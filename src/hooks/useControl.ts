@@ -4,8 +4,6 @@ import {
    setLocalStorage,
 } from "@/share/utils/appHelper";
 import { useCurrentSong } from "@/stores/currentSongContext";
-import { useQueue } from "@/stores/songQueueContext";
-import { log } from "console";
 import {
    MouseEventHandler,
    RefObject,
@@ -13,20 +11,23 @@ import {
    useRef,
    useState,
 } from "react";
-import useVolume from "./useVolume";
 
 type Props = {
    audioRef: RefObject<HTMLAudioElement>;
    processLineRef: RefObject<HTMLDivElement>;
    currentTimeRef: RefObject<HTMLDivElement>;
+   timeHolderRef: RefObject<HTMLDivElement>;
+   songs: Song[];
 };
 
 export default function useControl({
    audioRef,
+   songs,
    currentTimeRef,
    processLineRef,
+   timeHolderRef,
 }: Props) {
-   const { songs, setQueue } = useQueue();
+   // const { songs, setQueue } = useQueue();
    const { currentIndex, setCurrentSong, currentSong, from } = useCurrentSong();
 
    const [isPlaying, setIsPlaying] = useState(false);
@@ -37,7 +38,7 @@ export default function useControl({
    const isPlayAllSong = useRef(false);
    const currentIndexRef = useRef(0);
    const currentSongRef = useRef<Song | null>(null);
-   // const processLineRefWidth = useRef<number>();
+   const intervalId = useRef<NodeJS.Timeout>();
 
    const play = () => {
       try {
@@ -61,6 +62,18 @@ export default function useControl({
    };
 
    const handlePlayPause = () => {
+      if (!currentSong) {
+         const index = Math.floor(Math.random() * songs.length);
+
+         setCurrentSong({
+            song: songs[index],
+            from: "songs",
+            index,
+         });
+
+         return;
+      }
+
       isPlaying ? pause() : play();
    };
 
@@ -87,7 +100,7 @@ export default function useControl({
       ) {
          currentTimeRef.current.innerText = "0:00";
          // remainingTimeRef.current.innerText = "00:00";
-         processLineRef.current.style.background = "white";
+         processLineRef.current.style.background = "rgba(255,255,255,.6)";
       }
    };
 
@@ -102,22 +115,7 @@ export default function useControl({
          const lengthRatio = length / processLineRef.current.clientWidth;
          const newSeekTime = lengthRatio * audioRef.current.duration;
 
-         // if (audioRef.current) {
-         // const currentTime = audioRef.current.currentTime;
-
-         // if (prevSeekTime.current) {
-         //    if (
-         //       Math.abs(currentTime - prevSeekTime.current) < 1 &&
-         //       Math.abs(newSeekTime - prevSeekTime.current) < 1
-         //    ) {
-         //       console.log("no seek");
-         //       return;
-         //    }
-         // }
-
          audioRef.current.currentTime = newSeekTime;
-         // prevSeekTime.current = newSeekTime;
-         // }
       }
    };
 
@@ -131,8 +129,6 @@ export default function useControl({
          newIndex = 0;
          newSong = songs[0];
       }
-
-      console.log("check new index", newIndex, newSong, songs);
 
       setCurrentSong({
          song: newSong,
@@ -159,21 +155,25 @@ export default function useControl({
    };
 
    const handleTimeUpdate = () => {
-      if (!audioRef.current) {
-         console.log("auto ele is undefined when update time");
-         return;
-      }
+      if (!audioRef.current) return;
 
       const currentTime = audioRef.current?.currentTime;
       const timeLine = processLineRef.current;
 
-      if (audioRef.current.duration && currentTime && timeLine) {
+      if (
+         audioRef.current.duration &&
+         timeHolderRef.current &&
+         currentTime &&
+         timeLine
+      ) {
          const ratio = currentTime / (audioRef.current.duration / 100);
-         timeLine.style.background = `linear-gradient(to right, #fbbf24 ${ratio}%, white ${ratio}%, white 100%)`;
+         timeLine.style.background = `linear-gradient(to right, #fde68a ${ratio}%, rgba(255,255,255, .3) ${ratio}%, rgba(255,255,255, .3) 100%)`;
+
+         timeHolderRef.current.style.left = `${ratio}%`;
       }
 
       if (currentTimeRef.current) {
-         currentTimeRef.current.innerText = formatTime(currentTime!) || "00:00";
+         currentTimeRef.current.innerText = formatTime(currentTime!) || "0:00";
       }
    };
 
@@ -227,7 +227,7 @@ export default function useControl({
             // on the other hand the localStore have current song value
             // then update audio current time
             if (current?.song?.id === currentSongRef.current?.id) {
-               audioRef.current.currentTime = storage["duration"] || 0;
+               audioRef.current.currentTime = storage["timeProcess"] || 0;
                // update time line ui
                handleTimeUpdate();
                return;
@@ -246,20 +246,13 @@ export default function useControl({
 
    useEffect(() => {
       const storage = getLocalStorage();
-
       const current = storage["current"] as CurrentSong;
-
-      const queueSongs: Song[] = storage["queue"] || [];
-
-      if (queueSongs.length) {
-         if (current)
-            setCurrentSong({
-               song: current.song,
-               index: current.index,
-               from: current.from,
-            });
-
-         setQueue(queueSongs);
+      if (current) {
+         setCurrentSong({
+            song: current.song,
+            index: current.index,
+            from: current.from,
+         });
       }
    }, []);
 
@@ -274,29 +267,18 @@ export default function useControl({
       audioRef.current.addEventListener("pause", handlePause);
       audioRef.current.addEventListener("playing", handlePlaying);
       audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
+      audioRef.current.addEventListener("ended", handleEnded);
+      audioRef.current.addEventListener("loadedmetadata", handleLoaded);
 
       return () => {
          audioRef.current?.removeEventListener("error", handleError);
          audioRef.current?.removeEventListener("pause", handlePause);
          audioRef.current?.removeEventListener("playing", handlePlaying);
          audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
-      };
-   }, []);
-
-   useEffect(() => {
-      if (!audioRef.current) {
-         console.log("Audio element is undefined in use control");
-         return;
-      }
-
-      audioRef.current.addEventListener("ended", handleEnded);
-      audioRef.current.addEventListener("loadedmetadata", handleLoaded);
-
-      return () => {
          audioRef.current?.removeEventListener("ended", handleEnded);
          audioRef.current?.removeEventListener("loadedmetadata", handleLoaded);
       };
-   }, [songs]);
+   }, []);
 
    useEffect(() => {
       if (!audioRef.current) return;
@@ -313,6 +295,19 @@ export default function useControl({
          handleResetForNewSong();
       };
    }, [currentSong]);
+
+   useEffect(() => {
+      if (isPlaying) {
+         intervalId.current = setInterval(() => {
+            setLocalStorage(
+               "timeProcess",
+               Math.floor(audioRef.current?.currentTime || 0)
+            );
+         }, 3000);
+      }
+
+      return () => clearInterval(intervalId.current);
+   }, [isPlaying]);
 
    return {
       handleNext,

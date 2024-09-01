@@ -1,5 +1,6 @@
 "use client";
 
+import { songs } from "@/data";
 import useControl from "@/hooks/useControl";
 import useVolume from "@/hooks/useVolume";
 import Button from "@/share/_components/Button";
@@ -8,7 +9,6 @@ import { formatTime } from "@/share/utils/appHelper";
 import { useCurrentSong } from "@/stores/currentSongContext";
 import {
    ArrowPathIcon,
-   ArrowTrendingUpIcon,
    BackwardIcon,
    ForwardIcon,
    PauseIcon,
@@ -22,9 +22,9 @@ export default function Control() {
    const { currentSong } = useCurrentSong();
 
    const processLineRef = useRef<ElementRef<"div">>(null);
+   const timeHolderRef = useRef<ElementRef<"div">>(null);
    const audioRef = useRef<ElementRef<"audio">>(null);
    const currentTimeRef = useRef<ElementRef<"div">>(null);
-   const volumeProcess = useRef<ElementRef<"div">>(null);
 
    const {
       handleNext,
@@ -35,54 +35,72 @@ export default function Control() {
       isPlaying,
    } = useControl({
       audioRef,
+      songs: songs,
       currentTimeRef,
       processLineRef,
+      timeHolderRef,
    });
 
-   const { handleMute, handleSetVolume, handleWheel, isMute, volume } =
-      useVolume({ audioRef, volumeProcess });
+   const { handleMute, handleWheel, isMute } = useVolume({ audioRef });
 
    return (
-      <div className="fixed bottom-5 left-0 right-0">
-         <audio
-            ref={audioRef}
-            src={currentSong?.song_url}
-            className="hidden"
-         ></audio>
+      <>
+         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <audio
+               ref={audioRef}
+               src={currentSong?.song_url}
+               className="hidden"
+            ></audio>
 
-         <div className="container">
-            <Frame pushAble={"clear"}>
-               <div className="flex items-center justify-between sm:space-x-4 ">
-                  <div className="w-full sm:w-1/4  bg-amber-200 rounded-md p-2 text-amber-800">
-                     <h5 className="font-medium line-clamp-1">
-                        {currentSong?.name || "Song name"}
+            <div className="w-[400px] max-w-90vw">
+               <Frame pushAble={"clear"}>
+                  <p className="font-medium text-amber-200 ">Now playing</p>
+                  <div className="mt-2  bg-amber-200 rounded-md p-3 text-center text-amber-800">
+                     <h5 className="font-medium text-xl line-clamp-1">
+                        {currentSong?.name || "..."}
                      </h5>
-                     <p className="text-sm font-medium line-clamp-1">
+                     <p className="text-sm text-amber-900 font-medium line-clamp-1">
                         {currentSong?.singer || "..."}
                      </p>
                   </div>
 
-                  <div
-                     className={`flex flex-col sm:flex-grow max-w-[400px] ${
-                        !currentSong && "disabled"
-                     }`}
-                  >
-                     <div className={`"cta flex justify-center space-x-4 `}>
+                  <div className={`flex flex-col mt-5`}>
+                     <div className="flex items-center h-[30px] text-amber-200 space-x-1 ">
+                        <div
+                           ref={currentTimeRef}
+                           className="text-amber-200/80 w-[50px]"
+                        >
+                           0:00
+                        </div>
+                        <div
+                           ref={processLineRef}
+                           onClick={handleSeek}
+                           className={
+                              "relative group h-1 hover:h-[6px] w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%] " +
+                              `${!currentSong && "disabled"}`
+                           }
+                        >
+                           <div
+                              ref={timeHolderRef}
+                              className="absolute opacity-0 group-hover:opacity-[100] h-6 w-3 rounded-sm bg-amber-900 border-[2px] border-amber-200 top-1/2 -translate-y-1/2 -translate-x-1/2"
+                           ></div>
+                        </div>
+                        <div className="w-[50px] text-right">
+                           {formatTime(currentSong?.duration || 0)}
+                        </div>
+                     </div>
+
+                     <div className={`flex my-2 justify-center space-x-4 `}>
                         <button
                            onClick={handlePrevious}
-                           className="text-amber-200 hidden sm:block"
+                           className="text-amber-200"
                         >
                            <BackwardIcon className="w-7" />
                         </button>
 
-                        {/* <button className="text-amber-200 hidden sm:block">
-                           <ArrowTrendingUpIcon className="w-7" />
-                        </button> */}
-
-                        <Button
+                        <button
                            onClick={handlePlayPause}
-                           size={"clear"}
-                           className="p-1"
+                           className="p-2 bg-amber-200 text-amber-900 rounded-md"
                         >
                            {isWaiting ? (
                               <ArrowPathIcon className="w-9 animate-spin" />
@@ -95,46 +113,30 @@ export default function Control() {
                                  )}
                               </>
                            )}
-                        </Button>
+                        </button>
 
                         <button onClick={handleNext} className="text-amber-200">
                            <ForwardIcon className="w-7" />
                         </button>
-
-                        {/* <button className="text-amber-200 hidden sm:block">
-                           <ArrowPathIcon className="w-7" />
-                        </button> */}
-                     </div>
-                     <div className="hidden sm:flex items-center h-[30px] text-amber-200 space-x-1 ">
-                        <div ref={currentTimeRef} className="">
-                           0:00
-                        </div>
-                        <div
-                           ref={processLineRef}
-                           onClick={handleSeek}
-                           className="h-1 hover:h-2 w-full rounded-full bg-white"
-                        ></div>
-                        <span>{formatTime(currentSong?.duration || 0)}</span>
                      </div>
                   </div>
-
-                  <div className="hidden sm:flex w-1/4 items-center max-w-[140px] flex-grow space-x-1">
-                     <button onWheel={handleWheel} onClick={handleMute}>
-                        {isMute ? (
-                           <SpeakerXMarkIcon className="w-8 text-amber-200" />
-                        ) : (
-                           <SpeakerWaveIcon className="w-8 text-amber-200" />
-                        )}
-                     </button>
-                     <div
-                        ref={volumeProcess}
-                        onClick={handleSetVolume}
-                        className="h-1 hover:h-2 w-full rounded-full bg-white"
-                     ></div>
-                  </div>
-               </div>
-            </Frame>
+               </Frame>
+            </div>
          </div>
-      </div>
+
+         <div onWheel={handleWheel} className="fixed bottom-5 right-5">
+            <Button
+               className="p-2 text-amber-800"
+               size={"clear"}
+               onClick={handleMute}
+            >
+               {isMute ? (
+                  <SpeakerXMarkIcon className="w-6" />
+               ) : (
+                  <SpeakerWaveIcon className="w-6" />
+               )}
+            </Button>
+         </div>
+      </>
    );
 }
