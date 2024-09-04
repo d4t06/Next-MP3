@@ -52,73 +52,64 @@ export default function Control() {
                className="hidden"
             ></audio>
 
-            <div className="w-[400px] max-w-90vw">
+            <div className="w-[400px] max-w-[90vw]">
                <Frame pushAble={"clear"}>
-                  <p className="font-medium text-amber-200 ">Now playing</p>
-                  <div className="mt-2  bg-amber-200 rounded-md p-3 text-center text-amber-800">
-                     <h5 className="font-medium text-xl line-clamp-1">
+                  <div className="mt-2 rounded-md p-3 text-center text-amber-100">
+                     <h5 className="font-bold text-2xl line-clamp-1">
                         {currentSong?.name || "..."}
                      </h5>
-                     <p className="text-sm text-amber-900 font-medium line-clamp-1">
+                     <p className="text-sm font-medium line-clamp-1">
                         {currentSong?.singer || "..."}
                      </p>
                   </div>
 
-                  <div className={`flex flex-col mt-5`}>
-                     <div className="flex items-center h-[30px] text-amber-200 space-x-1 ">
+                  <div className="h-[6px] my-2 flex items-center">
+                     <div
+                        ref={processLineRef}
+                        onClick={handleSeek}
+                        className={
+                           "relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%] " +
+                           `${!currentSong && "disabled"}`
+                        }
+                     >
                         <div
-                           ref={currentTimeRef}
-                           className="text-amber-200/80 w-[50px]"
-                        >
-                           0:00
-                        </div>
-                        <div
-                           ref={processLineRef}
-                           onClick={handleSeek}
-                           className={
-                              "relative group h-1 hover:h-[6px] w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%] " +
-                              `${!currentSong && "disabled"}`
-                           }
-                        >
-                           <div
-                              ref={timeHolderRef}
-                              className="absolute opacity-0 group-hover:opacity-[100] h-6 w-3 rounded-sm bg-amber-900 border-[2px] border-amber-200 top-1/2 -translate-y-1/2 -translate-x-1/2"
-                           ></div>
-                        </div>
-                        <div className="w-[50px] text-right">
-                           {formatTime(currentSong?.duration || 0)}
-                        </div>
+                           ref={timeHolderRef}
+                           className="absolute hidden sm:block opacity-0 group-hover:opacity-[100] h-6 w-3 rounded-sm bg-amber-900 border-[2px] border-amber-200 top-1/2 -translate-y-1/2 -translate-x-1/2"
+                        ></div>
                      </div>
+                  </div>
 
-                     <div className={`flex my-2 justify-center space-x-4 `}>
-                        <button
-                           onClick={handlePrevious}
-                           className="text-amber-200"
-                        >
-                           <BackwardIcon className="w-7" />
-                        </button>
+                  <div className="flex justify-between items-center h-[30px] text-amber-100">
+                     <div ref={currentTimeRef}>0:00</div>
+                     <div>{formatTime(currentSong?.duration || 0)}</div>
+                  </div>
 
-                        <button
-                           onClick={handlePlayPause}
-                           className="p-2 bg-amber-200 text-amber-900 rounded-md"
-                        >
-                           {isWaiting ? (
-                              <ArrowPathIcon className="w-9 animate-spin" />
-                           ) : (
-                              <>
-                                 {isPlaying ? (
-                                    <PauseIcon className="w-9" />
-                                 ) : (
-                                    <PlayIcon className="w-9" />
-                                 )}
-                              </>
-                           )}
-                        </button>
+                  <div className={`flex my-2 justify-center items-center space-x-5 `}>
+                     <Button colors={"second"} onClick={handlePrevious}>
+                        <BackwardIcon className="w-8" />
+                     </Button>
 
-                        <button onClick={handleNext} className="text-amber-200">
-                           <ForwardIcon className="w-7" />
-                        </button>
-                     </div>
+                     <Button
+                        colors={"second"}
+                        className="!text-amber-200"
+                        onClick={handlePlayPause}
+                     >
+                        {isWaiting ? (
+                           <ArrowPathIcon className="w-10 animate-spin" />
+                        ) : (
+                           <>
+                              {isPlaying ? (
+                                 <PauseIcon className="w-10" />
+                              ) : (
+                                 <PlayIcon className="w-10" />
+                              )}
+                           </>
+                        )}
+                     </Button>
+
+                     <Button onClick={handleNext} colors={"second"}>
+                        <ForwardIcon className="w-8" />
+                     </Button>
                   </div>
                </Frame>
             </div>

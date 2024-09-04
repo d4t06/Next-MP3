@@ -5,7 +5,6 @@ export default function DefaultLayout({ children }: { children: ReactNode }) {
    return (
       <div className="flex items">
          {children}
-         <Control />
       </div>
    );
 }

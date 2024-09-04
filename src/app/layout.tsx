@@ -21,7 +21,7 @@ export default function RootLayout({
          <CurrentSongProvider>
             <QueueSongProvider>
                <body
-                  className={`${inter.className} bg-amber-200 min-h-screen`}
+                  className={`${inter.className} bg-amber-100 min-h-screen`}
                >
                   {children}
                </body>

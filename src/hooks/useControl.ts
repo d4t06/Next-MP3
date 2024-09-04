@@ -116,6 +116,7 @@ export default function useControl({
          const newSeekTime = lengthRatio * audioRef.current.duration;
 
          audioRef.current.currentTime = newSeekTime;
+         handleTimeUpdate();
       }
    };
 

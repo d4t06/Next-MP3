@@ -12,7 +12,7 @@ const ButtonVariant = cva(classes.button, {
    variants: {
       variant: {
          primary:
-            "before:content-[''] before:absolute before:z-[-1] before:inset-0 before:rounded-[8px] rounded-[8px]  active:translate-y-[2px] active:before:shadow-none",
+            "before:border-[#78350f] before:content-[''] before:absolute before:z-[-1] before:inset-0 before:rounded-[6px] rounded-[8px] before:shadow-[0_2px_0_#78350f] active:translate-y-[2px] active:before:shadow-none",
          clear: "",
       },
       size: {
@@ -20,8 +20,8 @@ const ButtonVariant = cva(classes.button, {
          primary: "px-[15px] py-[5px]",
       },
       colors: {
-         primary:
-            "before:border-[#78350f] text-amber-800 bg-amber-200 before:shadow-[0_2px_0_#78350f]",
+         primary: "text-amber-800 bg-amber-100",
+         second: "text-amber-100 bg-amber-800",
          clear: "",
       },
       border: {
