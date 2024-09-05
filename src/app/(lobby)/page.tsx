@@ -12,7 +12,7 @@ export default async function HomePage() {
    const session = await getServerSession(nextAuthOptions);
 
    const { songs } = (await getAllSong()) || {};
-   if (!songs || !songs.length) return <NoResult />;
+   if (!songs) return <NoResult />;
 
    return (
       <>

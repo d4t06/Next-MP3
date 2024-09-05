@@ -19,7 +19,7 @@ export const nextAuthOptions: NextAuthOptions = {
             const res = await fetch(
                `${
                   process.env.NEXT_PUBLIC_API_ENDPOINT ||
-                  "https://nest-mobile.vercel.app/api"
+                  "https://nest-mp3.vercel.app/api"
                }/auth/login`,
                {
                   method: "POST",

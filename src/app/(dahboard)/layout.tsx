@@ -11,15 +11,17 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <>
          <ToastProvider>
             <SongSelectProvider>
-               {children}
+               <div className="h-screen overflow-hidden">
+                  {children}
 
-               <Button
-                  href="/"
-                  className="!absolute p-[6px] bottom-[20px] left-[20px]"
-                  size={"clear"}
-               >
-                  <HomeIcon className="w-6" />
-               </Button>
+                  <Button
+                     href="/"
+                     className="!absolute p-[6px] bottom-[20px] left-[20px]"
+                     size={"clear"}
+                  >
+                     <HomeIcon className="w-6" />
+                  </Button>
+               </div>
             </SongSelectProvider>
             <UploadImagePortal />
             <ToastPortal autoClose />

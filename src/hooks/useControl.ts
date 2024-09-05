@@ -50,15 +50,8 @@ export default function useControl({
       audioRef.current?.pause();
    };
 
-   // const getNewSong = (index: number) => {
-   //    return songs[index];
-   // };
-
    const handlePause = () => {
       setIsPlaying(false);
-      // dispatch(setPlayStatus({ isPlaying: false }));
-
-      // if (intervalId.current) clearInterval(intervalId.current);
    };
 
    const handlePlayPause = () => {
@@ -81,26 +74,20 @@ export default function useControl({
       firstTimeSongLoaded.current = false;
       setIsPlaying(true);
       setIsWaiting(false);
-
-      // dispatch(
-      //    setPlayStatus({ isPlaying: true, isWaiting: false, isError: false })
-      // );
    };
 
    const handleResetForNewSong = () => {
       // setIsLoaded(false);
       setIsWaiting(true);
 
-      // if (!firstTimeSongLoaded.current) setLocalStorage("duration", 0);
-
       if (
          processLineRef.current &&
-         currentTimeRef.current
-         // remainingTimeRef.current
+         currentTimeRef.current &&
+         timeHolderRef.current
       ) {
          currentTimeRef.current.innerText = "0:00";
-         // remainingTimeRef.current.innerText = "00:00";
-         processLineRef.current.style.background = "rgba(255,255,255,.6)";
+         processLineRef.current.style.background = "rgba(255,255,255,.3)";
+         timeHolderRef.current.style.left = "0"
       }
    };
 
@@ -179,8 +166,15 @@ export default function useControl({
    };
 
    const handleEnded = () => {
-      if (currentIndex === songs.length - 1) {
-         isPlayAllSong.current = true;
+      if (currentIndexRef.current === songs.length - 1) {
+         if (songs.length === 1) {
+            handleResetForNewSong();
+
+            setIsPlaying(false);
+            setIsWaiting(false);
+
+            return;
+         } else isPlayAllSong.current = true;
       }
 
       return handleNext();
@@ -210,8 +204,10 @@ export default function useControl({
          } as CurrentSong);
 
       // case end of list
+
       if (isPlayAllSong.current) {
          isPlayAllSong.current = false;
+
          setIsPlaying(false);
          setIsWaiting(false);
          return;

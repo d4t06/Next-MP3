@@ -1,8 +1,5 @@
 "use client";
-
-import { songs } from "@/data";
 import useControl from "@/hooks/useControl";
-import useVolume from "@/hooks/useVolume";
 import Button from "@/share/_components/Button";
 import Frame from "@/share/_components/Frame";
 import { formatTime } from "@/share/utils/appHelper";
@@ -13,16 +10,15 @@ import {
    ForwardIcon,
    PauseIcon,
    PlayIcon,
-   SpeakerWaveIcon,
-   SpeakerXMarkIcon,
 } from "@heroicons/react/24/outline";
 import { ElementRef, useRef } from "react";
+import { VolumeButton } from "./VolumeButton";
 
 type Props = {
    songs: Song[];
 };
 
-export default function Control({  }: Props) {
+export default function Control({ songs }: Props) {
    const { currentSong } = useCurrentSong();
 
    const processLineRef = useRef<ElementRef<"div">>(null);
@@ -45,7 +41,11 @@ export default function Control({  }: Props) {
       timeHolderRef,
    });
 
-   const { handleMute, handleWheel, isMute } = useVolume({ audioRef });
+   const classes = {
+      timeLineRef: `relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%]`,
+      timeLineHolderRef:
+         "absolute pointer-events-none hidden sm:block opacity-0 group-hover:opacity-[100] h-6 w-3 rounded-sm bg-amber-900 border-[2px] border-amber-200 top-1/2 -translate-y-1/2 -translate-x-1/2",
+   };
 
    return (
       <>
@@ -57,7 +57,7 @@ export default function Control({  }: Props) {
             ></audio>
 
             <div className="w-[400px] max-w-[90vw]">
-               <Frame pushAble={"clear"}>
+               <Frame pushAble={"clear"} className="px-5">
                   <div className="mt-2 rounded-md p-3 text-center text-amber-100">
                      <h5 className="font-bold text-2xl line-clamp-1">
                         {currentSong?.name || "..."}
@@ -71,14 +71,13 @@ export default function Control({  }: Props) {
                      <div
                         ref={processLineRef}
                         onClick={handleSeek}
-                        className={
-                           "relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%] " +
-                           `${!currentSong && "disabled"}`
-                        }
+                        className={`${classes.timeLineRef} ${
+                           !currentSong && "disabled"
+                        }`}
                      >
                         <div
                            ref={timeHolderRef}
-                           className="absolute hidden sm:block opacity-0 group-hover:opacity-[100] h-6 w-3 rounded-sm bg-amber-900 border-[2px] border-amber-200 top-1/2 -translate-y-1/2 -translate-x-1/2"
+                           className={classes.timeLineHolderRef}
                         ></div>
                      </div>
                   </div>
@@ -91,13 +90,17 @@ export default function Control({  }: Props) {
                   <div
                      className={`flex my-2 justify-center items-center space-x-5 `}
                   >
-                     <Button disabled={songs.length <= 1} colors={"second"} onClick={handlePrevious}>
+                     <Button
+                        disabled={songs.length <= 1}
+                        colors={"second"}
+                        onClick={handlePrevious}
+                     >
                         <BackwardIcon className="w-8" />
                      </Button>
 
                      <Button
                         colors={"second"}
-                        className="!text-amber-200"
+                        disabled={!songs.length}
                         onClick={handlePlayPause}
                      >
                         {isWaiting ? (
@@ -113,7 +116,11 @@ export default function Control({  }: Props) {
                         )}
                      </Button>
 
-                     <Button disabled={songs.length <= 1} onClick={handleNext} colors={"second"}>
+                     <Button
+                        disabled={songs.length <= 1}
+                        onClick={handleNext}
+                        colors={"second"}
+                     >
                         <ForwardIcon className="w-8" />
                      </Button>
                   </div>
@@ -121,19 +128,7 @@ export default function Control({  }: Props) {
             </div>
          </div>
 
-         <div onWheel={handleWheel} className="fixed bottom-5 right-5">
-            <Button
-               className="p-2 text-amber-800"
-               size={"clear"}
-               onClick={handleMute}
-            >
-               {isMute ? (
-                  <SpeakerXMarkIcon className="w-6" />
-               ) : (
-                  <SpeakerWaveIcon className="w-6" />
-               )}
-            </Button>
-         </div>
+         <VolumeButton audioRef={audioRef} />
       </>
    );
 }
