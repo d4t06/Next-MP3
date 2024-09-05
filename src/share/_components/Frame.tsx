@@ -9,8 +9,8 @@ const FrameVariant = cva(classes.container, {
    variants: {
       size: {
          primary:
-            "before:rounded-[20px] before:bg-amber-800 before:border-[4px] before:shadow-[0_4px_0_#78350f] p-[14px] active:translate-y-[4px]",
-         small: "before:rounded-lg rounded-lg before:border-[2px] before:shadow-[0_2px_0_#78350f] p-[10px] active:translate-y-[2px]",
+            "before:rounded-2xl before:bg-amber-800 before:border-[4px] before:shadow-[0_4px_0_#78350f] p-[14px] active:translate-y-[4px]",
+         small: "before:rounded-lg before:border-[2px] before:shadow-[0_2px_0_#78350f] p-[10px] active:translate-y-[2px]",
       },
       pushAble: {
          primary: "active:before:shadow-none",

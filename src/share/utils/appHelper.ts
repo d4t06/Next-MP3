@@ -19,3 +19,19 @@ export const setLocalStorage = (key: string, value: any) => {
    if (typeof window !== "undefined")
       window.localStorage.setItem("next-mp3", JSON.stringify(storage));
 };
+
+export const sleep = (s: number) => new Promise((rs) => setTimeout(rs, s));
+
+export const initSongObject = ({ ...value }: Partial<SongSchema>) => {
+   return {
+      name: "",
+      singer: "",
+      image_url: "",
+      song_url: "",
+      duration: 0,
+      image_file_path: "",
+      song_file_path: "",
+      size: 0,
+      ...value,
+   } as SongSchema;
+};

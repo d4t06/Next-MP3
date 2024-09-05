@@ -18,7 +18,11 @@ import {
 } from "@heroicons/react/24/outline";
 import { ElementRef, useRef } from "react";
 
-export default function Control() {
+type Props = {
+   songs: Song[];
+};
+
+export default function Control({  }: Props) {
    const { currentSong } = useCurrentSong();
 
    const processLineRef = useRef<ElementRef<"div">>(null);
@@ -45,7 +49,7 @@ export default function Control() {
 
    return (
       <>
-         <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+         <div className="">
             <audio
                ref={audioRef}
                src={currentSong?.song_url}
@@ -84,8 +88,10 @@ export default function Control() {
                      <div>{formatTime(currentSong?.duration || 0)}</div>
                   </div>
 
-                  <div className={`flex my-2 justify-center items-center space-x-5 `}>
-                     <Button colors={"second"} onClick={handlePrevious}>
+                  <div
+                     className={`flex my-2 justify-center items-center space-x-5 `}
+                  >
+                     <Button disabled={songs.length <= 1} colors={"second"} onClick={handlePrevious}>
                         <BackwardIcon className="w-8" />
                      </Button>
 
@@ -107,7 +113,7 @@ export default function Control() {
                         )}
                      </Button>
 
-                     <Button onClick={handleNext} colors={"second"}>
+                     <Button disabled={songs.length <= 1} onClick={handleNext} colors={"second"}>
                         <ForwardIcon className="w-8" />
                      </Button>
                   </div>

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import CurrentSongProvider from "@/stores/currentSongContext";
-import QueueSongProvider from "@/stores/songQueueContext";
+import AuthProvider from "@/stores/sesstionContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,15 +17,12 @@ export default function RootLayout({
 }>) {
    return (
       <html lang="en">
-         <CurrentSongProvider>
-            <QueueSongProvider>
-               <body
-                  className={`${inter.className} bg-amber-100 min-h-screen`}
-               >
-                  {children}
-               </body>
-            </QueueSongProvider>
-         </CurrentSongProvider>
+         <AuthProvider>
+            <body className={`${inter.className} bg-amber-100 min-h-screen`}>
+               {children}
+               <div id="portals"></div>
+            </body>
+         </AuthProvider>
       </html>
    );
 }
