@@ -1,6 +1,5 @@
 "use client";
 
-import { getLocalStorage } from "@/share/utils/appHelper";
 import {
    ReactNode,
    createContext,

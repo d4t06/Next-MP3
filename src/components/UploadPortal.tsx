@@ -31,7 +31,7 @@ function UploadImagePortal() {
 
          {isUploading && (
             <Modal closeModal={() => {}}>
-               <div className="w-[400px] max-w-[90vw] text-amber-800 p-3">
+               <div className="w-[400px] max-w-[85vw] text-amber-800 p-3">
                   <p className="text-xl font-medium">Uploading</p>
                   <div className="space-y-2 mt-3">
                      {songSchemas.map((s, index) => {
@@ -52,7 +52,7 @@ function UploadImagePortal() {
                               </p>
 
                               {active && (
-                                 <ArrowPathIcon className="w-6 animate-spin" />
+                                 <ArrowPathIcon className="text-amber-900 w-6 animate-spin" />
                               )}
                            </div>
                         );

@@ -27,7 +27,6 @@ export default function useControl({
    processLineRef,
    timeHolderRef,
 }: Props) {
-   // const { songs, setQueue } = useQueue();
    const { currentIndex, setCurrentSong, currentSong, from } = useCurrentSong();
 
    const [isPlaying, setIsPlaying] = useState(false);
@@ -87,7 +86,7 @@ export default function useControl({
       ) {
          currentTimeRef.current.innerText = "0:00";
          processLineRef.current.style.background = "rgba(255,255,255,.3)";
-         timeHolderRef.current.style.left = "0"
+         timeHolderRef.current.style.left = "0";
       }
    };
 
@@ -244,12 +243,14 @@ export default function useControl({
    useEffect(() => {
       const storage = getLocalStorage();
       const current = storage["current"] as CurrentSong;
+
       if (current) {
-         setCurrentSong({
-            song: current.song,
-            index: current.index,
-            from: current.from,
-         });
+         if (songs.length && songs.find((s) => s.id === current.song.id))
+            setCurrentSong({
+               song: current.song,
+               index: current.index,
+               from: current.from,
+            });
       }
    }, []);
 

@@ -10,16 +10,22 @@ import {
    ForwardIcon,
    PauseIcon,
    PlayIcon,
+   QueueListIcon,
 } from "@heroicons/react/24/outline";
-import { ElementRef, useRef } from "react";
+import { ElementRef, useRef, useState } from "react";
 import { VolumeButton } from "./VolumeButton";
+import SongItem from "./SongItem";
 
 type Props = {
    songs: Song[];
 };
 
+type Tab = "playing" | "queue";
+
 export default function Control({ songs }: Props) {
    const { currentSong } = useCurrentSong();
+
+   const [tab, setTab] = useState<Tab>("playing");
 
    const processLineRef = useRef<ElementRef<"div">>(null);
    const timeHolderRef = useRef<ElementRef<"div">>(null);
@@ -35,7 +41,7 @@ export default function Control({ songs }: Props) {
       isPlaying,
    } = useControl({
       audioRef,
-      songs: songs,
+      songs,
       currentTimeRef,
       processLineRef,
       timeHolderRef,
@@ -45,6 +51,7 @@ export default function Control({ songs }: Props) {
       timeLineRef: `relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%]`,
       timeLineHolderRef:
          "absolute pointer-events-none hidden sm:block opacity-0 group-hover:opacity-[100] h-6 w-3 rounded-sm bg-amber-900 border-[2px] border-amber-200 top-1/2 -translate-y-1/2 -translate-x-1/2",
+      toggleButton: "p-2 !absolute bottom-5 right-7 -translate-x-full",
    };
 
    return (
@@ -56,79 +63,101 @@ export default function Control({ songs }: Props) {
                className="hidden"
             ></audio>
 
-            <div className="w-[400px] max-w-[90vw]">
+            <div className="w-[400px] max-w-[90vw] ">
                <Frame pushAble={"clear"} className="px-5">
-                  <div className="mt-2 rounded-md p-3 text-center text-amber-100">
-                     <h5 className="font-bold text-2xl line-clamp-1">
-                        {currentSong?.name || "..."}
-                     </h5>
-                     <p className="text-sm font-medium line-clamp-1">
-                        {currentSong?.singer || "..."}
-                     </p>
-                  </div>
-
-                  <div className="h-[6px] my-2 flex items-center">
-                     <div
-                        ref={processLineRef}
-                        onClick={handleSeek}
-                        className={`${classes.timeLineRef} ${
-                           !currentSong && "disabled"
-                        }`}
-                     >
+                  <div className="max-h-[40vh] overflow-auto">
+                     <div className={` ${tab === "playing" ? "" : "hidden"} `}>
                         <div
-                           ref={timeHolderRef}
-                           className={classes.timeLineHolderRef}
-                        ></div>
-                     </div>
-                  </div>
+                           className={`mt-2 rounded-md p-3 text-center text-amber-100 `}
+                        >
+                           <h5 className="font-bold text-2xl line-clamp-1">
+                              {currentSong?.name || "..."}
+                           </h5>
+                           <p className="text-sm font-medium line-clamp-1">
+                              {currentSong?.singer || "..."}
+                           </p>
+                        </div>
 
-                  <div className="flex justify-between items-center h-[30px] text-amber-100">
-                     <div ref={currentTimeRef}>0:00</div>
-                     <div>{formatTime(currentSong?.duration || 0)}</div>
-                  </div>
+                        <div className="h-[6px] my-2 flex items-center">
+                           <div
+                              ref={processLineRef}
+                              onClick={handleSeek}
+                              className={`${classes.timeLineRef} ${
+                                 !currentSong && "disabled"
+                              }`}
+                           >
+                              <div
+                                 ref={timeHolderRef}
+                                 className={classes.timeLineHolderRef}
+                              ></div>
+                           </div>
+                        </div>
 
-                  <div
-                     className={`flex my-2 justify-center items-center space-x-5 `}
-                  >
-                     <Button
-                        disabled={songs.length <= 1}
-                        colors={"second"}
-                        onClick={handlePrevious}
-                     >
-                        <BackwardIcon className="w-8" />
-                     </Button>
+                        <div className="flex justify-between items-center h-[30px] text-amber-100">
+                           <div ref={currentTimeRef}>0:00</div>
+                           <div>{formatTime(currentSong?.duration || 0)}</div>
+                        </div>
 
-                     <Button
-                        colors={"second"}
-                        disabled={!songs.length}
-                        onClick={handlePlayPause}
-                     >
-                        {isWaiting ? (
-                           <ArrowPathIcon className="w-10 animate-spin" />
-                        ) : (
-                           <>
-                              {isPlaying ? (
-                                 <PauseIcon className="w-10" />
+                        <div
+                           className={`flex my-2 justify-center items-center space-x-5 `}
+                        >
+                           <Button
+                              disabled={songs.length <= 1}
+                              colors={"second"}
+                              onClick={handlePrevious}
+                           >
+                              <BackwardIcon className="w-8" />
+                           </Button>
+
+                           <Button
+                              colors={"second"}
+                              disabled={!songs.length}
+                              onClick={handlePlayPause}
+                           >
+                              {isWaiting ? (
+                                 <ArrowPathIcon className="w-10 animate-spin" />
                               ) : (
-                                 <PlayIcon className="w-10" />
+                                 <>
+                                    {isPlaying ? (
+                                       <PauseIcon className="w-10" />
+                                    ) : (
+                                       <PlayIcon className="w-10" />
+                                    )}
+                                 </>
                               )}
-                           </>
-                        )}
-                     </Button>
+                           </Button>
 
-                     <Button
-                        disabled={songs.length <= 1}
-                        onClick={handleNext}
-                        colors={"second"}
-                     >
-                        <ForwardIcon className="w-8" />
-                     </Button>
+                           <Button
+                              disabled={songs.length <= 1}
+                              onClick={handleNext}
+                              colors={"second"}
+                           >
+                              <ForwardIcon className="w-8" />
+                           </Button>
+                        </div>
+                     </div>
+
+                     <div className={`${tab === "queue" ? "" : "hidden"}`}>
+                        {songs.map((s, index) => (
+                           <SongItem index={index} song={s} songs={songs} />
+                        ))}
+                     </div>
                   </div>
                </Frame>
             </div>
          </div>
 
          <VolumeButton audioRef={audioRef} />
+
+         <Button
+            className={classes.toggleButton}
+            size={"clear"}
+            onClick={() =>
+               tab === "playing" ? setTab("queue") : setTab("playing")
+            }
+         >
+            <QueueListIcon className="w-6" />
+         </Button>
       </>
    );
 }

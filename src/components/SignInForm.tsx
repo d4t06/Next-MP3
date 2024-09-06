@@ -39,7 +39,7 @@ export default function SignInForm() {
 
    const classes = {
       wrapper:
-         "!absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[400px] max-w-[100vw]",
+         "!absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-[400px] max-w-[90vw]",
       formContainer: "space-y-[22px] text-amber-100 p-[10px]",
       label: "font-[500] ",
       errMsg:

@@ -36,10 +36,10 @@ export default function SongItemWrapper({
    return (
       <div className={className} onClick={handleSetSong}>
          <div
-            className={`flex w-full font-medium justify-between items-center  rounded-md p-2 ${
+            className={`flex w-full font-medium justify-between items-center rounded-md p-2  ${
                currentSong?.id === song.id
-                  ? "bg-amber-800 text-amber-200"
-                  : "bg-amber-300 text-amber-800"
+                  ? "bg-amber-100 text-amber-800"
+                  : "cursor-pointer text-amber-100 hover:bg-amber-700"
             } `}
          >
             {children}
