@@ -18,7 +18,7 @@ export default function RootLayout({
    return (
       <html lang="en">
          <AuthProvider>
-            <body className={`${inter.className} bg-amber-100 min-h-screen`}>
+            <body className={`${inter.className} bg-amber-100`}>
                {children}
                <div id="portals"></div>
             </body>

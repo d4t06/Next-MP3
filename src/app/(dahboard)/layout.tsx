@@ -11,12 +11,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <>
          <ToastProvider>
             <SongSelectProvider>
-               <div className="h-screen overflow-hidden">
+               <div className="fixed inset-0">
                   {children}
 
                   <Button
                      href="/"
-                     className="!absolute p-[6px] bottom-[20px] left-[20px]"
+                     className="!absolute p-[6px] bottom-5 left-5"
                      size={"clear"}
                   >
                      <HomeIcon className="w-6" />

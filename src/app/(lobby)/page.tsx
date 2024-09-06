@@ -21,7 +21,7 @@ export default async function HomePage() {
          {session && (
             <Button
                href="/dashboard"
-               className="!absolute p-2 bottom-[20px] left-[20px]"
+               className="!absolute p-2 bottom-5 left-5"
                size={"clear"}
             >
                <ComputerDesktopIcon className="w-6" />

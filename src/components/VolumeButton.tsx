@@ -20,7 +20,7 @@ export function VolumeButton({ audioRef }: Props) {
    });
 
    const classes = {
-      wrapper: `fixed bottom-5 right-5 group
+      wrapper: `absolute bottom-5 right-5 group
       before:content-[''] before:w-[100%] before:h-1 before:absolute before:bottom-[100%] `,
       volumeLineContainer:
          "absolute hidden sm:flex opacity-0 pointer-events-none group-hover:pointer-events-auto group-hover:opacity-100 hover:opacity-100 hover:pointer-events-auto transition-opacity  bottom-[calc(100%+4px)] rounded-lg w-[100%] h-[100px] bg-amber-800 justify-center py-3",
