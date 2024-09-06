@@ -1,4 +1,5 @@
 import { runRevalidateTag } from "@/app/actions";
+import { uploadFile } from "@/share/services/firebaseServices";
 import { initSongObject } from "@/share/utils/appHelper";
 import parseSongFromFile from "@/share/utils/parseSong";
 import { useToast } from "@/stores/toastContext";
@@ -27,14 +28,13 @@ export default function useUploadImage() {
 
          setIsUploading(true);
 
-         const headers = new Headers();
-         headers.set("Authorization", `Bearer ${session?.token}`);
-
-         const headers2 = new Headers();
-         headers2.set("Authorization", `Bearer ${session?.token}`);
-         headers2.set("Content-Type", "application/json");
+         const header = new Headers();
+         header.set("Authorization", `Bearer ${session?.token}`);
+         header.set("Content-Type", "application/json");
 
          const schemas: SongSchema[] = [];
+
+         const start = Date.now()
 
          for (const file of fileLists) {
             const { duration, name, singer } = await parseSongFromFile(file);
@@ -53,34 +53,18 @@ export default function useUploadImage() {
          for (let i = 0; i < fileLists.length; i++) {
             setCurrentIndex(i);
 
-            const formData = new FormData();
-            formData.append("file", fileLists[i]);
-
-            const res = await fetch(`${API_ENDPOINT}/files`, {
-               method: "POST",
-               headers,
-               body: formData,
+            const { filePath, fileURL } = await uploadFile({
+               file: fileLists[i],
             });
 
-            if (!res.ok) throw new Error("Upload song file failed");
-
-            const {
-               data: { filePath, url },
-            } = (await res.json()) as {
-               data: {
-                  url: string;
-                  filePath: string;
-               };
-            };
-
             Object.assign(schemas[i], {
-               song_url: url,
+               song_url: fileURL,
                song_file_path: filePath,
             } as Partial<SongSchema>);
 
             await fetch(`${API_ENDPOINT}/songs`, {
                method: "POST",
-               headers: headers2,
+               headers: header,
                body: JSON.stringify(schemas[i]),
             });
 
@@ -91,7 +75,7 @@ export default function useUploadImage() {
 
          await runRevalidateTag("songs");
 
-         setSuccessToast("Upload song successful");
+         setSuccessToast(`Upload song successful after ${ (Date.now() - start) / 1000}s`);
       } catch (error) {
          console.log(error);
          setErrorToast("Upload song failed");

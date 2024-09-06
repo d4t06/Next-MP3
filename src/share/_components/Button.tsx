@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 
 const classes = {
-   active: "before:shadow-none font-[500] translate-y-[2px] text-[#cd1818]",
+   active: "before:shadow-none translate-y-[2px] !text-amber-100 before:bg-amber-800",
    button: "inline-flex relative  items-center justify-center z-0",
 };
 

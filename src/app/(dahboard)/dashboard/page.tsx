@@ -20,7 +20,7 @@ async function SongList() {
             <div className="text-amber-900">{data.count} songs</div>
          </div>
 
-         <div className="flex-grow overflow-y-auto">
+         <div className="flex-grow overflow-y-auto no-scrollbar">
             {data.songs.map((s, index) => (
                <DashboardSongItem song={s} key={index} />
             ))}

@@ -1,4 +1,5 @@
 import { runRevalidateTag } from "@/app/actions";
+import { deleteFile } from "@/share/services/firebaseServices";
 import { sleep } from "@/share/utils/appHelper";
 import { useToast } from "@/stores/toastContext";
 import { useSession } from "next-auth/react";
@@ -38,12 +39,12 @@ export default function useSongItemAction() {
 
          switch (props.variant) {
             case "delete":
-               const res = await fetch(`${SONG_URL}/${props.song.id}`, {
+               await deleteFile({ filePath: props.song.song_file_path });
+
+               await fetch(`${SONG_URL}/${props.song.id}`, {
                   method: "Delete",
                   headers,
                });
-
-               if (!res.ok) throw new Error("");
 
                setSuccessToast(`'${props.song.name}' deleted`);
 

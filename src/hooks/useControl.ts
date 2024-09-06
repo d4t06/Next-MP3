@@ -209,6 +209,7 @@ export default function useControl({
 
          setIsPlaying(false);
          setIsWaiting(false);
+         setLocalStorage("timeProcess", 0);
          return;
       }
 

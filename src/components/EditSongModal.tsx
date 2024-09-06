@@ -24,8 +24,7 @@ export default function EditSongModal({
    const ableToSubmit =
       !!songData.name &&
       !!songData.singer &&
-      songData.name !== song.name &&
-      songData.singer !== song.singer;
+      (songData.name !== song.name || songData.singer !== song.singer);
 
    const handleSubmit = () => {
       if (!ableToSubmit) return;

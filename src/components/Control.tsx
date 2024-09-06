@@ -15,6 +15,7 @@ import {
 import { ElementRef, useRef, useState } from "react";
 import { VolumeButton } from "./VolumeButton";
 import SongItem from "./SongItem";
+import TimerButton from "./TimerButton";
 
 type Props = {
    songs: Song[];
@@ -51,7 +52,7 @@ export default function Control({ songs }: Props) {
       timeLineRef: `relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%]`,
       timeLineHolderRef:
          "absolute pointer-events-none hidden sm:block opacity-0 group-hover:opacity-[100] h-6 w-3 rounded-sm bg-amber-900 border-[2px] border-amber-200 top-1/2 -translate-y-1/2 -translate-x-1/2",
-      toggleButton: "p-2 !absolute bottom-5 right-7 -translate-x-full",
+      toggleButton: "p-2 ",
    };
 
    return (
@@ -139,7 +140,12 @@ export default function Control({ songs }: Props) {
 
                      <div className={`${tab === "queue" ? "" : "hidden"}`}>
                         {songs.map((s, index) => (
-                           <SongItem key={index} index={index} song={s} songs={songs} />
+                           <SongItem
+                              key={index}
+                              index={index}
+                              song={s}
+                              songs={songs}
+                           />
                         ))}
                      </div>
                   </div>
@@ -147,17 +153,21 @@ export default function Control({ songs }: Props) {
             </div>
          </div>
 
-         <VolumeButton audioRef={audioRef} />
+         <div className="absolute bottom-5 right-5 flex space-x-2">
+            <TimerButton audioRef={audioRef} isPlaying={isPlaying} />
 
-         <Button
-            className={classes.toggleButton}
-            size={"clear"}
-            onClick={() =>
-               tab === "playing" ? setTab("queue") : setTab("playing")
-            }
-         >
-            <QueueListIcon className="w-6" />
-         </Button>
+            <VolumeButton audioRef={audioRef} />
+
+            <Button
+               className={classes.toggleButton}
+               size={"clear"}
+               onClick={() =>
+                  tab === "playing" ? setTab("queue") : setTab("playing")
+               }
+            >
+               <QueueListIcon className="w-6" />
+            </Button>
+         </div>
       </>
    );
 }

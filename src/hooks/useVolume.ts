@@ -73,12 +73,13 @@ export default function useVolume({
 
    useEffect(() => {
       const volume = getLocalStorage()["volume"];
-      setVolume(+volume || 1);
+      setVolume(isNaN(+volume) ? 1 : +volume);
    }, []);
 
    useEffect(() => {
       if (!audioRef.current) return;
       audioRef.current.muted = isMute;
+      if (isMute) setLocalStorage("volume", 0);
    }, [isMute]);
 
    useEffect(() => {
