@@ -31,7 +31,6 @@ export default function useControl({
 
    const [isPlaying, setIsPlaying] = useState(false);
    const [isWaiting, setIsWaiting] = useState(false);
-   const [isError, setIsError] = useState(false);
 
    const firstTimeSongLoaded = useRef(true);
    const isPlayAllSong = useRef(false);

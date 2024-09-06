@@ -12,7 +12,7 @@ import {
    PlayIcon,
    QueueListIcon,
 } from "@heroicons/react/24/outline";
-import { ElementRef, useRef, useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { VolumeButton } from "./VolumeButton";
 import SongItem from "./SongItem";
 import TimerButton from "./TimerButton";
@@ -48,6 +48,18 @@ export default function Control({ songs }: Props) {
       timeHolderRef,
    });
 
+   useEffect(() => {
+      if (tab === "queue") {
+         const activeSongEle = document.querySelector(".active-song-item");
+         if (activeSongEle) {
+            activeSongEle.scrollIntoView({
+               behavior: "instant",
+               block: "center",
+            });
+         }
+      }
+   }, [tab]);
+
    const classes = {
       timeLineRef: `relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%]`,
       timeLineHolderRef:
@@ -64,12 +76,12 @@ export default function Control({ songs }: Props) {
                className="hidden"
             ></audio>
 
-            <div className="w-[400px] max-w-[90vw] ">
-               <Frame pushAble={"clear"} className="px-5">
+            <div className="w-[400px] max-w-[95vw] ">
+               <Frame pushAble={"clear"} className="">
                   <div className="max-h-[40vh] overflow-auto px-2 no-scrollbar">
                      <div className={` ${tab === "playing" ? "" : "hidden"} `}>
                         <div
-                           className={`mt-2 rounded-md p-3 text-center text-amber-100 `}
+                           className={`mt-2 rounded-md text-center text-amber-100 `}
                         >
                            <h5 className="font-bold text-2xl line-clamp-1">
                               {currentSong?.name || "..."}
@@ -79,7 +91,7 @@ export default function Control({ songs }: Props) {
                            </p>
                         </div>
 
-                        <div className="h-[6px] my-2 flex items-center">
+                        <div className="h-[6px] mt-5 mb-2 flex items-center">
                            <div
                               ref={processLineRef}
                               onClick={handleSeek}

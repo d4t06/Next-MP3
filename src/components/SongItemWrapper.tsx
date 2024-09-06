@@ -33,17 +33,20 @@ export default function SongItemWrapper({
       setCurrentSong({ song, index, from: songFrom });
    };
 
+   const active = currentSong?.id === song.id;
+
    return (
-      <div className={className} onClick={handleSetSong}>
-         <div
-            className={`flex w-full font-medium justify-between items-center rounded-md p-2  ${
-               currentSong?.id === song.id
-                  ? "bg-amber-100 text-amber-800"
-                  : "cursor-pointer text-amber-100 hover:bg-amber-700"
-            } `}
-         >
-            {children}
-         </div>
+      <div
+         onClick={handleSetSong}
+         className={`${
+            active ? "active-song-item" : ""
+         } flex w-full font-medium justify-between items-center rounded-md p-2  ${
+            active
+               ? "bg-amber-100 text-amber-800"
+               : "cursor-pointer text-amber-100 hover:bg-amber-700"
+         } `}
+      >
+         {children}
       </div>
    );
 }

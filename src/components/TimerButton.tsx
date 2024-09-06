@@ -12,7 +12,7 @@ type Props = {
 
 export default function TimerButton({ audioRef, isPlaying }: Props) {
    const [isOpenModal, setIsOpenModal] = useState(false);
-   const [time, setTime] = useState<5 | 20 | 25 | 30 | 0>(0);
+   const [time, setTime] = useState<15 | 20 | 25 | 30 | 0>(0);
 
    const { setIsActive, countDown, handleEndTimer } = useTimer({ audioRef, isPlaying });
 
@@ -56,11 +56,11 @@ export default function TimerButton({ audioRef, isPlaying }: Props) {
                   <div className="text-xl font-semibold">Timer</div>
                   <div className="mt-3 flex flex-wrap -ml2">
                      <Button
-                        active={time === 5}
-                        onClick={() => setTime(5)}
+                        active={time === 15}
+                        onClick={() => setTime(15)}
                         className={`${classes.timerBtn}`}
                      >
-                        5 min
+                        15 min
                      </Button>
                      <Button
                         active={time === 20}
