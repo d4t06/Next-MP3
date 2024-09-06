@@ -23,7 +23,7 @@ function UploadImagePortal() {
                onChange={handleInputChange}
                type="file"
                multiple
-               accept="audio/mpeg3"
+               accept="audio/*"
                id="song-upload"
                className="hidden"
             />
@@ -39,7 +39,6 @@ function UploadImagePortal() {
                         return (
                            <div className="flex justify-between" key={index}>
                               <p
-                                 key={index}
                                  className={`font-medium whitespace-nowrap overflow-hidden text-ellipsis ${
                                     index < currentIndex ? "opacity-60" : ""
                                  } ${

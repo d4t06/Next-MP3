@@ -51,7 +51,7 @@ export default function Control({ songs }: Props) {
       timeLineRef: `relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%]`,
       timeLineHolderRef:
          "absolute pointer-events-none hidden sm:block opacity-0 group-hover:opacity-[100] h-6 w-3 rounded-sm bg-amber-900 border-[2px] border-amber-200 top-1/2 -translate-y-1/2 -translate-x-1/2",
-      toggleButton: "p-2 !absolute bottom-5 right-7 -translate-x-full",
+      toggleButton: "p-2 !fixed bottom-5 right-7 -translate-x-full",
    };
 
    return (
@@ -65,7 +65,7 @@ export default function Control({ songs }: Props) {
 
             <div className="w-[400px] max-w-[90vw] ">
                <Frame pushAble={"clear"} className="px-5">
-                  <div className="max-h-[40vh] overflow-auto">
+                  <div className="max-h-[40vh] overflow-auto px-2 no-scrollbar">
                      <div className={` ${tab === "playing" ? "" : "hidden"} `}>
                         <div
                            className={`mt-2 rounded-md p-3 text-center text-amber-100 `}
