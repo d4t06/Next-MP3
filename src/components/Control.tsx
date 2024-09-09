@@ -16,6 +16,7 @@ import { ElementRef, useEffect, useRef, useState } from "react";
 import { VolumeButton } from "./VolumeButton";
 import SongItem from "./SongItem";
 import TimerButton from "./TimerButton";
+import ScrollText from "./ScrollText";
 
 type Props = {
    songs: Song[];
@@ -83,9 +84,11 @@ export default function Control({ songs }: Props) {
                         <div
                            className={`mt-2 rounded-md text-center text-amber-100 `}
                         >
-                           <h5 className="font-bold text-2xl line-clamp-1">
-                              {currentSong?.name || "..."}
-                           </h5>
+                           <ScrollText
+                              content={currentSong?.name || "..."}
+                              className="h-auto font-bold text-2xl text-center"
+                           />
+
                            <p className="text-sm font-medium line-clamp-1">
                               {currentSong?.singer || "..."}
                            </p>

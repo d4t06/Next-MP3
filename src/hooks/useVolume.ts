@@ -67,8 +67,8 @@ export default function useVolume({
    };
 
    const handleMute = () => {
-      if (!audioRef.current) return;
       setIsMute(!isMute);
+      setLocalStorage("volume", !isMute ? 0 : 1);
    };
 
    useEffect(() => {
@@ -79,7 +79,6 @@ export default function useVolume({
    useEffect(() => {
       if (!audioRef.current) return;
       audioRef.current.muted = isMute;
-      if (isMute) setLocalStorage("volume", 0);
    }, [isMute]);
 
    useEffect(() => {

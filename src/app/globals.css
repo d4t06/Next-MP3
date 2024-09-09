@@ -17,3 +17,15 @@ a[aria-disabled="true"],
    -ms-overflow-style: none; /* IE and Edge */
    scrollbar-width: none; /* Firefox */
 }
+
+.mask {
+   -webkit-mask-image: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0.8) 1%,
+      #fff 1%,
+      #fff 99%,
+      rgba(255, 255, 255, 0.8) 1%,
+      rgba(255, 255, 255, 0)
+   );
+}
