@@ -18,22 +18,23 @@ export default function SongItemWrapper({
    children,
    song,
    songs,
-   className = "",
    index,
    songFrom = "songs",
 }: Props) {
    const { setCurrentSong, currentSong, from } = useCurrentSong();
    const { setQueue, songs: queueSongs } = useQueue();
 
-   const handleSetSong = () => {
-      if (songFrom !== from || songs.length !== queueSongs.length) {
-         setQueue(songs);
-         setLocalStorage("queue", songs);
-      }
-      setCurrentSong({ song, index, from: songFrom });
-   };
-
    const active = currentSong?.id === song.id;
+
+   const handleSetSong = () => {
+      if (!active) {
+         if (songFrom !== from || songs.length !== queueSongs.length) {
+            setQueue(songs);
+            setLocalStorage("queue", songs);
+         }
+         setCurrentSong({ song, index, from: songFrom });
+      }
+   };
 
    return (
       <div

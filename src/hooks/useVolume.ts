@@ -10,11 +10,7 @@ type Props = {
    volumeHolderRef: RefObject<HTMLDivElement>;
 };
 
-export default function useVolume({
-   audioRef,
-   volumeHolderRef,
-   volumeLineRef,
-}: Props) {
+export default function useVolume({ audioRef, volumeHolderRef, volumeLineRef }: Props) {
    const [isMute, setIsMute] = useState(false);
    const [volume, setVolume] = useState(0);
 
@@ -68,7 +64,7 @@ export default function useVolume({
 
    const handleMute = () => {
       setIsMute(!isMute);
-      setLocalStorage("volume", !isMute ? 0 : 1);
+      // setLocalStorage("volume", !isMute ? 0 : 1);
    };
 
    useEffect(() => {
@@ -88,11 +84,7 @@ export default function useVolume({
    }, [debounceVolume]);
 
    useEffect(() => {
-      if (
-         audioRef.current &&
-         volumeLineRef.current &&
-         volumeHolderRef.current
-      ) {
+      if (audioRef.current && volumeLineRef.current && volumeHolderRef.current) {
          const ratio = volume * 100;
 
          audioRef.current.volume = volume;

@@ -32,3 +32,5 @@ type Toast = {
    desc: string;
    id: string;
 };
+
+type Tab = "playing" | "queue";

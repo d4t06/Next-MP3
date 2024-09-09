@@ -14,9 +14,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import { VolumeButton } from "./VolumeButton";
-import SongItem from "./SongItem";
 import TimerButton from "./TimerButton";
 import ScrollText from "./ScrollText";
+import SongListContainer from "./SongList";
 
 type Props = {
    songs: Song[];
@@ -71,23 +71,26 @@ export default function Control({ songs }: Props) {
    return (
       <>
          <div className="">
-            <audio
-               ref={audioRef}
-               src={currentSong?.song_url}
-               className="hidden"
-            ></audio>
+            <audio ref={audioRef} src={currentSong?.song_url} className="hidden"></audio>
 
             <div className="w-[400px] max-w-[95vw] ">
                <Frame pushAble={"clear"} className="">
-                  <div className="max-h-[40vh] overflow-auto px-2 no-scrollbar">
-                     <div className={` ${tab === "playing" ? "" : "hidden"} `}>
-                        <div
-                           className={`mt-2 rounded-md text-center text-amber-100 `}
-                        >
-                           <ScrollText
-                              content={currentSong?.name || "..."}
-                              className="h-auto font-bold text-2xl text-center"
-                           />
+                  <div className="px-2">
+                     <div
+                        className={` ${
+                           tab === "playing"
+                              ? "opacity-100 h-auto"
+                              : "opacity-0 pointer-events-none h-0"
+                        } `}
+                     >
+                        <div className={`mt-2 rounded-md text-center text-amber-100 `}>
+                           <div className="h-[32px]">
+                              <ScrollText
+                                 trigger={tab}
+                                 content={currentSong?.name || "..."}
+                                 className="font-bold text-2xl"
+                              />
+                           </div>
 
                            <p className="text-sm font-medium line-clamp-1">
                               {currentSong?.singer || "..."}
@@ -153,15 +156,18 @@ export default function Control({ songs }: Props) {
                         </div>
                      </div>
 
-                     <div className={`${tab === "queue" ? "" : "hidden"}`}>
-                        {songs.map((s, index) => (
-                           <SongItem
-                              key={index}
-                              index={index}
-                              song={s}
-                              songs={songs}
-                           />
-                        ))}
+                     <div
+                        className={` ${
+                           tab === "queue"
+                              ? "opacity-100 h-auto"
+                              : "opacity-0 pointer-events-none h-0"
+                        } `}
+                     >
+                        <SongListContainer
+                           tab={tab}
+                           back={() => setTab("playing")}
+                           songs={songs}
+                        />
                      </div>
                   </div>
                </Frame>
@@ -176,9 +182,7 @@ export default function Control({ songs }: Props) {
             <Button
                className={classes.toggleButton}
                size={"clear"}
-               onClick={() =>
-                  tab === "playing" ? setTab("queue") : setTab("playing")
-               }
+               onClick={() => (tab === "playing" ? setTab("queue") : setTab("playing"))}
             >
                <QueueListIcon className="w-6" />
             </Button>
