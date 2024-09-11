@@ -71,7 +71,11 @@ export default function Control({ songs }: Props) {
    return (
       <>
          <div className="">
-            <audio ref={audioRef} src={currentSong?.song_url} className="hidden"></audio>
+            <audio
+               ref={audioRef}
+               src={currentSong?.song_url}
+               className="hidden"
+            ></audio>
 
             <div className="w-[400px] max-w-[95vw] ">
                <Frame pushAble={"clear"} className="">
@@ -83,10 +87,11 @@ export default function Control({ songs }: Props) {
                               : "opacity-0 pointer-events-none h-0"
                         } `}
                      >
-                        <div className={`mt-2 rounded-md text-center text-amber-100 `}>
+                        <div
+                           className={`mt-2 rounded-md text-center text-amber-100 `}
+                        >
                            <div className="h-[32px]">
                               <ScrollText
-                                 trigger={tab}
                                  content={currentSong?.name || "..."}
                                  className="font-bold text-2xl"
                               />
@@ -182,7 +187,9 @@ export default function Control({ songs }: Props) {
             <Button
                className={classes.toggleButton}
                size={"clear"}
-               onClick={() => (tab === "playing" ? setTab("queue") : setTab("playing"))}
+               onClick={() =>
+                  tab === "playing" ? setTab("queue") : setTab("playing")
+               }
             >
                <QueueListIcon className="w-6" />
             </Button>

@@ -172,7 +172,10 @@ export default function useControl({
             setIsWaiting(false);
 
             return;
-         } else isPlayAllSong.current = true;
+         } else {
+            const isTimer = !!getLocalStorage()["timer"] || 0;
+            if (!isTimer) isPlayAllSong.current = true;
+         }
       }
 
       return handleNext();

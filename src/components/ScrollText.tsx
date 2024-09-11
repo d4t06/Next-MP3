@@ -4,7 +4,6 @@ import { useRef } from "react";
 type Props = {
    className?: string;
    content: string;
-   trigger?: any;
 };
 
 export default function ScrollText({ className = "h-[50px]", content }: Props) {

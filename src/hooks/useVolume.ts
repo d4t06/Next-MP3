@@ -43,7 +43,7 @@ export default function useVolume({ audioRef, volumeHolderRef, volumeLineRef }: 
    const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
 
-      const FACTOR = 0.1;
+      const FACTOR = 0.05;
       let newVolume = volume;
 
       // scroll down

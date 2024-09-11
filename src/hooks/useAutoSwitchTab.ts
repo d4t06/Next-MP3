@@ -27,7 +27,7 @@ export default function useAutoSwitchTab({ back, scrollContainer, tab }: Props) 
    useEffect(() => {
       if (!someThingToTrigger) return;
 
-      timerId.current = setTimeout(back, 10000);
+      timerId.current = setTimeout(back, 5000);
 
       return () => {
          clearTimeout(timerId.current);
