@@ -1,10 +1,11 @@
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import { VariantProps, cva } from "class-variance-authority";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ElementRef, forwardRef, ReactNode, Ref } from "react";
 
 const classes = {
-   active: "before:shadow-none translate-y-[2px] !text-amber-100 before:bg-amber-800",
+   active:
+      "before:shadow-none translate-y-[2px] !text-amber-100 before:bg-amber-800",
    button: "inline-flex relative  items-center justify-center z-0",
 };
 
@@ -54,22 +55,25 @@ interface Props extends VariantProps<typeof ButtonVariant> {
    active?: boolean;
    blank?: boolean;
 }
-export default function Button({
-   onClick,
-   disabled,
-   type = "button",
-   children,
-   loading,
-   className,
-   size,
-   variant,
-   colors,
-   href,
-   active,
-   blank,
-   fontWeight,
-   border,
-}: Props) {
+function Button(
+   {
+      onClick,
+      disabled,
+      type = "button",
+      children,
+      loading,
+      className,
+      size,
+      variant,
+      colors,
+      href,
+      active,
+      blank,
+      fontWeight,
+      border,
+   }: Props,
+   ref: Ref<ElementRef<"button">>
+) {
    const content = (
       <>
          {loading && <ArrowPathIcon className="w-[24px] animate-spin" />}
@@ -97,6 +101,7 @@ export default function Button({
             </Link>
          ) : (
             <button
+               ref={ref}
                type={type || "button"}
                onClick={onClick}
                disabled={loading || disabled}
@@ -115,3 +120,5 @@ export default function Button({
       </>
    );
 }
+
+export default forwardRef(Button);

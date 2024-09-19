@@ -33,6 +33,7 @@ export default function Control({ songs }: Props) {
    const timeHolderRef = useRef<ElementRef<"div">>(null);
    const audioRef = useRef<ElementRef<"audio">>(null);
    const currentTimeRef = useRef<ElementRef<"div">>(null);
+   const queueButtonRef = useRef<ElementRef<"button">>(null);
 
    const {
       handleNext,
@@ -172,6 +173,7 @@ export default function Control({ songs }: Props) {
                            tab={tab}
                            back={() => setTab("playing")}
                            songs={songs}
+                           queueButtonRef={queueButtonRef}
                         />
                      </div>
                   </div>
@@ -185,6 +187,7 @@ export default function Control({ songs }: Props) {
             <VolumeButton audioRef={audioRef} />
 
             <Button
+               ref={queueButtonRef}
                className={classes.toggleButton}
                size={"clear"}
                onClick={() =>
