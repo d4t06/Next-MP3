@@ -10,7 +10,11 @@ const API_ENDPOINT = `${
    process.env.NEXT_PUBLIC_API_ENDPOINT || "https://nest-mp3.vercel.app/api"
 }`;
 
-export default function useUploadImage() {
+type Props = {
+   toggleModal: () => void;
+};
+
+export default function useUploadImage({ toggleModal }: Props) {
    // hooks
    const { data: session } = useSession();
    const { setErrorToast, setSuccessToast } = useToast();
@@ -27,6 +31,7 @@ export default function useUploadImage() {
          if (!fileLists.length) return;
 
          setIsUploading(true);
+         toggleModal();
 
          const header = new Headers();
          header.set("Authorization", `Bearer ${session?.token}`);
@@ -34,7 +39,7 @@ export default function useUploadImage() {
 
          const schemas: SongSchema[] = [];
 
-         const start = Date.now()
+         const start = Date.now();
 
          for (const file of fileLists) {
             const { duration, name, singer } = await parseSongFromFile(file);
@@ -75,12 +80,15 @@ export default function useUploadImage() {
 
          await runRevalidateTag("songs");
 
-         setSuccessToast(`Upload song successful after ${ (Date.now() - start) / 1000}s`);
+         setSuccessToast(
+            `Upload song successful after ${(Date.now() - start) / 1000}s`
+         );
       } catch (error) {
          console.log(error);
          setErrorToast("Upload song failed");
       } finally {
          setIsUploading(false);
+         toggleModal();
          setSongSchemas([]);
       }
    };

@@ -1,20 +1,33 @@
 "use client";
 
 import useModal, { ModalRef } from "@/hooks/useModal";
-import { forwardRef, ReactNode, Ref } from "react";
+import {
+   EventHandler,
+   forwardRef,
+   MouseEventHandler,
+   ReactNode,
+   Ref,
+} from "react";
 import { createPortal } from "react-dom";
 
 type Props = {
    children?: ReactNode;
    className?: string;
    childClassName?: string;
+   persisted?: boolean;
 };
 
 function Modal(
-   { children, className = "z-[99]", childClassName }: Props,
+   { children, className = "z-[99]", childClassName, persisted }: Props,
    ref: Ref<ModalRef>
 ) {
    const { isMounted, isOpen, toggle } = useModal({ ref });
+
+   const handleOverlayClick: MouseEventHandler = (e) => {
+      if (persisted) return;
+      e.stopPropagation();
+      toggle();
+   };
 
    const classes = {
       unMountedContent: "opacity-0 scale-[.95]",
@@ -36,10 +49,7 @@ function Modal(
                                     : classes.unMountedLayer
                               }
                            `}
-                     onClick={(e) => {
-                        e.stopPropagation();
-                        toggle();
-                     }}
+                     onClick={handleOverlayClick}
                   ></div>
                   {children && (
                      <div

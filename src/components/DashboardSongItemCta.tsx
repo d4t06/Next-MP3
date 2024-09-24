@@ -8,6 +8,7 @@ import Modal from "./Modal";
 import ConfirmModal from "./ConfirmModal";
 import useSongItemAction from "@/hooks/useSongItemAction";
 import EditSongModal from "./EditSongModal";
+import { ModalRef } from "@/hooks/useModal";
 
 type Props = {
    song: Song;
@@ -17,13 +18,15 @@ type Modal = "delete" | "edit";
 
 export default function DashboardSongItemCta({ song }: Props) {
    const [isPlay, setIsPlay] = useState(false);
-   const [openModal, setOpenModal] = useState<Modal | "">("");
+   const [modal, setModal] = useState<Modal | "">("");
+
+   const modalRef = useRef<ModalRef>(null);
 
    const audioRef = useRef<ElementRef<"audio">>(null);
 
    const { action, isFetching } = useSongItemAction();
 
-   const closeModal = () => setOpenModal("");
+   const closeModal = () => modalRef.current?.toggle();
 
    const handlePlayPause = () => {
       const newIsPlay = !isPlay;
@@ -68,7 +71,7 @@ export default function DashboardSongItemCta({ song }: Props) {
             </Button>
 
             <Button
-               onClick={() => setOpenModal("delete")}
+               onClick={() => setModal("delete")}
                className={classes.button}
                size={"clear"}
             >
@@ -77,7 +80,7 @@ export default function DashboardSongItemCta({ song }: Props) {
             </Button>
 
             <Button
-               onClick={() => setOpenModal("edit")}
+               onClick={() => setModal("edit")}
                className={classes.button}
                size={"clear"}
             >
@@ -86,27 +89,25 @@ export default function DashboardSongItemCta({ song }: Props) {
             </Button>
          </div>
 
-         {openModal && (
-            <Modal closeModal={closeModal}>
-               {openModal === "delete" && (
-                  <ConfirmModal
-                     label={`Delete '${song.name}' ?`}
-                     closeModal={closeModal}
-                     callback={handleDeleteSong}
-                     loading={isFetching}
-                  />
-               )}
+         <Modal>
+            {modal === "delete" && (
+               <ConfirmModal
+                  label={`Delete '${song.name}' ?`}
+                  closeModal={closeModal}
+                  callback={handleDeleteSong}
+                  loading={isFetching}
+               />
+            )}
 
-               {openModal === "edit" && (
-                  <EditSongModal
-                     closeModal={closeModal}
-                     loading={isFetching}
-                     song={song}
-                     submit={handleEditSong}
-                  />
-               )}
-            </Modal>
-         )}
+            {modal === "edit" && (
+               <EditSongModal
+                  closeModal={closeModal}
+                  loading={isFetching}
+                  song={song}
+                  submit={handleEditSong}
+               />
+            )}
+         </Modal>
       </>
    );
 }
