@@ -8,10 +8,9 @@ type Props = {
    songs: Song[];
    back: () => void;
    tab: Tab;
-   queueButtonRef: RefObject<ElementRef<"button">>;
 };
 
-export default function SongList({ back, songs, tab, queueButtonRef }: Props) {
+export default function SongList({ back, songs, tab }: Props) {
    const songListContainer = useRef<ElementRef<"div">>(null);
 
    useAutoSwitchTab({
@@ -20,13 +19,19 @@ export default function SongList({ back, songs, tab, queueButtonRef }: Props) {
       tab,
    });
 
+   // handle click outside
    useEffect(() => {
       const handleWindowClick: EventListener = (e) => {
+         const queueBtn = document.querySelector(".queue-btn");
+         const volumeBtn = document.querySelector(".volume-btn-wrapper");
+         const timerBtn = document.querySelector(".timer-btn");
+
          if (
-            !queueButtonRef ||
             !songListContainer ||
             songListContainer.current?.contains(e.target as Node) ||
-            queueButtonRef.current?.contains(e.target as Node)
+            queueBtn?.contains(e.target as Node) ||
+            volumeBtn?.contains(e.target as Node) ||
+            timerBtn?.contains(e.target as Node)
          )
             return;
 

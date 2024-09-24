@@ -17,6 +17,7 @@ import { VolumeButton } from "./VolumeButton";
 import TimerButton from "./TimerButton";
 import ScrollText from "./ScrollText";
 import SongListContainer from "./SongList";
+import Tooltip from "./Tootip";
 
 type Props = {
    songs: Song[];
@@ -66,11 +67,12 @@ export default function Control({ songs }: Props) {
       timeLineRef: `relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%]`,
       timeLineHolderRef:
          "absolute pointer-events-none hidden sm:block opacity-0 group-hover:opacity-[100] h-6 w-3 rounded-sm bg-amber-900 border-[2px] border-amber-200 top-1/2 -translate-y-1/2 -translate-x-1/2",
-      toggleButton: "p-2 ",
+      toggleButton: "queue-btn p-2 ",
    };
 
    return (
       <>
+         <title>{currentSong?.name || "Next MP3"}</title>
          <div className="">
             <audio
                ref={audioRef}
@@ -173,7 +175,6 @@ export default function Control({ songs }: Props) {
                            tab={tab}
                            back={() => setTab("playing")}
                            songs={songs}
-                           queueButtonRef={queueButtonRef}
                         />
                      </div>
                   </div>
@@ -186,16 +187,18 @@ export default function Control({ songs }: Props) {
 
             <VolumeButton audioRef={audioRef} />
 
-            <Button
-               ref={queueButtonRef}
-               className={classes.toggleButton}
-               size={"clear"}
-               onClick={() =>
-                  tab === "playing" ? setTab("queue") : setTab("playing")
-               }
-            >
-               <QueueListIcon className="w-6" />
-            </Button>
+            <Tooltip content={tab === "playing" ? "Queue" : "Playing"}>
+               <Button
+                  ref={queueButtonRef}
+                  className={classes.toggleButton}
+                  size={"clear"}
+                  onClick={() =>
+                     tab === "playing" ? setTab("queue") : setTab("playing")
+                  }
+               >
+                  <QueueListIcon className="w-6" />
+               </Button>
+            </Tooltip>
          </div>
       </>
    );

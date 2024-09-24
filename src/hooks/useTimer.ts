@@ -55,5 +55,5 @@ export default function useTimer({ audioRef, isPlaying }: Props) {
       setCountDown(timer);
    }, []);
 
-   return { countDown, setIsActive, handleEndTimer };
+   return { countDown, setIsActive, handleEndTimer, isActive };
 }
