@@ -51,10 +51,10 @@ export default function TimerButton({ audioRef, isPlaying }: Props) {
                      <span className="group-hover:hidden text-sm">
                         {formatTime(countDown)}
                      </span>
-                     <XMarkIcon className="w-6 hidden group-hover:block" />
+                     <XMarkIcon className="w-6 hidden group-hover:block pointer-events-none" />
                   </>
                ) : (
-                  <ClockIcon className="w-6" />
+                  <ClockIcon className="w-6 pointer-events-none" />
                )}
             </Button>
          </Tooltip>

@@ -50,9 +50,9 @@ export function VolumeButton({ audioRef }: Props) {
             onClick={handleMute}
          >
             {isMute ? (
-               <SpeakerXMarkIcon className="w-6" />
+               <SpeakerXMarkIcon className="w-6 pointer-events-none" />
             ) : (
-               <SpeakerWaveIcon className="w-6" />
+               <SpeakerWaveIcon className="w-6 pointer-events-none" />
             )}
          </Button>
       </div>
