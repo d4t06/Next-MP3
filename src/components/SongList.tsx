@@ -35,7 +35,7 @@ export default function SongList({ back, songs, tab }: Props) {
          )
             return;
 
-         // back();
+         back();
       };
 
       if (tab !== "queue") return;
