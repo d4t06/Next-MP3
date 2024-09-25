@@ -182,7 +182,7 @@ export default function Control({ songs }: Props) {
             </div>
          </div>
 
-         <div className="absolute bottom-5 right-5 flex space-x-2">
+         <div className="absolute bottom-8 right-8 flex space-x-2">
             <TimerButton audioRef={audioRef} isPlaying={isPlaying} />
 
             <VolumeButton audioRef={audioRef} />

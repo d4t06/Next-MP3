@@ -5,8 +5,9 @@ import { nextAuthOptions } from "../api/auth/[...nextauth]/authOption";
 import { ComputerDesktopIcon } from "@heroicons/react/24/outline";
 import { getAllSong } from "@/share/services/getAllSong";
 import NoResult from "@/components/NoResult";
+import Tooltip from "@/components/Tootip";
 
-export const revalidate = 86400;
+export const revalidate = 864000;
 
 export default async function HomePage() {
    const session = await getServerSession(nextAuthOptions);
@@ -18,15 +19,15 @@ export default async function HomePage() {
       <>
          <Control songs={songs} />
 
-         {session && (
-            <Button
-               href="/dashboard"
-               className="!absolute p-2 bottom-5 left-5"
-               size={"clear"}
-            >
-               <ComputerDesktopIcon className="w-6" />
-            </Button>
-         )}
+         <div className="!absolute bottom-8 left-8">
+            {session && (
+               <Tooltip content="Dashboard">
+                  <Button href="/dashboard" className="p-2" size={"clear"}>
+                     <ComputerDesktopIcon className="w-6" />
+                  </Button>
+               </Tooltip>
+            )}
+         </div>
       </>
    );
 }

@@ -26,8 +26,12 @@ export default function DashboardSongItemCta({ song }: Props) {
 
    const { action, isFetching } = useSongItemAction();
 
-   const closeModal = () => modalRef.current?.toggle();
+   const toggle = () => modalRef.current?.toggle();
 
+   const openModal = (modal: Modal) => {
+      setModal(modal);
+      toggle();
+   };
    const handlePlayPause = () => {
       const newIsPlay = !isPlay;
 
@@ -42,12 +46,12 @@ export default function DashboardSongItemCta({ song }: Props) {
 
    const handleDeleteSong = async () => {
       await action({ variant: "delete", song });
-      closeModal();
+      toggle();
    };
 
    const handleEditSong = async (schema: Partial<SongSchema>) => {
       await action({ variant: "edit", id: song.id, song: schema });
-      closeModal();
+      toggle();
    };
 
    return (
@@ -71,7 +75,7 @@ export default function DashboardSongItemCta({ song }: Props) {
             </Button>
 
             <Button
-               onClick={() => setModal("delete")}
+               onClick={() => openModal("delete")}
                className={classes.button}
                size={"clear"}
             >
@@ -80,7 +84,7 @@ export default function DashboardSongItemCta({ song }: Props) {
             </Button>
 
             <Button
-               onClick={() => setModal("edit")}
+               onClick={() => openModal("edit")}
                className={classes.button}
                size={"clear"}
             >
@@ -89,11 +93,11 @@ export default function DashboardSongItemCta({ song }: Props) {
             </Button>
          </div>
 
-         <Modal>
+         <Modal ref={modalRef}>
             {modal === "delete" && (
                <ConfirmModal
                   label={`Delete '${song.name}' ?`}
-                  closeModal={closeModal}
+                  closeModal={toggle}
                   callback={handleDeleteSong}
                   loading={isFetching}
                />
@@ -101,7 +105,7 @@ export default function DashboardSongItemCta({ song }: Props) {
 
             {modal === "edit" && (
                <EditSongModal
-                  closeModal={closeModal}
+                  closeModal={toggle}
                   loading={isFetching}
                   song={song}
                   submit={handleEditSong}

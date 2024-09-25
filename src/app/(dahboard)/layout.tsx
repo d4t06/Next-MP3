@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
                   <Button
                      href="/"
-                     className="!absolute p-2 bottom-5 left-5"
+                     className="!absolute p-2 bottom-5 left-8"
                      size={"clear"}
                   >
                      <HomeIcon className="w-6" />

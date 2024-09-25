@@ -17,6 +17,8 @@ export default function RootLayout({
 }>) {
    return (
       <html lang="en">
+         <meta content="#fcf3c7" name="theme-color" />
+
          <AuthProvider>
             <body className={`${inter.className} bg-amber-100`}>
                {children}
