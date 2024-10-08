@@ -1,7 +1,7 @@
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import { VariantProps, cva } from "class-variance-authority";
 import Link from "next/link";
-import { ElementRef, forwardRef, ReactNode, Ref } from "react";
+import { ElementRef, forwardRef, MouseEventHandler, ReactNode, Ref } from "react";
 
 const classes = {
    active:
@@ -45,7 +45,7 @@ const ButtonVariant = cva(classes.button, {
 });
 
 interface Props extends VariantProps<typeof ButtonVariant> {
-   onClick?: () => void;
+   onClick?: MouseEventHandler;
    loading?: boolean;
    children: ReactNode;
    disabled?: boolean;

@@ -11,16 +11,16 @@ export default function useAutoSwitchTab({ back, scrollContainer, tab }: Props) 
 
    const [someThingToTrigger, setSomeThingToTrigger] = useState(0);
 
-   const handleScroll = () => setSomeThingToTrigger(Math.random);
+   const handleWheel = () => setSomeThingToTrigger(Math.random);
 
    useEffect(() => {
       const ele = scrollContainer.current;
       if (!ele) return;
 
-      ele.addEventListener("scroll", handleScroll);
+      ele.addEventListener("wheel", handleWheel);
 
       return () => {
-         ele.removeEventListener("scroll", handleScroll);
+         ele.removeEventListener("wheel", handleWheel);
       };
    }, []);
 

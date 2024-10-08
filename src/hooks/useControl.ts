@@ -33,10 +33,11 @@ export default function useControl({
    const [isWaiting, setIsWaiting] = useState(false);
 
    const firstTimeSongLoaded = useRef(true);
-   const isPlayAllSong = useRef(false);
-   const currentIndexRef = useRef(0);
-   const currentSongRef = useRef<Song | null>(null);
-   const intervalId = useRef<NodeJS.Timeout>();
+   const isPlayAllSong = useRef(false); // use for end event
+   const currentIndexRef = useRef<number | undefined>(undefined); // use for audio event handler
+   const currentSongRef = useRef<Song | null>(null); // use for audio event handler
+   const intervalId = useRef<NodeJS.Timeout>(); // for update local storage
+   const isPlayingRef = useRef(false); // for document.keydown event
 
    const play = () => {
       try {
@@ -54,6 +55,8 @@ export default function useControl({
 
    const handlePlayPause = () => {
       if (!currentSong) {
+         console.log("go here");
+
          const index = Math.floor(Math.random() * songs.length);
 
          setCurrentSong({
@@ -106,6 +109,8 @@ export default function useControl({
    };
 
    const handleNext = () => {
+      if (currentIndexRef.current === undefined) return;
+
       let newIndex = currentIndexRef.current + 1;
       let newSong: Song;
 
@@ -198,11 +203,12 @@ export default function useControl({
       const current = storage["current"];
 
       if (!firstTimeSongLoaded.current || !current)
-         setLocalStorage("current", {
-            from,
-            index: currentIndexRef.current,
-            song: currentSongRef.current,
-         } as CurrentSong);
+         if (currentIndexRef.current !== undefined)
+            setLocalStorage("current", {
+               from,
+               index: currentIndexRef.current,
+               song: currentSongRef.current,
+            } as CurrentSong);
 
       // case end of list
 
@@ -298,6 +304,8 @@ export default function useControl({
    }, [currentSong]);
 
    useEffect(() => {
+      isPlayingRef.current = isPlaying;
+
       if (isPlaying) {
          intervalId.current = setInterval(() => {
             setLocalStorage(
@@ -309,6 +317,28 @@ export default function useControl({
 
       return () => clearInterval(intervalId.current);
    }, [isPlaying]);
+
+   const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === " ") {
+         e.preventDefault();
+         e.stopPropagation();
+
+         console.log("check ", currentIndexRef.current);
+
+         if (currentIndexRef.current !== undefined)
+            isPlayingRef.current ? pause() : play();
+      }
+   };
+
+   useEffect(() => {
+      document.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+         console.log("clean pu");
+
+         document.removeEventListener("keydown", handleKeyDown);
+      };
+   }, []);
 
    return {
       handleNext,

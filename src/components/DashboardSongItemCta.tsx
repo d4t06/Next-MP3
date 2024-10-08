@@ -3,7 +3,7 @@
 import Button from "@/share/_components/Button";
 import { PauseIcon, PlayIcon } from "@heroicons/react/16/solid";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { ElementRef, useRef, useState } from "react";
+import { ElementRef, MouseEventHandler, useRef, useState } from "react";
 import Modal from "./Modal";
 import ConfirmModal from "./ConfirmModal";
 import useSongItemAction from "@/hooks/useSongItemAction";
@@ -20,6 +20,7 @@ export default function DashboardSongItemCta({ song }: Props) {
    const [isPlay, setIsPlay] = useState(false);
    const [modal, setModal] = useState<Modal | "">("");
 
+   const playPauseBtnRef = useRef<ElementRef<"button">>(null);
    const modalRef = useRef<ModalRef>(null);
 
    const audioRef = useRef<ElementRef<"audio">>(null);
@@ -32,11 +33,23 @@ export default function DashboardSongItemCta({ song }: Props) {
       setModal(modal);
       toggle();
    };
-   const handlePlayPause = () => {
+   const handlePlayPause: MouseEventHandler = (e) => {
       const newIsPlay = !isPlay;
 
       setIsPlay(newIsPlay);
-      newIsPlay ? audioRef.current?.play() : audioRef.current?.pause();
+
+      if (newIsPlay) {
+         const previewPlayingBtn = document.querySelector(
+            "button.current-playing"
+         ) as HTMLButtonElement;
+         if (previewPlayingBtn) previewPlayingBtn.click();
+
+         audioRef.current?.play();
+      } else {
+         audioRef.current?.pause();
+      }
+
+      playPauseBtnRef.current?.classList.toggle("current-playing", newIsPlay);
    };
 
    const classes = {
@@ -65,6 +78,7 @@ export default function DashboardSongItemCta({ song }: Props) {
             <Button
                onClick={handlePlayPause}
                className={classes.button}
+               ref={playPauseBtnRef}
                size={"clear"}
             >
                {isPlay ? (

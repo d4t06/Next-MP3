@@ -9,3 +9,9 @@
 -  add click outside
 -  add tooltip tp button
 -  add animation to modal
+
+### update 8/10/2024
+
+-  fix bug dashboard page
+-  add keyboard events
+-  plan to show live lyrics

@@ -12,7 +12,7 @@ import {
    PlayIcon,
    QueueListIcon,
 } from "@heroicons/react/24/outline";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { ElementRef, useRef, useState } from "react";
 import { VolumeButton } from "./VolumeButton";
 import TimerButton from "./TimerButton";
 import ScrollText from "./ScrollText";
@@ -50,18 +50,6 @@ export default function Control({ songs }: Props) {
       processLineRef,
       timeHolderRef,
    });
-
-   useEffect(() => {
-      if (tab === "queue") {
-         const activeSongEle = document.querySelector(".active-song-item");
-         if (activeSongEle) {
-            activeSongEle.scrollIntoView({
-               behavior: "instant",
-               block: "center",
-            });
-         }
-      }
-   }, [tab]);
 
    const classes = {
       timeLineRef: `relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%]`,

@@ -1,6 +1,6 @@
 "use client";
 
-import { setLocalStorage } from "@/share/utils/appHelper";
+import { convertToEn, setLocalStorage } from "@/share/utils/appHelper";
 import { useCurrentSong } from "@/stores/currentSongContext";
 import { useQueue } from "@/stores/songQueueContext";
 import { ReactNode } from "react";
@@ -39,6 +39,7 @@ export default function SongItemWrapper({
    return (
       <div
          onClick={handleSetSong}
+         date-first-letter={convertToEn(song.name.charAt(0))}
          className={`${
             active ? "active-song-item" : ""
          } flex w-full font-medium justify-between items-center rounded-md p-2  ${

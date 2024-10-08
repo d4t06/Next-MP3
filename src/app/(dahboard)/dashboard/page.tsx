@@ -16,7 +16,7 @@ async function SongList() {
 
    return (
       <>
-         <div className="h-[40px] flex items-center space-x-2">
+         <div className="h-[40px] pb-2 flex items-center space-x-2 border-b border-amber-800/15">
             <div className="text-amber-900">{data.count} songs</div>
          </div>
 
@@ -36,8 +36,8 @@ export default async function DashboardPage() {
 
    return (
       <>
-         <div className="container md:max-w-[800px] h-full flex flex-col">
-            <div className="flex mt-5 justify-between items-center">
+         <div className="container md:max-w-[800px] h-full flex flex-col ">
+            <div className="flex mt-5 justify-between items-center ">
                <div className="text-xl text-amber-900 font-semibold">Songs</div>
 
                <Button className="" size={"clear"} colors={"second"}>
