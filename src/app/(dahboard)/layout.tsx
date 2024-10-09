@@ -12,7 +12,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
          <ToastProvider>
             <SongSelectProvider>
                <div className="fixed inset-0">
-                  {children}
+                  <div className="container h-full md:max-w-[800px] ">{children}</div>
 
                   <Button
                      href="/"

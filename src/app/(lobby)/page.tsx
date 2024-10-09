@@ -3,7 +3,7 @@ import Button from "@/share/_components/Button";
 import { getServerSession } from "next-auth";
 import { nextAuthOptions } from "../api/auth/[...nextauth]/authOption";
 import { ComputerDesktopIcon } from "@heroicons/react/24/outline";
-import { getAllSong } from "@/share/services/getAllSong";
+import { getAllSong } from "@/share/services/songService";
 import NoResult from "@/components/NoResult";
 import Tooltip from "@/components/Tootip";
 

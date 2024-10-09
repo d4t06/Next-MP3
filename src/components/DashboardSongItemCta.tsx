@@ -2,7 +2,11 @@
 
 import Button from "@/share/_components/Button";
 import { PauseIcon, PlayIcon } from "@heroicons/react/16/solid";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+   DocumentTextIcon,
+   PencilIcon,
+   TrashIcon,
+} from "@heroicons/react/24/outline";
 import { ElementRef, MouseEventHandler, useRef, useState } from "react";
 import Modal from "./Modal";
 import ConfirmModal from "./ConfirmModal";
@@ -104,6 +108,16 @@ export default function DashboardSongItemCta({ song }: Props) {
             >
                <PencilIcon className="w-6" />
                <span className={classes.text}>Edit</span>
+            </Button>
+
+            <Button
+               href={`dashboard/edit-lyric/${song.id}`}
+               onClick={() => openModal("edit")}
+               className={classes.button}
+               size={"clear"}
+            >
+               <DocumentTextIcon className="w-6" />
+               <span className={classes.text}>Edit lyric</span>
             </Button>
          </div>
 

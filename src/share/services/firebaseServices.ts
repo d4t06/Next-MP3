@@ -7,13 +7,7 @@ import {
 } from "firebase/storage";
 import { convertToEn } from "../utils/appHelper";
 
-export const uploadFile = async ({
-   file,
-   msg,
-}: {
-   file: File;
-   msg?: string;
-}) => {
+export const uploadFile = async ({ file }: { file: File }) => {
    const start = Date.now();
 
    // define ref

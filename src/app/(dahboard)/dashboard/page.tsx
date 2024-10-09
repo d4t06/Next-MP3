@@ -2,13 +2,13 @@ import { nextAuthOptions } from "@/app/api/auth/[...nextauth]/authOption";
 import DashboardSongItem from "@/components/DashboardSongItem";
 import NoResult from "@/components/NoResult";
 import Button from "@/share/_components/Button";
-import { getAllSong } from "@/share/services/getAllSong";
+import { getAllSong } from "@/share/services/songService";
 import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-export const revalidate = 864000
+export const revalidate = 864000;
 
 async function SongList() {
    const data = await getAllSong();
@@ -36,7 +36,7 @@ export default async function DashboardPage() {
 
    return (
       <>
-         <div className="container md:max-w-[800px] h-full flex flex-col ">
+         <div className="h-full flex flex-col">
             <div className="flex mt-5 justify-between items-center ">
                <div className="text-xl text-amber-900 font-semibold">Songs</div>
 

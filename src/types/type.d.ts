@@ -10,16 +10,23 @@ type Song = {
    image_url: string;
 };
 
-type SongSchema = Omit<Song, "id">;
-
-type Playlist = {
-   blurhash_encode: string;
-   image_url: string;
-   song_ids: string[];
-   id: string;
-   by: string;
-   name: string;
+type Lyric = {
+   start: number;
+   song_lyric_id: number;
+   text: string;
 };
+
+type SongLyric = {
+   song_id: number;
+   base_lyric: string;
+   lyrics: string;
+};
+
+type SongWithLyric = Song & {
+   song_lyric: SongLyric | null;
+};
+
+type SongSchema = Omit<Song, "id">;
 
 type CurrentSong = {
    song: Song;
