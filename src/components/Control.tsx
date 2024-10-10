@@ -18,6 +18,7 @@ import TimerButton from "./TimerButton";
 import ScrollText from "./ScrollText";
 import SongListContainer from "./SongList";
 import Tooltip from "./Tootip";
+import SongInfoAndLyric from "./SongInfoAndLyric";
 
 type Props = {
    songs: Song[];
@@ -78,20 +79,12 @@ export default function Control({ songs }: Props) {
                               : "opacity-0 pointer-events-none h-0"
                         } `}
                      >
-                        <div
-                           className={`mt-2 rounded-md text-center text-amber-100 `}
-                        >
-                           <div className="h-[32px]">
-                              <ScrollText
-                                 content={currentSong?.name || "..."}
-                                 className="font-bold text-2xl"
-                              />
-                           </div>
-
-                           <p className="text-sm font-medium line-clamp-1">
-                              {currentSong?.singer || "..."}
-                           </p>
-                        </div>
+                        {currentSong && (
+                           <SongInfoAndLyric
+                              audioRef={audioRef}
+                              currentSong={currentSong}
+                           />
+                        )}
 
                         <div className="h-[6px] mt-5 mb-2 flex items-center">
                            <div

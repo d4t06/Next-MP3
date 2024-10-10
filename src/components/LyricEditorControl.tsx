@@ -31,13 +31,16 @@ function LyricEditorControl(
 ) {
    const modalRef = useRef<ModalRef>(null);
 
-   const { setBaseLyric, baseLyric } = useEditLyricContext();
+   const { setBaseLyric, baseLyric, setIsChanged } = useEditLyricContext();
    const { handlePlayPause, backward, forward, status, seek, isClickPlay } =
       useAudioControl({
          audioEle,
       });
 
-   const { addLyric, removeLyric } = useLyricAction({ audioEle, isClickPlay });
+   const { addLyric, removeLyric, isEnableAddBtn } = useLyricAction({
+      audioEle,
+      isClickPlay,
+   });
 
    useImperativeHandle(ref, () => ({ seek }));
 
@@ -45,6 +48,7 @@ function LyricEditorControl(
 
    const handleSetBaseLyric = (value: string) => {
       setBaseLyric(value);
+      setIsChanged(true);
       closeModal();
    };
 
@@ -72,10 +76,18 @@ function LyricEditorControl(
       <>
          <div className="mt-3">
             <div className="flex -mt-2 -ml-2">
-               <Button className={classes.button} onClick={handlePlayPause}>
+               <Button
+                  colors={"second"}
+                  className={classes.button}
+                  onClick={handlePlayPause}
+               >
                   {renderPlayPausedButton()}
                </Button>
-               <Button onClick={addLyric} className={classes.button}>
+               <Button
+                  disabled={!isEnableAddBtn}
+                  onClick={addLyric}
+                  className={classes.button}
+               >
                   <PlusIcon className="w-6" />
                   <span>Add</span>
                </Button>

@@ -1,6 +1,6 @@
 import { useRef, useState, FormEvent, useEffect } from "react";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { useEditLyricContext } from "@/stores/editLyricContext";
+import { PencilSquareIcon } from "@heroicons/react/16/solid";
 
 type Props = {
    lyric: Lyric;
@@ -40,11 +40,11 @@ export default function AddLyricItem({ lyric, index, seek }: Props) {
          </button>
 
          {!isEditText && (
-            <p className="text-[16px] leading-[1.2] font-bold select-none flex items-center">
+            <p className="font-[500] select-none flex items-center">
                {lyric.text}
 
-               <button onClick={() => setIdEditText(true)} className="ml-[8px]">
-                  <PencilSquareIcon className="w-[16px]" />
+               <button onClick={() => setIdEditText(true)} className="ml-2">
+                  <PencilSquareIcon className="w-5" />
                </button>
             </p>
          )}

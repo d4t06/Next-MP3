@@ -12,11 +12,11 @@ type Song = {
 
 type Lyric = {
    start: number;
-   song_lyric_id: number;
    text: string;
 };
 
 type SongLyric = {
+   id?: number;
    song_id: number;
    base_lyric: string;
    lyrics: string;

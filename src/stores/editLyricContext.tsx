@@ -1,12 +1,16 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useRef, useState } from "react";
 
 const useEditLyric = () => {
    const [baseLyric, setBaseLyric] = useState<string>("");
    const [baseLyricArr, setBaseLyricArr] = useState<string[]>([]);
    const [lyrics, setLyrics] = useState<Lyric[]>([]);
    const [currentLyricIndex, setCurrentLyricIndex] = useState<number>(0);
+   const [isFetching, setIsFetching] = useState(false);
+   const [isChanged, setIsChanged] = useState(false);
+
+   const start = useRef(0);
 
    const updateLyric = (index: number, text: string) => {
       setLyrics((prev) => {
@@ -27,6 +31,11 @@ const useEditLyric = () => {
       currentLyricIndex,
       setCurrentLyricIndex,
       updateLyric,
+      isFetching,
+      setIsFetching,
+      isChanged,
+      setIsChanged,
+      start,
    };
 };
 

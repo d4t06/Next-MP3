@@ -7,7 +7,7 @@ type Props = {
 };
 
 export function useLyricAction({ audioEle, isClickPlay }: Props) {
-   const end = useRef(0);
+   // const end = useRef(0);
    const start = useRef(0);
 
    const {
@@ -16,58 +16,49 @@ export function useLyricAction({ audioEle, isClickPlay }: Props) {
       lyrics,
       setCurrentLyricIndex,
       setLyrics,
+      setIsChanged,
    } = useEditLyricContext();
 
    const isFinish = lyrics.length >= baseLyricArr.length;
 
-   const isNearFinish = lyrics.length === baseLyricArr.length - 1;
-
    const isEnableAddBtn = isClickPlay && !!baseLyricArr.length && !isFinish;
 
    const addLyric = () => {
-      // if song no has lyric
-      if (!baseLyricArr.length) return;
+      if (!audioEle || !baseLyricArr.length || isFinish) return;
+      const currentTime = +audioEle.currentTime.toFixed(1);
 
-      if (!audioEle) return;
-
-      // if end of the song
-      if (isFinish) return;
-
-      // if start time and end time is equal
-      if (start.current == +audioEle.currentTime.toFixed(1)) return;
-
-      if (isNearFinish) end.current = +audioEle.duration.toFixed(1);
-      else end.current = +audioEle.currentTime.toFixed(1);
+      if (start.current === currentTime) return; // prevent double click
 
       const text = baseLyricArr[currentLyricIndex];
-
       const lyric: Lyric = {
-         start: start.current,
+         start: start.current, // end time of prev lyric
          text,
-         song_lyric_id: 0,
       };
 
-      start.current = end.current;
+      console.log("next lyric start", currentTime);
+
+      start.current = currentTime; // update start for next lyric
 
       setLyrics([...lyrics, lyric]);
       setCurrentLyricIndex(currentLyricIndex + 1);
+
+      setIsChanged(true);
    };
 
    const removeLyric = () => {
       if (currentLyricIndex <= 0) return;
 
       if (audioEle) {
-         start.current = lyrics[currentLyricIndex - 1].start;
-         end.current = 0;
+         const prevStart = lyrics[currentLyricIndex - 1].start;
 
-         const previousLyricResult = lyrics.slice(0, currentLyricIndex - 1);
+         start.current = prevStart;
+         audioEle.currentTime = prevStart;
 
-         setLyrics(previousLyricResult);
-         setCurrentLyricIndex(currentLyricIndex - 1);
+         setLyrics((prev) => prev.slice(0, -1));
+         setCurrentLyricIndex((prev) => prev - 1);
+         setIsChanged(true);
       }
    };
-
-   const handleSubmit = async () => {};
 
    return { addLyric, removeLyric, isEnableAddBtn };
 }
