@@ -17,6 +17,7 @@ import InputModal from "@/share/_components/InputModal";
 import { ModalRef } from "@/hooks/useModal";
 import { useEditLyricContext } from "@/stores/editLyricContext";
 import { useLyricAction } from "@/hooks/useEditLyricAction";
+import Popup, { PopupContent, PopupTrigger } from "@/share/_components/Popup";
 
 type Props = {
    audioEle: HTMLAudioElement;
@@ -33,7 +34,8 @@ function LyricEditorControl(
 ) {
    const modalRef = useRef<ModalRef>(null);
 
-   const { setBaseLyric, baseLyric, setIsChanged } = useEditLyricContext();
+   const { setBaseLyric, baseLyric, setIsChanged, lyrics } =
+      useEditLyricContext();
    const {
       handlePlayPause,
       pause,
@@ -46,7 +48,15 @@ function LyricEditorControl(
       audioEle,
    });
 
-   const { addLyric, removeLyric, isEnableAddBtn } = useLyricAction({
+   const {
+      addLyric,
+      removeLyric,
+      isEnableAddBtn,
+      speed,
+      volume,
+      changeSpeed,
+      changeVolume,
+   } = useLyricAction({
       audioEle,
       isClickPlay,
    });
@@ -84,11 +94,54 @@ function LyricEditorControl(
    return (
       <>
          <div className="flex flex-wrap -mt-2 -ml-2">
-            <Button
-               colors={"second"}
-               className={classes.button}
-               onClick={handlePlayPause}
-            >
+            <Popup className="mt-2 ml-2">
+               <PopupTrigger>
+                  <Button className="h-full" colors={"second"}>
+                     <Cog6ToothIcon className="w-6" />
+                  </Button>
+               </PopupTrigger>
+
+               <PopupContent
+                  className="top-[calc(100%+8px)] left-0"
+                  appendTo="parent"
+               >
+                  <div className="w-[220px] p-2 rounded-lg text-amber-800 bg-amber-100 border-[2px] border-amber-800">
+                     <div className="space-y-[6px]">
+                        <div className={`flex space-x-1`}>
+                           <div className="w-[110px] flex-shrink-0">
+                              Speed {speed}x
+                           </div>
+                           <input
+                              className="w-full"
+                              type="range"
+                              step={0.1}
+                              min={1}
+                              max={1.5}
+                              value={speed}
+                              onChange={(e) => changeSpeed(+e.target.value)}
+                           />
+                        </div>
+
+                        <div className={`flex space-x-1`}>
+                           <div className="w-[110px] flex-shrink-0">
+                              Volume {volume}%
+                           </div>
+                           <input
+                              className="w-full"
+                              type="range"
+                              step={1}
+                              min={1}
+                              max={100}
+                              value={volume}
+                              onChange={(e) => changeVolume(+e.target.value)}
+                           />
+                        </div>
+                     </div>
+                  </div>
+               </PopupContent>
+            </Popup>
+
+            <Button className={classes.button} onClick={handlePlayPause}>
                {renderPlayPausedButton()}
             </Button>
             <Button
@@ -99,7 +152,11 @@ function LyricEditorControl(
                <PlusIcon className="w-6" />
                <span>Add</span>
             </Button>
-            <Button onClick={removeLyric} className={classes.button}>
+            <Button
+               disabled={!lyrics.length}
+               onClick={removeLyric}
+               className={classes.button}
+            >
                <MinusIcon className="w-6" />
                <span>Remove</span>
             </Button>
@@ -118,10 +175,6 @@ function LyricEditorControl(
             >
                <DocumentTextIcon className="w-6" />
                <span>Edit lyrics</span>
-            </Button>
-
-            <Button className={classes.button}>
-               <Cog6ToothIcon className="w-6" />
             </Button>
          </div>
 

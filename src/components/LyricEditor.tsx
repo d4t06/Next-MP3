@@ -22,20 +22,26 @@ export default function LyricEditor({ songWithLyric }: Props) {
    });
 
    return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full mt-5">
          <audio
             className="hidden"
             ref={audioRef}
             src={songWithLyric.song_url}
          ></audio>
 
-         <div className="flex flex-col items-start mt-5 text-amber-800">
-            <Button size={"clear"} className="py-1 px-2 space-x-1" href="/dashboard">
-               <ChevronLeftIcon className="w-5" />
-               <span>Dashboard</span>
-            </Button>
-            <h1 className="text-xl mt-5">Edit lyric - {songWithLyric.name}</h1>
-         </div>
+         {/* <div className="flex flex-col items-start mt-5 text-amber-800">
+         </div> */}
+         <Button
+            size={"clear"}
+            className="self-start py-1 px-2 space-x-1"
+            href="/dashboard"
+         >
+            <ChevronLeftIcon className="w-5" />
+            <span>Dashboard</span>
+         </Button>
+         <h1 className="text-xl mt-5 text-amber-800">
+            Edit lyric - {songWithLyric.name}
+         </h1>
 
          {audioRef.current && (
             <>

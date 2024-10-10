@@ -1,13 +1,9 @@
-import { sleep } from "../utils/appHelper";
+import { API_ENDPOINT, sleep } from "../utils/appHelper";
 
 export const getSongLyric = async (songId: number) => {
-   const res = await fetch(
-      `${
-         process.env.NEXT_PUBLIC_API_ENDPOINT ||
-         "https://nest-mp3.vercel.app/api"
-      }/song-lyrics?song_id=${songId}`,
-      { next: { tags: [`lyric-${songId}`] } }
-   );
+   const res = await fetch(`${API_ENDPOINT}/song-lyrics?song_id=${songId}`, {
+      next: { tags: [`lyric-${songId}`] },
+   });
 
    if (!res.ok) return undefined;
 

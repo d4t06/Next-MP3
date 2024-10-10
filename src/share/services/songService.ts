@@ -1,13 +1,9 @@
-import { sleep } from "../utils/appHelper";
+import { API_ENDPOINT, sleep } from "../utils/appHelper";
 
 export const getAllSong = async () => {
-   const res = await fetch(
-      `${
-         process.env.NEXT_PUBLIC_API_ENDPOINT ||
-         "https://nest-mp3.vercel.app/api"
-      }/songs`,
-      { next: { tags: ["songs"] } }
-   );
+   const res = await fetch(`${API_ENDPOINT}/songs`, {
+      next: { tags: ["songs"] },
+   });
 
    if (!res.ok) return undefined;
 
@@ -22,9 +18,7 @@ export const getAllSong = async () => {
 export const getOneSong = async (songId: string) => {
    if (isNaN(+songId)) return undefined;
 
-   const url = `${
-      process.env.NEXT_PUBLIC_API_ENDPOINT || "https://nest-mp3.vercel.app/api"
-   }/songs/${songId}`;
+   const url = `${API_ENDPOINT}/songs/${songId}`;
 
    const res = await fetch(url);
 

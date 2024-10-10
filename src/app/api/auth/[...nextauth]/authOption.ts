@@ -1,3 +1,4 @@
+import { API_ENDPOINT } from "@/share/utils/appHelper";
 import { NextAuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
@@ -16,21 +17,15 @@ export const nextAuthOptions: NextAuthOptions = {
 
             const { password } = credentials;
 
-            const res = await fetch(
-               `${
-                  process.env.NEXT_PUBLIC_API_ENDPOINT ||
-                  "https://nest-mp3.vercel.app/api"
-               }/auth/login`,
-               {
-                  method: "POST",
-                  body: JSON.stringify({
-                     password,
-                  }),
-                  headers: {
-                     "Content-type": "application/json",
-                  },
-               }
-            );
+            const res = await fetch(`${API_ENDPOINT}/auth/login`, {
+               method: "POST",
+               body: JSON.stringify({
+                  password,
+               }),
+               headers: {
+                  "Content-type": "application/json",
+               },
+            });
 
             if (!res.ok) return null;
 

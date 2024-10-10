@@ -1,5 +1,6 @@
+import { getLocalStorage, setLocalStorage } from "@/share/utils/appHelper";
 import { useEditLyricContext } from "@/stores/editLyricContext";
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
    audioEle: HTMLAudioElement;
@@ -7,6 +8,9 @@ type Props = {
 };
 
 export function useLyricAction({ audioEle, isClickPlay }: Props) {
+   const [speed, setSpeed] = useState(1);
+   const [volume, setVolume] = useState(100);
+
    const {
       start,
       baseLyricArr,
@@ -57,5 +61,39 @@ export function useLyricAction({ audioEle, isClickPlay }: Props) {
       }
    };
 
-   return { addLyric, removeLyric, isEnableAddBtn };
+   const changeSpeed = (speed: number) => {
+      audioEle.playbackRate = speed;
+      setSpeed(speed);
+      setLocalStorage("edit_lyric_audio_speed", speed);
+   };
+
+   const changeVolume = (value: number) => {
+      audioEle.volume = value / 100;
+      setVolume(value);
+      setLocalStorage("edit_lyric_audio_volume", value);
+   };
+
+   useEffect(() => {
+      const { edit_lyric_audio_speed, edit_lyric_audio_volume } =
+         getLocalStorage();
+
+      if (edit_lyric_audio_speed) {
+         setSpeed(+edit_lyric_audio_speed);
+         audioEle.playbackRate = +edit_lyric_audio_speed;
+      }
+      if (edit_lyric_audio_volume) {
+         setVolume(+edit_lyric_audio_volume);
+         audioEle.volume = +edit_lyric_audio_volume / 100;
+      }
+   }, []);
+
+   return {
+      addLyric,
+      removeLyric,
+      isEnableAddBtn,
+      speed,
+      volume,
+      changeSpeed,
+      changeVolume,
+   };
 }

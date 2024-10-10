@@ -1,14 +1,12 @@
 import { runRevalidateTag } from "@/app/actions";
 import { uploadFile } from "@/share/services/firebaseServices";
-import { initSongObject } from "@/share/utils/appHelper";
+import { API_ENDPOINT, initSongObject } from "@/share/utils/appHelper";
 import parseSongFromFile from "@/share/utils/parseSong";
 import { useToast } from "@/stores/toastContext";
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 
-const API_ENDPOINT = `${
-   process.env.NEXT_PUBLIC_API_ENDPOINT || "https://nest-mp3.vercel.app/api"
-}`;
+
 
 type Props = {
    toggleModal: () => void;

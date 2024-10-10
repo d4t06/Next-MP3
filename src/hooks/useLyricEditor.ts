@@ -1,4 +1,5 @@
 import { LyricEditorControlRef } from "@/components/LyricEditorControl";
+import { API_ENDPOINT } from "@/share/utils/appHelper";
 import { useEditLyricContext } from "@/stores/editLyricContext";
 import { useToast } from "@/stores/toastContext";
 import { useSession } from "next-auth/react";
@@ -8,10 +9,6 @@ type Props = {
    songWithLyric: SongWithLyric;
    controlRef: RefObject<LyricEditorControlRef>;
 };
-
-const API_ENDPOINT = `${
-   process.env.NEXT_PUBLIC_API_ENDPOINT || "https://nest-mp3.vercel.app/api"
-}`;
 
 export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
    const { data: session } = useSession();

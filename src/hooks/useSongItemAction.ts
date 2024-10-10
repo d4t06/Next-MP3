@@ -1,13 +1,11 @@
 import { runRevalidateTag } from "@/app/actions";
 import { deleteFile } from "@/share/services/firebaseServices";
-import { sleep } from "@/share/utils/appHelper";
+import { API_ENDPOINT, sleep } from "@/share/utils/appHelper";
 import { useToast } from "@/stores/toastContext";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-const SONG_URL = `${
-   process.env.NEXT_PUBLIC_API_ENDPOINT || "https://nest-mp3.vercel.app/api"
-}/songs`;
+const SONG_URL = `${API_ENDPOINT}/songs`;
 
 export default function useSongItemAction() {
    const [isFetching, setIsFetching] = useState(false);

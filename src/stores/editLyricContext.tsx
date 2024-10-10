@@ -11,7 +11,6 @@ const useEditLyric = () => {
    const [isChanged, setIsChanged] = useState(false);
 
    const start = useRef(0);
-   const end = useRef(0);
 
    const updateLyric = (index: number, text: string) => {
       setLyrics((prev) => {
@@ -37,7 +36,6 @@ const useEditLyric = () => {
       isChanged,
       setIsChanged,
       start,
-      end,
    };
 };
 
