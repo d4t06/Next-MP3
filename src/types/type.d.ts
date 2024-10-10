@@ -12,6 +12,7 @@ type Song = {
 
 type Lyric = {
    start: number;
+   end: number;
    text: string;
 };
 

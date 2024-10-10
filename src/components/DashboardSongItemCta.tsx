@@ -117,7 +117,7 @@ export default function DashboardSongItemCta({ song }: Props) {
                size={"clear"}
             >
                <DocumentTextIcon className="w-6" />
-               <span className={classes.text}>Edit lyric</span>
+               <span className={classes.text}>Lyric</span>
             </Button>
          </div>
 

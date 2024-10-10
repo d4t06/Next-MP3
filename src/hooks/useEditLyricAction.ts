@@ -7,10 +7,8 @@ type Props = {
 };
 
 export function useLyricAction({ audioEle, isClickPlay }: Props) {
-   // const end = useRef(0);
-   const start = useRef(0);
-
    const {
+      start,
       baseLyricArr,
       currentLyricIndex,
       lyrics,
@@ -33,9 +31,8 @@ export function useLyricAction({ audioEle, isClickPlay }: Props) {
       const lyric: Lyric = {
          start: start.current, // end time of prev lyric
          text,
+         end: currentTime,
       };
-
-      console.log("next lyric start", currentTime);
 
       start.current = currentTime; // update start for next lyric
 

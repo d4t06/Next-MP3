@@ -9,6 +9,7 @@ import {
    ArrowPathIcon,
    MinusIcon,
    DocumentTextIcon,
+   Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
 import { forwardRef, Ref, useImperativeHandle, useRef } from "react";
 import Modal from "./Modal";
@@ -23,6 +24,7 @@ type Props = {
 
 export type LyricEditorControlRef = {
    seek: (second: number) => void;
+   pause: () => void;
 };
 
 function LyricEditorControl(
@@ -32,17 +34,24 @@ function LyricEditorControl(
    const modalRef = useRef<ModalRef>(null);
 
    const { setBaseLyric, baseLyric, setIsChanged } = useEditLyricContext();
-   const { handlePlayPause, backward, forward, status, seek, isClickPlay } =
-      useAudioControl({
-         audioEle,
-      });
+   const {
+      handlePlayPause,
+      pause,
+      backward,
+      forward,
+      status,
+      seek,
+      isClickPlay,
+   } = useAudioControl({
+      audioEle,
+   });
 
    const { addLyric, removeLyric, isEnableAddBtn } = useLyricAction({
       audioEle,
       isClickPlay,
    });
 
-   useImperativeHandle(ref, () => ({ seek }));
+   useImperativeHandle(ref, () => ({ seek, pause }));
 
    const closeModal = () => modalRef.current?.toggle();
 
@@ -74,43 +83,46 @@ function LyricEditorControl(
 
    return (
       <>
-         <div className="mt-3">
-            <div className="flex -mt-2 -ml-2">
-               <Button
-                  colors={"second"}
-                  className={classes.button}
-                  onClick={handlePlayPause}
-               >
-                  {renderPlayPausedButton()}
-               </Button>
-               <Button
-                  disabled={!isEnableAddBtn}
-                  onClick={addLyric}
-                  className={classes.button}
-               >
-                  <PlusIcon className="w-6" />
-                  <span>Add</span>
-               </Button>
-               <Button onClick={removeLyric} className={classes.button}>
-                  <MinusIcon className="w-6" />
-                  <span>Remove</span>
-               </Button>
-               <Button onClick={() => backward(2)} className={classes.button}>
-                  <BackwardIcon className="w-6" />
-                  <span>2s</span>
-               </Button>
-               <Button onClick={() => forward(2)} className={classes.button}>
-                  <span>2s</span>
-                  <ForwardIcon className="w-6" />
-               </Button>
-               <Button
-                  onClick={() => modalRef.current?.toggle()}
-                  className={classes.button}
-               >
-                  <DocumentTextIcon className="w-6" />
-                  <span>Edit lyrics</span>
-               </Button>
-            </div>
+         <div className="flex flex-wrap -mt-2 -ml-2">
+            <Button
+               colors={"second"}
+               className={classes.button}
+               onClick={handlePlayPause}
+            >
+               {renderPlayPausedButton()}
+            </Button>
+            <Button
+               disabled={!isEnableAddBtn}
+               onClick={addLyric}
+               className={classes.button}
+            >
+               <PlusIcon className="w-6" />
+               <span>Add</span>
+            </Button>
+            <Button onClick={removeLyric} className={classes.button}>
+               <MinusIcon className="w-6" />
+               <span>Remove</span>
+            </Button>
+
+            <Button onClick={() => backward(2)} className={classes.button}>
+               <BackwardIcon className="w-6" />
+               <span>2s</span>
+            </Button>
+            <Button onClick={() => forward(2)} className={classes.button}>
+               <span>2s</span>
+               <ForwardIcon className="w-6" />
+            </Button>
+            <Button
+               onClick={() => modalRef.current?.toggle()}
+               className={classes.button}
+            >
+               <DocumentTextIcon className="w-6" />
+               <span>Edit lyrics</span>
+            </Button>
+
+            <Button className={classes.button}>
+               <Cog6ToothIcon className="w-6" />
+            </Button>
          </div>
 
          <Modal ref={modalRef}>

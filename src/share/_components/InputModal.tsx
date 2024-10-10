@@ -55,7 +55,7 @@ export default function InputModal({
 
             {variant === "text-area" && (
                <textarea
-                  className={`${classes.input} min-h-[100px]`}
+                  className={`${classes.input} min-h-[50vh]`}
                   value={value}
                   onChange={(e) => setValue(e.target.value)}
                />

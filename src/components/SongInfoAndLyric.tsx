@@ -5,6 +5,7 @@ import ScrollText from "./ScrollText";
 import LyricItem from "./LyricIitem";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import useSongInfoAndLyric from "@/hooks/useSongInfoAndLyric";
+import { Center } from "@/share/_components/Center";
 
 type Props = {
    currentSong: Song;
@@ -43,12 +44,14 @@ export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
             <div
                className={`${
                   tab === "lyrics"
-                     ? "opacity-[1] h-[30vh]"
+                     ? "opacity-[1] h-[30vh] pt-2 pb-[7vh]"
                      : "opacity-0 pointer-events-none h-0"
-               } overflow-auto text-center text-amber-100 text-lg no-scrollbar`}
+               }  overflow-auto text-center relative text-amber-100 text-lg no-scrollbar mask-vertical`}
             >
                {isFetching ? (
-                  <ArrowPathIcon className="w-6 animate-spin" />
+                  <Center>
+                     <ArrowPathIcon className=" w-6 animate-spin" />
+                  </Center>
                ) : (
                   <>
                      {lyrics?.length ? (
@@ -56,10 +59,11 @@ export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
                            {lyrics.map((l, index) => {
                               let status = "coming";
 
-                              if (currentTime >= l.start) {
+                              if (currentTime >= l.start - 0.3) {
                                  if (
                                     (lyrics[index + 1] &&
-                                       currentTime < lyrics[index + 1].start) ||
+                                       currentTime <
+                                          lyrics[index + 1].start - 0.3) ||
                                     index === lyrics.length - 1
                                  )
                                     status = "active";
@@ -68,21 +72,30 @@ export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
 
                               return (
                                  <LyricItem
+                                    key={index}
                                     className="pb-3"
                                     text={l.text}
                                     //@ts-ignore
                                     status={status}
                                     scrollBehavior={scrollBehavior}
+                                    shouldScroll={tab === "lyrics"}
                                  />
                               );
                            })}
                         </>
                      ) : (
-                        <p>...</p>
+                        <Center>
+                           <p>...</p>
+                        </Center>
                      )}
                   </>
                )}
             </div>
+            {tab === "lyrics" && (
+               <p className="text-sm mt-2 text-amber-100/60 text-center">
+                  {currentSong.name} - {currentSong.singer}
+               </p>
+            )}
          </div>
       </>
    );

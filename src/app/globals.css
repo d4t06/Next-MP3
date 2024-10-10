@@ -29,3 +29,15 @@ a[aria-disabled="true"],
       rgba(255, 255, 255, 0)
    );
 }
+
+.mask-vertical {
+   -webkit-mask-image: linear-gradient(
+     180deg,
+     hsla(0, 0%, 100%, 0),
+     hsla(0, 0%, 100%, 0.8) 10%,
+     #fff 25%,
+     #fff 75%,
+     hsla(0, 0%, 100%, 0.8) 90%,
+     hsla(0, 0%, 100%, 0)
+   );
+ }

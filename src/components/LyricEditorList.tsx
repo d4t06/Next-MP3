@@ -25,15 +25,6 @@ export default function LyricEditorList({ controlRef }: Props) {
    };
 
    useEffect(() => {
-      if (!ranFirstScroll.current) return;
-
-      const activeLyricEl = document.querySelector(".active-lyric");
-      if (!activeLyricEl) return;
-
-      scroll(activeLyricEl);
-   }, [currentLyricIndex]);
-
-   useEffect(() => {
       if (!ranFirstScroll.current) {
          ranFirstScroll.current = false;
 
@@ -56,7 +47,7 @@ export default function LyricEditorList({ controlRef }: Props) {
                            : "coming";
                      return (
                         <LyricItem
-                           className="pb-[34px] mr-[24px]"
+                           className="pt-[24px] pb-[10px] mr-[24px]"
                            key={index}
                            status={status}
                            text={lyric}

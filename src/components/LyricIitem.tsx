@@ -11,6 +11,7 @@ type Props = {
    text: string;
    className?: string;
    scrollBehavior?: MutableRefObject<ScrollBehavior>;
+   shouldScroll?: boolean;
 };
 
 export default function LyricItem({
@@ -18,10 +19,13 @@ export default function LyricItem({
    text,
    className = "pb-6",
    scrollBehavior,
+   shouldScroll = true,
 }: Props) {
    const lyricRef = useRef<ElementRef<"p">>(null);
 
    const scroll = () => {
+      console.log("scroll behavior", scrollBehavior?.current);
+
       lyricRef.current?.scrollIntoView({
          behavior: scrollBehavior?.current || "smooth",
          block: "center",
@@ -36,7 +40,7 @@ export default function LyricItem({
          case "coming":
             return "";
          case "active":
-            return "text-[#ffed00]";
+            return "text-[#ffed00] active-lyric";
          case "done":
             return "disabled";
       }
@@ -44,7 +48,7 @@ export default function LyricItem({
 
    useEffect(() => {
       if (status === "active") {
-         scroll();
+         if (shouldScroll) scroll();
       }
    }, [status]);
 

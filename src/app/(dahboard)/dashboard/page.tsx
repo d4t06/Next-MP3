@@ -2,8 +2,13 @@ import { nextAuthOptions } from "@/app/api/auth/[...nextauth]/authOption";
 import DashboardSongItem from "@/components/DashboardSongItem";
 import NoResult from "@/components/NoResult";
 import Button from "@/share/_components/Button";
+import { Center } from "@/share/_components/Center";
 import { getAllSong } from "@/share/services/songService";
-import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
+import {
+   ArrowPathIcon,
+   ArrowUpTrayIcon,
+   HomeIcon,
+} from "@heroicons/react/24/outline";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -51,9 +56,23 @@ export default async function DashboardPage() {
                </Button>
             </div>
 
-            <Suspense fallback="...loading">
+            <Suspense
+               fallback={
+                  <Center>
+                     <ArrowPathIcon className="text-amber-800 w-6 animate-spin" />
+                  </Center>
+               }
+            >
                <SongList />
             </Suspense>
+
+            <Button
+               href="/"
+               className="!absolute p-2 bottom-5 left-8"
+               size={"clear"}
+            >
+               <HomeIcon className="w-6" />
+            </Button>
          </div>
       </>
    );

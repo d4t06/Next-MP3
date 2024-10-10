@@ -1,17 +1,19 @@
+import { LyricEditorControlRef } from "@/components/LyricEditorControl";
 import { useEditLyricContext } from "@/stores/editLyricContext";
 import { useToast } from "@/stores/toastContext";
 import { useSession } from "next-auth/react";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { ElementRef, RefObject, useEffect, useRef, useState } from "react";
 
 type Props = {
    songWithLyric: SongWithLyric;
+   controlRef: RefObject<LyricEditorControlRef>;
 };
 
 const API_ENDPOINT = `${
    process.env.NEXT_PUBLIC_API_ENDPOINT || "https://nest-mp3.vercel.app/api"
 }`;
 
-export default function useLyricEditor({ songWithLyric }: Props) {
+export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
    const { data: session } = useSession();
 
    const [_hasAudioEle, setHasAudioEle] = useState(false);
@@ -59,6 +61,7 @@ export default function useLyricEditor({ songWithLyric }: Props) {
          setErrorToast("");
       } finally {
          setIsFetching(false);
+         controlRef.current?.pause();
       }
    };
 
@@ -80,10 +83,10 @@ export default function useLyricEditor({ songWithLyric }: Props) {
          setCurrentLyricIndex(latestIndex + 1);
 
          if (audioRef.current) {
-            const latestCurrentTime = parsedLyric[latestIndex].start;
+            const latestEndTime = parsedLyric[latestIndex].end;
 
-            audioRef.current.currentTime = latestCurrentTime;
-            start.current = latestCurrentTime;
+            audioRef.current.currentTime = latestEndTime;
+            start.current = latestEndTime;
          }
       }
    }, []);

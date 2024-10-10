@@ -12,7 +12,7 @@ export default function AddLyricItem({ lyric, index, seek }: Props) {
    const [isEditText, setIdEditText] = useState(false);
    const [text, setText] = useState(lyric.text);
 
-   const textRef = useRef<HTMLInputElement>(null);
+   const textRef = useRef<HTMLTextAreaElement>(null);
 
    const { updateLyric } = useEditLyricContext();
 
@@ -24,7 +24,7 @@ export default function AddLyricItem({ lyric, index, seek }: Props) {
    };
 
    const classes = {
-      input: `rounded-md outline-none w-full px-2`,
+      input: `rounded-md bg-amber-900 text-amber-100 outline-none w-full p-2`,
    };
 
    useEffect(() => {
@@ -51,12 +51,11 @@ export default function AddLyricItem({ lyric, index, seek }: Props) {
 
          {isEditText && (
             <form action="" onSubmit={handleEdit}>
-               <input
+               <textarea
                   onBlur={() => setIdEditText(false)}
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   ref={textRef}
-                  type="text"
                   className={classes.input}
                />
             </form>

@@ -5,7 +5,7 @@ import { nextAuthOptions } from "../api/auth/[...nextauth]/authOption";
 import { ComputerDesktopIcon } from "@heroicons/react/24/outline";
 import { getAllSong } from "@/share/services/songService";
 import NoResult from "@/components/NoResult";
-import Tooltip from "@/components/Tootip";
+import Tooltip from "@/share/_components/Tooltip";
 
 export const revalidate = 864000;
 

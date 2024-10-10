@@ -5,7 +5,7 @@ import Modal from "./Modal";
 import useTimer from "@/hooks/useTimer";
 import { formatTime } from "@/share/utils/appHelper";
 import { ModalRef } from "@/hooks/useModal";
-import Tooltip from "./Tootip";
+import Tooltip from "@/share/_components/Tooltip";
 
 type Props = {
    isPlaying: boolean;

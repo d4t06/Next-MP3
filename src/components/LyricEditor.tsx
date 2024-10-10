@@ -7,6 +7,7 @@ import LyricEditorControl, {
 import LyricEditorList from "./LyricEditorList";
 import Button from "@/share/_components/Button";
 import useLyricEditor from "@/hooks/useLyricEditor";
+import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 
 type Props = {
    songWithLyric: SongWithLyric;
@@ -17,26 +18,33 @@ export default function LyricEditor({ songWithLyric }: Props) {
 
    const { audioRef, isChanged, isFetching, handleAddLyric } = useLyricEditor({
       songWithLyric,
+      controlRef,
    });
 
    return (
       <div className="flex flex-col h-full">
          <audio
-         controls
+            className="hidden"
             ref={audioRef}
             src={songWithLyric.song_url}
          ></audio>
 
-         <h1 className="text-xl mt-5 text-amber-800">
-            Edit lyric - {songWithLyric.name}
-         </h1>
+         <div className="flex flex-col items-start mt-5 text-amber-800">
+            <Button size={"clear"} className="py-1 px-2 space-x-1" href="/dashboard">
+               <ChevronLeftIcon className="w-5" />
+               <span>Dashboard</span>
+            </Button>
+            <h1 className="text-xl mt-5">Edit lyric - {songWithLyric.name}</h1>
+         </div>
 
          {audioRef.current && (
             <>
-               <LyricEditorControl
-                  ref={controlRef}
-                  audioEle={audioRef.current}
-               />
+               <div className="mt-5">
+                  <LyricEditorControl
+                     ref={controlRef}
+                     audioEle={audioRef.current}
+                  />
+               </div>
 
                <LyricEditorList controlRef={controlRef} />
 
