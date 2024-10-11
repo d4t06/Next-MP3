@@ -1,4 +1,5 @@
 import { LyricEditorControlRef } from "@/components/LyricEditorControl";
+import SongInfoAndLyric from "@/components/SongInfoAndLyric";
 import { API_ENDPOINT } from "@/share/utils/appHelper";
 import { useEditLyricContext } from "@/stores/editLyricContext";
 import { useToast } from "@/stores/toastContext";
@@ -18,10 +19,12 @@ export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
 
    const {
       baseLyric,
+      songLyricId,
       setBaseLyricArr,
       setBaseLyric,
       setLyrics,
       setCurrentLyricIndex,
+      setSongLyricId,
       lyrics,
       setIsFetching,
       isFetching,
@@ -34,6 +37,7 @@ export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
    const handleAddLyric = async () => {
       try {
          setIsFetching(true);
+         controlRef.current?.pause();
 
          const header = new Headers();
          header.set("Authorization", `Bearer ${session?.token}`);
@@ -43,14 +47,22 @@ export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
             base_lyric: baseLyric,
             lyrics: JSON.stringify(lyrics),
             song_id: songWithLyric.id,
-            id: songWithLyric.song_lyric?.id,
+            id: songLyricId,
          };
 
-         await fetch(`${API_ENDPOINT}/song-lyrics`, {
+         const res = await fetch(`${API_ENDPOINT}/song-lyrics`, {
             method: "POST",
             headers: header,
             body: JSON.stringify(newSongLyric),
          });
+
+         if (!songLyricId)
+            if (res.ok) {
+               const payload = (await res.json()) as { data: SongLyric };
+               if (payload.data) {
+                  setSongLyricId(payload.data.id);
+               }
+            }
 
          setSuccessToast("Update song lyric successful");
          setIsChanged(false);
@@ -58,7 +70,6 @@ export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
          setErrorToast("");
       } finally {
          setIsFetching(false);
-         controlRef.current?.pause();
       }
    };
 
@@ -67,6 +78,7 @@ export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
       if (audioRef.current) setHasAudioEle(true);
 
       if (songWithLyric.song_lyric) {
+         setSongLyricId(songWithLyric.song_lyric.id);
          setBaseLyric(songWithLyric.song_lyric.base_lyric);
 
          const parsedLyric = JSON.parse(

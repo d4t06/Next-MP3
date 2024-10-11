@@ -22,7 +22,7 @@ export default function LyricEditor({ songWithLyric }: Props) {
    });
 
    return (
-      <div className="flex flex-col h-full mt-5">
+      <div className="flex flex-col h-full">
          <audio
             className="hidden"
             ref={audioRef}
@@ -33,7 +33,7 @@ export default function LyricEditor({ songWithLyric }: Props) {
          </div> */}
          <Button
             size={"clear"}
-            className="self-start py-1 px-2 space-x-1"
+            className="self-start py-1 px-2 space-x-1 mt-5"
             href="/dashboard"
          >
             <ChevronLeftIcon className="w-5" />
@@ -54,16 +54,15 @@ export default function LyricEditor({ songWithLyric }: Props) {
 
                <LyricEditorList controlRef={controlRef} />
 
-               <div className="flex mb-5">
-                  <Button
-                     disabled={!isChanged}
-                     onClick={handleAddLyric}
-                     loading={isFetching}
-                     colors={"second"}
-                  >
-                     Save
-                  </Button>
-               </div>
+               <Button
+                  className="self-start mb-5"
+                  disabled={!isChanged}
+                  onClick={handleAddLyric}
+                  loading={isFetching}
+                  colors={"second"}
+               >
+                  Save
+               </Button>
             </>
          )}
       </div>

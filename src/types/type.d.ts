@@ -17,7 +17,7 @@ type Lyric = {
 };
 
 type SongLyric = {
-   id?: number;
+   id: number | null;
    song_id: number;
    base_lyric: string;
    lyrics: string;

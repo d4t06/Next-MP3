@@ -9,6 +9,7 @@ const useEditLyric = () => {
    const [currentLyricIndex, setCurrentLyricIndex] = useState<number>(0);
    const [isFetching, setIsFetching] = useState(false);
    const [isChanged, setIsChanged] = useState(false);
+   const [songLyricId, setSongLyricId] = useState<number | null>(null);
 
    const start = useRef(0);
 
@@ -23,6 +24,8 @@ const useEditLyric = () => {
 
    return {
       baseLyric,
+      songLyricId,
+      setSongLyricId,
       setBaseLyric,
       baseLyricArr,
       setBaseLyricArr,

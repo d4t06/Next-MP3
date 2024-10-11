@@ -74,6 +74,8 @@ function LyricEditorControl(
    const classes = {
       button: "mt-2 ml-2 space-x-1",
       icon: "w-6",
+      arrow: `before:content-[''] before:absolute before:-translate-x-1/2 before:left-[27px]  before:bottom-[calc(100%-1px)] before:z-[-1] before:border-8 before:border-transparent before:border-b-amber-800`,
+
    };
 
    const renderPlayPausedButton = () => {
@@ -102,10 +104,10 @@ function LyricEditorControl(
                </PopupTrigger>
 
                <PopupContent
-                  className="top-[calc(100%+8px)] left-0"
+                  className="top-[calc(100%+8px)] left-0 z-[9]"
                   appendTo="parent"
                >
-                  <div className="w-[220px] p-2 rounded-lg text-amber-800 bg-amber-100 border-[2px] border-amber-800">
+                  <div className={`relative ${classes.arrow} w-[220px] relative p-2 rounded-lg text-amber-800 bg-amber-100 border-[2px] border-amber-800`}>
                      <div className="space-y-[6px]">
                         <div className={`flex space-x-1`}>
                            <div className="w-[110px] flex-shrink-0">
@@ -137,6 +139,8 @@ function LyricEditorControl(
                            />
                         </div>
                      </div>
+
+
                   </div>
                </PopupContent>
             </Popup>
