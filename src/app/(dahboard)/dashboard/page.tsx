@@ -21,14 +21,16 @@ async function SongList() {
 
    return (
       <>
-         <div className="h-[40px] pb-2 flex items-center space-x-2 border-b border-amber-800/15">
+         <div className="container md:max-w-[800px] h-[40px] pb-2 flex items-center space-x-2 border-b border-amber-800/15">
             <div className="text-amber-900">{data.count} songs</div>
          </div>
 
-         <div className="flex-grow overflow-y-auto no-scrollbar pb-[80px]">
-            {data.songs.map((s, index) => (
-               <DashboardSongItem song={s} key={index} />
-            ))}
+         <div className="flex-grow overflow-y-auto no-scrollbar ">
+            <div className="container md:max-w-[800px] pb-[80px]">
+               {data.songs.map((s, index) => (
+                  <DashboardSongItem song={s} key={index} />
+               ))}
+            </div>
          </div>
       </>
    );
@@ -42,7 +44,7 @@ export default async function DashboardPage() {
    return (
       <>
          <div className="h-full flex flex-col">
-            <div className="flex mt-5 justify-between items-center ">
+            <div className="flex mt-5 justify-between items-center container md:max-w-[800px]">
                <div className="text-xl text-amber-900 font-semibold">Songs</div>
 
                <Button className="" size={"clear"} colors={"second"}>

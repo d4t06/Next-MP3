@@ -44,7 +44,7 @@ export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
             <div
                className={`${
                   tab === "lyrics"
-                     ? "opacity-[1] h-[30vh] pt-2 pb-[7vh]"
+                     ? "opacity-[1] h-[30vh] pt-4 pb-[7vh]"
                      : "opacity-0 pointer-events-none h-0"
                }  overflow-auto text-center relative text-amber-100 text-lg no-scrollbar mask-vertical`}
             >

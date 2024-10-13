@@ -6,21 +6,26 @@ type Props = {
    tab: Tab;
 };
 
-export default function useAutoSwitchTab({ back, scrollContainer, tab }: Props) {
+export default function useAutoSwitchTab({
+   back,
+   scrollContainer,
+   tab,
+}: Props) {
    const timerId = useRef<NodeJS.Timeout>();
 
    const [someThingToTrigger, setSomeThingToTrigger] = useState(0);
 
-   const handleWheel = () => setSomeThingToTrigger(Math.random);
+   const handleScroll = () => setSomeThingToTrigger(Math.random);
 
    useEffect(() => {
       const ele = scrollContainer.current;
       if (!ele) return;
 
-      ele.addEventListener("wheel", handleWheel);
+      /** must use scroll event cause' wheel event don't work on mobile */
+      ele.addEventListener("scroll", handleScroll);
 
       return () => {
-         ele.removeEventListener("wheel", handleWheel);
+         ele.removeEventListener("scroll", handleScroll);
       };
    }, []);
 

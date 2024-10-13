@@ -15,3 +15,8 @@
 -  fix bug dashboard page
 -  add keyboard events
 -  plan to show live lyrics
+
+
+### update 13/10/2024
+- fix bug
+- logout when token expire

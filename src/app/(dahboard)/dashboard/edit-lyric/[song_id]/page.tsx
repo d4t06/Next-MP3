@@ -20,7 +20,9 @@ export default async function EditSongLyric(props: Props) {
 
    return (
       <EditLyricContextProvider>
-         <LyricEditor songWithLyric={songWithLyric} />
+         <div className="container h-full max-w-[800px]">
+            <LyricEditor songWithLyric={songWithLyric} />
+         </div>
       </EditLyricContextProvider>
    );
 }

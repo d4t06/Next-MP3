@@ -1,10 +1,10 @@
 import { LyricEditorControlRef } from "@/components/LyricEditorControl";
-import SongInfoAndLyric from "@/components/SongInfoAndLyric";
 import { API_ENDPOINT } from "@/share/utils/appHelper";
 import { useEditLyricContext } from "@/stores/editLyricContext";
 import { useToast } from "@/stores/toastContext";
 import { useSession } from "next-auth/react";
 import { ElementRef, RefObject, useEffect, useRef, useState } from "react";
+import usePrivateRequest from "./usePrivateRequest";
 
 type Props = {
    songWithLyric: SongWithLyric;
@@ -33,6 +33,7 @@ export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
       start,
    } = useEditLyricContext();
    const { setErrorToast, setSuccessToast } = useToast();
+   const { request } = usePrivateRequest();
 
    const handleAddLyric = async () => {
       try {
@@ -50,24 +51,22 @@ export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
             id: songLyricId,
          };
 
-         const res = await fetch(`${API_ENDPOINT}/song-lyrics`, {
+         const payload = await request(`${API_ENDPOINT}/song-lyrics`, {
             method: "POST",
             headers: header,
             body: JSON.stringify(newSongLyric),
          });
 
-         if (!songLyricId)
-            if (res.ok) {
-               const payload = (await res.json()) as { data: SongLyric };
-               if (payload.data) {
-                  setSongLyricId(payload.data.id);
-               }
-            }
+         if (payload && payload.data) {
+            if (!songLyricId) setSongLyricId(payload.data.id);
 
-         setSuccessToast("Update song lyric successful");
-         setIsChanged(false);
+            setSuccessToast("Update song lyric successful");
+            setIsChanged(false);
+         }
       } catch (error) {
-         setErrorToast("");
+         console.log(error);
+
+         setErrorToast();
       } finally {
          setIsFetching(false);
       }
