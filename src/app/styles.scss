@@ -1,0 +1,44 @@
+.button {
+   &::before {
+      border-color: #78350f;
+      box-shadow: 0 2px 0 #78350f;
+   }
+
+   &:active {
+      &::before {
+         box-shadow: none !important;
+      }
+   }
+
+   // before:absolute before:z-[-1]  before:rounded-[8px] rounded-[8px] => work
+   &.variant {
+      &--primary {
+         border-radius: 8px;
+
+         &:active {
+            transform: translateY(2px);
+         }
+         &::before {
+            content: "";
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            position: absolute;
+            z-index: -1;
+            border-radius: 8px;
+         }
+      }
+   }
+}
+
+.frame {
+   &.size {
+      &--primary::before {
+         box-shadow: 0 4px 0 #78350f;
+      }
+      &--small::before {
+         box-shadow: 0 2px 0 #78350f;
+      }
+   }
+}

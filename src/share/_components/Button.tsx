@@ -5,15 +5,15 @@ import { ElementRef, forwardRef, MouseEventHandler, ReactNode, Ref } from "react
 
 const classes = {
    active:
-      "before:shadow-none translate-y-[2px] !text-amber-100 before:bg-amber-800",
-   button: "inline-flex relative  items-center justify-center z-0",
+      "",
+   button: "button inline-flex relative items-center justify-center z-0",
 };
 
 const ButtonVariant = cva(classes.button, {
    variants: {
       variant: {
          primary:
-            "before:border-[#78350f] before:content-[''] before:absolute before:z-[-1] before:inset-0 before:rounded-lg  before:shadow-[0_2px_0_#78350f] active:translate-y-[2px] active:before:shadow-none",
+            "variant--primary",
          clear: "",
       },
       size: {

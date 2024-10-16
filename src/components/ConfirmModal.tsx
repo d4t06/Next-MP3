@@ -22,7 +22,7 @@ export default function ConfirmModal({
    return (
       <div
          className={`text-amber-800 ${
-            className || "w-[400px] max-w-[calc(90vw-40px)]"
+            className || "w-[500px] max-w-[calc(90vw-40px)]"
          } ${loading ? "opacity-60 pointer-events-none" : ""}`}
       >
          <h1 className="text-[20px] font-semibold">

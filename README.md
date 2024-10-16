@@ -20,3 +20,7 @@
 ### update 13/10/2024
 - fix bug
 - logout when token expire
+
+### update 14/10/2024
+- config tailwind css for old browser
+- fix ui

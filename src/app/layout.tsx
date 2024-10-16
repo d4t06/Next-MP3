@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import defaultTheme from "tailwindcss/defaultTheme";
 import "./globals.css";
+import "./styles.scss";
 import AuthProvider from "@/stores/sesstionContext";
 
-const inter = Inter({ subsets: ["latin"] });
+const font = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
    title: "Next MP3",
@@ -20,7 +22,15 @@ export default function RootLayout({
          <meta content="#fcf3c7" name="theme-color" />
 
          <AuthProvider>
-            <body className={`${inter.className} bg-amber-100`}>
+            <body
+               style={{
+                  fontFamily:
+                     font.style.fontFamily +
+                     "," +
+                     defaultTheme.fontFamily.sans.join(","),
+               }}
+               className={`bg-amber-100`}
+            >
                {children}
                <div id="portals"></div>
             </body>

@@ -1,10 +1,13 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
-   content: [
-      "./src/**/*.{js,ts,jsx,tsx,mdx}",
- 
-   ],
+   corePlugins: {
+      backgroundOpacity: false,
+      textOpacity: false,
+      borderOpacity: false,
+      boxShadowColor: false,
+   },
+   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
    theme: {
       container: {
          center: true,

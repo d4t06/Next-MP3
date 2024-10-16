@@ -6,6 +6,7 @@ import LyricItem from "./LyricIitem";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import useSongInfoAndLyric from "@/hooks/useSongInfoAndLyric";
 import { Center } from "@/share/_components/Center";
+import { MusicalNoteIcon } from "@heroicons/react/24/outline";
 
 type Props = {
    currentSong: Song;
@@ -27,7 +28,7 @@ export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
                   tab === "info"
                      ? "opacity-[1]"
                      : "opacity-0 pointer-events-none h-0"
-               } text-center text-amber-100 `}
+               } relative cursor-pointer text-center text-amber-100 `}
             >
                <div className="h-[32px]">
                   <ScrollText
@@ -39,6 +40,8 @@ export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
                <p className="text-sm font-medium line-clamp-1">
                   {currentSong?.singer || "..."}
                </p>
+
+               <MusicalNoteIcon className="w-5 absolute top-0 right-0" />
             </div>
 
             <div
@@ -46,7 +49,7 @@ export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
                   tab === "lyrics"
                      ? "opacity-[1] h-[30vh] pt-4 pb-[7vh]"
                      : "opacity-0 pointer-events-none h-0"
-               }  overflow-auto text-center relative text-amber-100 text-lg no-scrollbar mask-vertical`}
+               }  overflow-auto text-center relative text-amber-100 font-[800] text-2xl no-scrollbar mask-vertical`}
             >
                {isFetching ? (
                   <Center>
@@ -73,7 +76,7 @@ export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
                               return (
                                  <LyricItem
                                     key={index}
-                                    className="pb-3"
+                                    className="pb-4"
                                     text={l.text}
                                     //@ts-ignore
                                     status={status}

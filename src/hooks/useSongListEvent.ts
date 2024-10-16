@@ -21,25 +21,26 @@ export default function useSongListEvent({
    const handleKeyboardPress = (e: KeyboardEvent) => {
       const isLetterOrNumber = /^[a-zA-Z0-9]$/;
       if (isLetterOrNumber.test(e.key)) {
-         const firstElement = document.querySelector(
-            `div[date-first-letter=${e.key}]`
-         );
+         const firstElement = document.querySelector(`div[date-first-letter=${e.key}]`);
 
          if (firstElement) scroll(firstElement);
       }
    };
 
    const handleWindowClick: EventListener = (e) => {
-      const queueBtn = document.querySelector(".queue-btn");
-      const volumeBtn = document.querySelector(".volume-btn-wrapper");
-      const timerBtn = document.querySelector(".timer-btn");
+      const $ = document.querySelector.bind(document);
+
+      const buttons = [
+         $(".queue-btn"),
+         $(".volume-btn-wrapper"),
+         $(".timer-btn"),
+      ];
+      const target = e.target as Node;
 
       if (
          !songListContainer ||
-         songListContainer.current?.contains(e.target as Node) ||
-         queueBtn?.contains(e.target as Node) ||
-         volumeBtn?.contains(e.target as Node) ||
-         timerBtn?.contains(e.target as Node)
+         songListContainer.current?.contains(target) ||
+         !!buttons.find((btn) => btn?.contains(target))
       )
          return;
 

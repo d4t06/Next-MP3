@@ -55,7 +55,7 @@ export default function LyricItem({
    return (
       <p
          ref={lyricRef}
-         className={`select-none font-[500] ${className} ${getClass()}`}
+         className={`select-none ${className} ${getClass()}`}
       >
          {text}
       </p>
