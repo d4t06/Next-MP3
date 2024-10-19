@@ -5,6 +5,7 @@ import EditLyricContextProvider from "@/stores/editLyricContext";
 import { getServerSession } from "next-auth";
 // import Error from "next/error";
 import { redirect } from "next/navigation";
+import CheckAuth from "@/components/CheckAuth";
 
 type Props = {
    params: { song_id: string };
@@ -15,11 +16,11 @@ export default async function EditSongLyric(props: Props) {
    if (!session) return redirect("/signin");
 
    const songWithLyric = await songService.getOneSong(props.params.song_id);
-
    if (!songWithLyric) return <p>Something went wrong</p>;
 
    return (
       <EditLyricContextProvider>
+         <CheckAuth />?
          <div className="container h-full max-w-[800px]">
             <LyricEditor songWithLyric={songWithLyric} />
          </div>

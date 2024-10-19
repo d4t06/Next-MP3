@@ -34,7 +34,7 @@ export default function SignInForm() {
          return;
       }
 
-      router.push("/dashboard");
+      router.replace("/dashboard");
    };
 
    const classes = {

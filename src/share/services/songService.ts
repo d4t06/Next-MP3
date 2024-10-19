@@ -1,18 +1,23 @@
 import { API_ENDPOINT, sleep } from "../utils/appHelper";
 
 export const getAllSong = async () => {
-   const res = await fetch(`${API_ENDPOINT}/songs`, {
-      next: { tags: ["songs"] },
-   });
+   try {
+      const res = await fetch(`${API_ENDPOINT}/songs`, {
+         next: { tags: ["songs"] },
+      });
 
-   if (!res.ok) return undefined;
+      if (!res.ok) return undefined;
 
-   if (process.env.NODE_ENV === "development") await sleep(500);
+      if (process.env.NODE_ENV === "development") await sleep(500);
 
-   const payload = (await res.json()) as {
-      data: { songs: Song[]; count: number };
-   };
-   return payload.data;
+      const payload = (await res.json()) as {
+         data: { songs: Song[]; count: number };
+      };
+      return payload.data;
+   } catch (error) {
+      console.log(error);
+      return undefined;
+   }
 };
 
 export const getOneSong = async (songId: string) => {

@@ -21,7 +21,11 @@ export default function useSongListEvent({
    const handleKeyboardPress = (e: KeyboardEvent) => {
       const isLetterOrNumber = /^[a-zA-Z0-9]$/;
       if (isLetterOrNumber.test(e.key)) {
-         const firstElement = document.querySelector(`div[date-first-letter=${e.key}]`);
+         const firstElement = document.querySelector(
+            `div[date-first-letter=${
+               typeof e.key === "number" ? e.key : "'" + e.key + "'"
+            }]`
+         );
 
          if (firstElement) scroll(firstElement);
       }

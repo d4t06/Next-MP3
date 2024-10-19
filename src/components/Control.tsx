@@ -15,10 +15,11 @@ import {
 import { ElementRef, useRef, useState } from "react";
 import { VolumeButton } from "./VolumeButton";
 import TimerButton from "./TimerButton";
-import ScrollText from "./ScrollText";
+// import ScrollText from "./ScrollText";
 import SongListContainer from "./SongList";
 import Tooltip from "@/share/_components/Tooltip";
 import SongInfoAndLyric from "./SongInfoAndLyric";
+import { useSession } from "next-auth/react";
 
 type Props = {
    songs: Song[];

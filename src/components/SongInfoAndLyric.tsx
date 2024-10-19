@@ -30,6 +30,11 @@ export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
                      : "opacity-0 pointer-events-none h-0"
                } relative cursor-pointer text-center text-amber-100 `}
             >
+               <p className="flex">
+                  <span className="ml-auto text-[6px] py-[2px]  text-amber-800 px-1 rounded-full bg-amber-100">
+                     &#9679; &#9679; &#9679;
+                  </span>
+               </p>
                <div className="h-[32px]">
                   <ScrollText
                      content={currentSong?.name || "..."}
@@ -40,8 +45,6 @@ export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
                <p className="text-sm font-medium line-clamp-1">
                   {currentSong?.singer || "..."}
                </p>
-
-               <MusicalNoteIcon className="w-5 absolute top-0 right-0" />
             </div>
 
             <div

@@ -1,12 +1,10 @@
 import { runRevalidateTag } from "@/app/actions";
-import { uploadFile } from "@/share/services/firebaseServices";
+import { deleteFile, uploadFile } from "@/share/services/firebaseServices";
 import { API_ENDPOINT, initSongObject } from "@/share/utils/appHelper";
 import parseSongFromFile from "@/share/utils/parseSong";
 import { useToast } from "@/stores/toastContext";
 import { useSession } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
-
-
 
 type Props = {
    toggleModal: () => void;
@@ -14,7 +12,7 @@ type Props = {
 
 export default function useUploadImage({ toggleModal }: Props) {
    // hooks
-   const { data: session } = useSession();
+   const { data: session, update } = useSession();
    const { setErrorToast, setSuccessToast } = useToast();
 
    const [songSchemas, setSongSchemas] = useState<SongSchema[]>([]);
@@ -65,15 +63,18 @@ export default function useUploadImage({ toggleModal }: Props) {
                song_file_path: filePath,
             } as Partial<SongSchema>);
 
-            await fetch(`${API_ENDPOINT}/songs`, {
+            const res = await fetch(`${API_ENDPOINT}/songs`, {
                method: "POST",
                headers: header,
                body: JSON.stringify(schemas[i]),
             });
 
-            // delete song file if fail when save record to database
-            // if (save song fail) {
-            // }
+            if (!res.ok) {
+               await deleteFile({ filePath });
+
+               if (res.status === 401) await update();
+               throw new Error("");
+            }
          }
 
          await runRevalidateTag("songs");

@@ -4,6 +4,7 @@ import { API_ENDPOINT, sleep } from "@/share/utils/appHelper";
 import { useToast } from "@/stores/toastContext";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import useInterceptRequest from "./useInterceptRequest";
 
 const SONG_URL = `${API_ENDPOINT}/songs`;
 
@@ -12,6 +13,7 @@ export default function useSongItemAction() {
 
    const { data: session } = useSession();
    const { setErrorToast, setSuccessToast } = useToast();
+   const request = useInterceptRequest();
 
    type Delete = {
       variant: "delete";
@@ -37,34 +39,23 @@ export default function useSongItemAction() {
 
          switch (props.variant) {
             case "delete":
+               await request.delete(`${SONG_URL}/${props.song.id}`);
                await deleteFile({ filePath: props.song.song_file_path });
 
-               await fetch(`${SONG_URL}/${props.song.id}`, {
-                  method: "Delete",
-                  headers,
-               });
-
                setSuccessToast(`'${props.song.name}' deleted`);
-
                break;
 
             case "edit":
-               headers.set("Content-Type", "application/json");
-               const ress = await fetch(`${SONG_URL}/${props.id}`, {
-                  method: "Put",
-                  headers,
-                  body: JSON.stringify(props.song),
-               });
-
-               if (!ress.ok) throw new Error("");
+               await request.put(`${SONG_URL}/${props.id}`, props.song);
 
                setSuccessToast(`Edit song successful`);
                break;
          }
 
          await runRevalidateTag("songs");
-      } catch (error) {
-         console.log(error);
+      } catch (error: any) {
+         console.log({ message: error });
+
          setErrorToast();
       } finally {
          setIsFetching(false);

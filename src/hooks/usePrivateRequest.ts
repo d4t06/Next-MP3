@@ -1,22 +1,17 @@
-import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function usePrivateRequest() {
-   const router = useRouter();
+   const { update } = useSession();
 
    const request = async (input: string, init?: RequestInit) => {
       const res = await fetch(input, init);
       if (!res.ok) {
-         if (res.status === 401) {
-            await signOut({ redirect: false });
-            router.push("/signin");
-
-            return;
-         } else throw new Error();
+         if (res.status === 401) await update();
+         throw new Error();
       }
 
-      return await res.json();
+      return res.json();
    };
 
-   return { request };
+   return {request};
 }

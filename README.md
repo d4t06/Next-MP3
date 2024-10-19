@@ -16,11 +16,17 @@
 -  add keyboard events
 -  plan to show live lyrics
 
+### update 19/10/2024
+
+-  add refresh token rotation
+-  use axios interceptor
 
 ### update 13/10/2024
-- fix bug
-- logout when token expire
+
+-  fix bug
+-  logout when token expire
 
 ### update 14/10/2024
-- config tailwind css for old browser
-- fix ui
+
+-  config tailwind css for old browser
+-  fix ui

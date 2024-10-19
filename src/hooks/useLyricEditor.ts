@@ -1,10 +1,9 @@
 import { LyricEditorControlRef } from "@/components/LyricEditorControl";
-import { API_ENDPOINT } from "@/share/utils/appHelper";
+import { API_ENDPOINT, setLocalStorage } from "@/share/utils/appHelper";
 import { useEditLyricContext } from "@/stores/editLyricContext";
 import { useToast } from "@/stores/toastContext";
-import { useSession } from "next-auth/react";
 import { ElementRef, RefObject, useEffect, useRef, useState } from "react";
-import usePrivateRequest from "./usePrivateRequest";
+import useInterceptRequest from "./useInterceptRequest";
 
 type Props = {
    songWithLyric: SongWithLyric;
@@ -12,8 +11,6 @@ type Props = {
 };
 
 export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
-   const { data: session } = useSession();
-
    const [_hasAudioEle, setHasAudioEle] = useState(false);
    const audioRef = useRef<ElementRef<"audio">>(null);
 
@@ -33,16 +30,12 @@ export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
       start,
    } = useEditLyricContext();
    const { setErrorToast, setSuccessToast } = useToast();
-   const { request } = usePrivateRequest();
+   const request = useInterceptRequest();
 
    const handleAddLyric = async () => {
       try {
          setIsFetching(true);
          controlRef.current?.pause();
-
-         const header = new Headers();
-         header.set("Authorization", `Bearer ${session?.token}`);
-         header.set("Content-Type", "application/json");
 
          const newSongLyric: SongLyric = {
             base_lyric: baseLyric,
@@ -51,14 +44,13 @@ export default function useLyricEditor({ songWithLyric, controlRef }: Props) {
             id: songLyricId,
          };
 
-         const payload = await request(`${API_ENDPOINT}/song-lyrics`, {
-            method: "POST",
-            headers: header,
-            body: JSON.stringify(newSongLyric),
-         });
+         const payload = await request.post(
+            `${API_ENDPOINT}/song-lyrics`,
+            newSongLyric
+         );
 
-         if (payload && payload.data) {
-            if (!songLyricId) setSongLyricId(payload.data.id);
+         if (payload.data.data) {
+            if (!songLyricId) setSongLyricId(payload.data.data.id);
 
             setSuccessToast("Update song lyric successful");
             setIsChanged(false);

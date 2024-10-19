@@ -1,4 +1,5 @@
 import { nextAuthOptions } from "@/app/api/auth/[...nextauth]/authOption";
+import CheckAuth from "@/components/CheckAuth";
 import DashboardSongItem from "@/components/DashboardSongItem";
 import NoResult from "@/components/NoResult";
 import Button from "@/share/_components/Button";
@@ -37,12 +38,26 @@ async function SongList() {
 }
 
 export default async function DashboardPage() {
+   // server session only change when refresh page or navigate
    const session = await getServerSession(nextAuthOptions);
 
+   console.log("dashboard check session", new Date().toTimeString(), session);
    if (!session) return redirect("/signin");
+
+
+   /** this code doesn't work
+    * after login, navigate back to /dashboard
+    * but session doesn't update yet
+    * then sign out and back to sign in page again
+    */
+   // check auth on server side
+   // if (session.error) return <CheckAuth session={session} />;
 
    return (
       <>
+         {/* Check auth on client side
+         session context update when call session callback called (call update()), except navigate */}
+         <CheckAuth />
          <div className="h-full flex flex-col">
             <div className="flex mt-5 justify-between items-center container md:max-w-[800px]">
                <div className="text-xl text-amber-900 font-semibold">Songs</div>
