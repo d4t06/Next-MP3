@@ -5,12 +5,12 @@ import { MouseEvent, RefObject, WheelEvent, useEffect, useState } from "react";
 import useDebounce from "./useDebounce";
 
 type Props = {
-   audioRef: RefObject<HTMLAudioElement>;
+   audioEle: HTMLAudioElement
    volumeLineRef: RefObject<HTMLDivElement>;
    volumeHolderRef: RefObject<HTMLDivElement>;
 };
 
-export default function useVolume({ audioRef, volumeHolderRef, volumeLineRef }: Props) {
+export default function useVolume({ audioEle, volumeHolderRef, volumeLineRef }: Props) {
    const [isMute, setIsMute] = useState(false);
    const [volume, setVolume] = useState(0);
 
@@ -73,8 +73,8 @@ export default function useVolume({ audioRef, volumeHolderRef, volumeLineRef }: 
    }, []);
 
    useEffect(() => {
-      if (!audioRef.current) return;
-      audioRef.current.muted = isMute;
+      if (!audioEle) return;
+      audioEle.muted = isMute;
    }, [isMute]);
 
    useEffect(() => {
@@ -84,10 +84,10 @@ export default function useVolume({ audioRef, volumeHolderRef, volumeLineRef }: 
    }, [debounceVolume]);
 
    useEffect(() => {
-      if (audioRef.current && volumeLineRef.current && volumeHolderRef.current) {
+      if (audioEle && volumeLineRef.current && volumeHolderRef.current) {
          const ratio = volume * 100;
 
-         audioRef.current.volume = volume;
+         audioEle.volume = volume;
          volumeLineRef.current.style.background = `linear-gradient(to top, rgb(253, 230, 138) ${ratio}%, white ${ratio}%, white 100%)`;
          volumeHolderRef.current.style.bottom = `${ratio}%`;
 

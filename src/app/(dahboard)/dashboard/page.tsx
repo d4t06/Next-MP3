@@ -40,10 +40,7 @@ async function SongList() {
 export default async function DashboardPage() {
    // server session only change when refresh page or navigate
    const session = await getServerSession(nextAuthOptions);
-
-   console.log("dashboard check session", new Date().toTimeString(), session);
    if (!session) return redirect("/signin");
-
 
    /** this code doesn't work
     * after login, navigate back to /dashboard

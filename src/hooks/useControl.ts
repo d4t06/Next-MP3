@@ -4,16 +4,11 @@ import {
    setLocalStorage,
 } from "@/share/utils/appHelper";
 import { useCurrentSong } from "@/stores/currentSongContext";
-import {
-   MouseEventHandler,
-   RefObject,
-   useEffect,
-   useRef,
-   useState,
-} from "react";
+import { MouseEventHandler, RefObject, useEffect, useRef } from "react";
+import useAudioControl from "./useAudioControl";
 
 type Props = {
-   audioRef: RefObject<HTMLAudioElement>;
+   audioEle: HTMLAudioElement;
    processLineRef: RefObject<HTMLDivElement>;
    currentTimeRef: RefObject<HTMLDivElement>;
    timeHolderRef: RefObject<HTMLDivElement>;
@@ -21,7 +16,7 @@ type Props = {
 };
 
 export default function useControl({
-   audioRef,
+   audioEle,
    songs,
    currentTimeRef,
    processLineRef,
@@ -29,57 +24,28 @@ export default function useControl({
 }: Props) {
    const { currentIndex, setCurrentSong, currentSong, from } = useCurrentSong();
 
-   const [isPlaying, setIsPlaying] = useState(false);
-   const [isWaiting, setIsWaiting] = useState(false);
-
    const firstTimeSongLoaded = useRef(true);
    const isPlayAllSong = useRef(false); // use for end event
    const currentIndexRef = useRef<number | undefined>(undefined); // use for audio event handler
    const currentSongRef = useRef<Song | null>(null); // use for audio event handler
-   const intervalId = useRef<NodeJS.Timeout>(); // for update local storage
    const isPlayingRef = useRef(false); // for document.keydown event
 
-   const play = () => {
-      try {
-         audioRef.current?.play();
-      } catch (error) {}
-   };
+   const { play, pause, handlePlayPause, status, setStatus } = useAudioControl({
+      audioEle: audioEle,
+   });
 
-   const pause = () => {
-      audioRef.current?.pause();
-   };
-
-   const handlePause = () => {
-      setIsPlaying(false);
-   };
-
-   const handlePlayPause = () => {
-      if (!currentSong) {
-         console.log("go here");
-
-         const index = Math.floor(Math.random() * songs.length);
-
-         setCurrentSong({
-            song: songs[index],
-            from: "songs",
-            index,
-         });
-
-         return;
+   const _handlePlayPause = () => {
+      if (firstTimeSongLoaded.current) {
+         audioEle.currentTime = getLocalStorage()["timeProcess"] || 0;
+         firstTimeSongLoaded.current = false;
       }
 
-      isPlaying ? pause() : play();
-   };
-
-   const handlePlaying = () => {
-      firstTimeSongLoaded.current = false;
-      setIsPlaying(true);
-      setIsWaiting(false);
+      handlePlayPause();
    };
 
    const handleResetForNewSong = () => {
-      // setIsLoaded(false);
-      setIsWaiting(true);
+      setStatus("waiting");
+      firstTimeSongLoaded.current = false;
 
       if (
          processLineRef.current &&
@@ -93,7 +59,7 @@ export default function useControl({
    };
 
    const handleSeek = <MouseEventHandler>function (e) {
-      if (!audioRef.current) return;
+      if (!audioEle) return;
       const node = e.target as HTMLElement;
 
       if (processLineRef.current) {
@@ -101,9 +67,9 @@ export default function useControl({
 
          const length = e.clientX - clientRect.left;
          const lengthRatio = length / processLineRef.current.clientWidth;
-         const newSeekTime = lengthRatio * audioRef.current.duration;
+         const newSeekTime = lengthRatio * audioEle.duration;
 
-         audioRef.current.currentTime = newSeekTime;
+         audioEle.currentTime = newSeekTime;
          handleTimeUpdate();
       }
    };
@@ -145,27 +111,29 @@ export default function useControl({
       });
    };
 
-   const handleTimeUpdate = () => {
-      if (!audioRef.current) return;
-
-      const currentTime = audioRef.current?.currentTime;
+   const updateTimeProgressEle = (time: number) => {
       const timeLine = processLineRef.current;
+      const timeLineHolder = timeHolderRef.current;
+      const currentTimeEle = currentTimeRef.current;
 
-      if (
-         audioRef.current.duration &&
-         timeHolderRef.current &&
-         currentTime &&
-         timeLine
-      ) {
-         const ratio = currentTime / (audioRef.current.duration / 100);
+      if (audioEle.duration && timeLineHolder && timeLine) {
+         const ratio = time / (audioEle.duration / 100);
          timeLine.style.background = `linear-gradient(to right, #fde68a ${ratio}%, rgba(255,255,255, .3) ${ratio}%, rgba(255,255,255, .3) 100%)`;
-
-         timeHolderRef.current.style.left = `${ratio}%`;
+         timeLineHolder.style.left = `${ratio}%`;
       }
 
-      if (currentTimeRef.current) {
-         currentTimeRef.current.innerText = formatTime(currentTime!) || "0:00";
-      }
+      if (currentTimeEle) currentTimeEle.innerText = formatTime(time) || "0:00";
+   };
+
+   const handleTimeUpdate = () => {
+      if (!audioEle) return;
+      const currentTime = audioEle?.currentTime;
+
+      updateTimeProgressEle(currentTime);
+
+      // set localStorage
+      if (Math.round(currentTime) % 3 === 0)
+         setLocalStorage("timeProcess", Math.round(currentTime));
    };
 
    const handleEnded = () => {
@@ -173,8 +141,9 @@ export default function useControl({
          if (songs.length === 1) {
             handleResetForNewSong();
 
-            setIsPlaying(false);
-            setIsWaiting(false);
+            // setIsPlaying(false);
+            // setIsWaiting(false);
+            setStatus("paused");
 
             return;
          } else {
@@ -190,12 +159,14 @@ export default function useControl({
       if (firstTimeSongLoaded.current) return;
       if (songs.length > 1) {
          handleNext();
-      } else setIsPlaying(false);
+      }
+      //  setIsPlaying(false);
+      else setStatus("paused");
    };
 
    const handleLoaded = () => {
-      if (!audioRef.current) {
-         setIsWaiting(false);
+      if (!audioEle) {
+         setStatus("paused");
          return;
       }
 
@@ -215,26 +186,29 @@ export default function useControl({
       if (isPlayAllSong.current) {
          isPlayAllSong.current = false;
 
-         setIsPlaying(false);
-         setIsWaiting(false);
+         // setIsPlaying(false);
+         // setIsWaiting(false);
+
+         setStatus("paused");
          setLocalStorage("timeProcess", 0);
          return;
       }
 
       if (firstTimeSongLoaded.current) {
-         setIsPlaying(false);
-         setIsWaiting(false);
+         // setIsPlaying(false);
+         // setIsWaiting(false);
+         setStatus("paused");
 
          if (firstTimeSongLoaded.current) {
-            firstTimeSongLoaded.current = false;
+            /** set when click play button */
+            // firstTimeSongLoaded.current = false;
 
             // if user have play any song before
             // on the other hand the localStore have current song value
             // then update audio current time
             if (current?.song?.id === currentSongRef.current?.id) {
-               audioRef.current.currentTime = storage["timeProcess"] || 0;
                // update time line ui
-               handleTimeUpdate();
+               updateTimeProgressEle(storage["timeProcess"] || 0);
                return;
             }
 
@@ -265,30 +239,30 @@ export default function useControl({
 
    // add events listener
    useEffect(() => {
-      if (!audioRef.current) {
+      if (!audioEle) {
          console.log("Audio element is undefined in use control");
          return;
       }
 
-      audioRef.current.addEventListener("error", handleError);
-      audioRef.current.addEventListener("pause", handlePause);
-      audioRef.current.addEventListener("playing", handlePlaying);
-      audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
-      audioRef.current.addEventListener("ended", handleEnded);
-      audioRef.current.addEventListener("loadedmetadata", handleLoaded);
+      audioEle.addEventListener("error", handleError);
+      // audioEle.addEventListener("pause", handlePause);
+      // audioEle.addEventListener("playing", handlePlaying);
+      audioEle.addEventListener("timeupdate", handleTimeUpdate);
+      audioEle.addEventListener("ended", handleEnded);
+      audioEle.addEventListener("loadedmetadata", handleLoaded);
 
       return () => {
-         audioRef.current?.removeEventListener("error", handleError);
-         audioRef.current?.removeEventListener("pause", handlePause);
-         audioRef.current?.removeEventListener("playing", handlePlaying);
-         audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
-         audioRef.current?.removeEventListener("ended", handleEnded);
-         audioRef.current?.removeEventListener("loadedmetadata", handleLoaded);
+         audioEle?.removeEventListener("error", handleError);
+         // audioEle?.removeEventListener("pause", handlePause);
+         // audioEle?.removeEventListener("playing", handlePlaying);
+         audioEle?.removeEventListener("timeupdate", handleTimeUpdate);
+         audioEle?.removeEventListener("ended", handleEnded);
+         audioEle?.removeEventListener("loadedmetadata", handleLoaded);
       };
    }, []);
 
    useEffect(() => {
-      if (!audioRef.current) return;
+      if (!audioEle) return;
 
       currentSongRef.current = currentSong;
 
@@ -302,21 +276,6 @@ export default function useControl({
          handleResetForNewSong();
       };
    }, [currentSong]);
-
-   useEffect(() => {
-      isPlayingRef.current = isPlaying;
-
-      if (isPlaying) {
-         intervalId.current = setInterval(() => {
-            setLocalStorage(
-               "timeProcess",
-               Math.floor(audioRef.current?.currentTime || 0)
-            );
-         }, 3000);
-      }
-
-      return () => clearInterval(intervalId.current);
-   }, [isPlaying]);
 
    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === " ") {
@@ -334,8 +293,6 @@ export default function useControl({
       document.addEventListener("keydown", handleKeyDown);
 
       return () => {
-         console.log("clean pu");
-
          document.removeEventListener("keydown", handleKeyDown);
       };
    }, []);
@@ -344,8 +301,7 @@ export default function useControl({
       handleNext,
       handleSeek,
       handlePrevious,
-      handlePlayPause,
-      isPlaying,
-      isWaiting,
+      handlePlayPause: _handlePlayPause,
+      status,
    };
 }

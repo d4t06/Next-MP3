@@ -1,12 +1,12 @@
 import { API_ENDPOINT, sleep } from "@/share/utils/appHelper";
-import { RefObject, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
    currentSong: Song;
-   audioRef: RefObject<HTMLAudioElement>;
+   audioEle: HTMLAudioElement;
 };
 
-export default function useSongInfoAndLyric({ audioRef, currentSong }: Props) {
+export default function useSongInfoAndLyric({ audioEle, currentSong }: Props) {
    const [tab, setTab] = useState<"info" | "lyrics">("info");
    const [lyrics, setLyrics] = useState<Lyric[]>();
    const [isFetching, setIsFetching] = useState(true);
@@ -41,15 +41,15 @@ export default function useSongInfoAndLyric({ audioRef, currentSong }: Props) {
    };
 
    const handleTimeUpdate = () => {
-      if (!audioRef.current) return;
+      if (!audioEle) return;
 
-      const currentTime = audioRef.current.currentTime;
+      const currentTime = audioEle.currentTime;
       setCurrentTime(currentTime);
    };
 
    const handleSeeked = () => {
-      if (!audioRef.current) return;
-      const _currentTime = audioRef.current.currentTime;
+      if (!audioEle) return;
+      const _currentTime = audioEle.currentTime;
 
       // disable animation
       if (Math.abs(_currentTime - currentTime) > 20) {
@@ -68,14 +68,14 @@ export default function useSongInfoAndLyric({ audioRef, currentSong }: Props) {
 
    // Add event to get current time
    useEffect(() => {
-      if (!audioRef.current) return;
+      if (!audioEle) return;
 
-      audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
-      audioRef.current.addEventListener("seeked", handleSeeked);
+      audioEle.addEventListener("timeupdate", handleTimeUpdate);
+      audioEle.addEventListener("seeked", handleSeeked);
 
       return () => {
-         audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
-         audioRef.current?.removeEventListener("seeked", handleSeeked);
+         audioEle?.removeEventListener("timeupdate", handleTimeUpdate);
+         audioEle?.removeEventListener("seeked", handleSeeked);
       };
    }, []);
 
@@ -86,10 +86,10 @@ export default function useSongInfoAndLyric({ audioRef, currentSong }: Props) {
          setIsSongLoaded(true);
       };
 
-      audioRef.current?.addEventListener("loadeddata", handleSongLoaded);
+      audioEle?.addEventListener("loadeddata", handleSongLoaded);
 
       return () => {
-         audioRef.current?.removeEventListener("loadeddata", handleSongLoaded);
+         audioEle?.removeEventListener("loadeddata", handleSongLoaded);
       };
    }, []);
 
@@ -103,7 +103,6 @@ export default function useSongInfoAndLyric({ audioRef, currentSong }: Props) {
    // get lyric
    useEffect(() => {
       if (tab === "lyrics") {
-
          // scroll active song to center when switch tab
          const activeLyric = document.querySelector(".active-lyric");
          if (activeLyric) {

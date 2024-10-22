@@ -2,6 +2,8 @@ import { Ref, useEffect, useImperativeHandle, useState } from "react";
 
 export type ModalRef = {
    toggle: () => void;
+   open: () => void;
+   close: () => void;
 };
 export default function useModal({ ref }: { ref: Ref<ModalRef> }) {
    const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +14,18 @@ export default function useModal({ ref }: { ref: Ref<ModalRef> }) {
       if (!isOpen) setIsOpen(true);
    };
 
+   const open = () => {
+      setIsOpen(true);
+   };
+
+   const close = () => {
+      setIsMounted(false);
+   };
+
    useImperativeHandle(ref, () => ({
       toggle,
+      open,
+      close,
    }));
 
    useEffect(() => {
@@ -33,6 +45,6 @@ export default function useModal({ ref }: { ref: Ref<ModalRef> }) {
    return {
       isOpen,
       isMounted,
-      toggle
+      toggle,
    };
 }

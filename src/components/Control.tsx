@@ -7,6 +7,7 @@ import { useCurrentSong } from "@/stores/currentSongContext";
 import {
    ArrowPathIcon,
    BackwardIcon,
+   ExclamationCircleIcon,
    ForwardIcon,
    PauseIcon,
    PlayIcon,
@@ -19,39 +20,47 @@ import TimerButton from "./TimerButton";
 import SongListContainer from "./SongList";
 import Tooltip from "@/share/_components/Tooltip";
 import SongInfoAndLyric from "./SongInfoAndLyric";
-import { useSession } from "next-auth/react";
 
 type Props = {
    songs: Song[];
+   audioEle: HTMLAudioElement;
 };
 
 type Tab = "playing" | "queue";
 
-export default function Control({ songs }: Props) {
+export default function Control({ songs, audioEle }: Props) {
    const { currentSong } = useCurrentSong();
 
    const [tab, setTab] = useState<Tab>("playing");
 
    const processLineRef = useRef<ElementRef<"div">>(null);
    const timeHolderRef = useRef<ElementRef<"div">>(null);
-   const audioRef = useRef<ElementRef<"audio">>(null);
    const currentTimeRef = useRef<ElementRef<"div">>(null);
    const queueButtonRef = useRef<ElementRef<"button">>(null);
 
-   const {
-      handleNext,
-      handlePlayPause,
-      handlePrevious,
-      handleSeek,
-      isWaiting,
-      isPlaying,
-   } = useControl({
-      audioRef,
-      songs,
-      currentTimeRef,
-      processLineRef,
-      timeHolderRef,
-   });
+   const { handleNext, handlePlayPause, handlePrevious, handleSeek, status } =
+      useControl({
+         audioEle,
+         songs,
+         currentTimeRef,
+         processLineRef,
+         timeHolderRef,
+      });
+
+   const renderPlayButton = () => {
+      switch (status) {
+         case "playing":
+            return <PauseIcon className="w-10" />;
+
+         case "paused":
+            return <PlayIcon className="w-10" />;
+
+         case "waiting":
+            return <ArrowPathIcon className="w-10 animate-spin" />;
+         case "error":
+            return <ExclamationCircleIcon className="w-10" />;
+      }
+   };
 
    const classes = {
       timeLineRef: `relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%]`,
@@ -64,12 +73,6 @@ export default function Control({ songs }: Props) {
       <>
          <title>{currentSong?.name || "Next MP3"}</title>
          <div className="">
-            <audio
-               ref={audioRef}
-               src={currentSong?.song_url}
-               className="hidden"
-            ></audio>
-
             <div className="w-[400px] max-w-[95vw] ">
                <Frame pushAble={"clear"} className="">
                   <div className="px-2">
@@ -82,7 +85,7 @@ export default function Control({ songs }: Props) {
                      >
                         {currentSong && (
                            <SongInfoAndLyric
-                              audioRef={audioRef}
+                              audioEle={audioEle}
                               currentSong={currentSong}
                            />
                         )}
@@ -123,17 +126,7 @@ export default function Control({ songs }: Props) {
                               disabled={!songs.length}
                               onClick={handlePlayPause}
                            >
-                              {isWaiting ? (
-                                 <ArrowPathIcon className="w-10 animate-spin" />
-                              ) : (
-                                 <>
-                                    {isPlaying ? (
-                                       <PauseIcon className="w-10" />
-                                    ) : (
-                                       <PlayIcon className="w-10" />
-                                    )}
-                                 </>
-                              )}
+                              {renderPlayButton()}
                            </Button>
 
                            <Button
@@ -165,9 +158,9 @@ export default function Control({ songs }: Props) {
          </div>
 
          <div className="absolute bottom-8 right-8 flex space-x-2">
-            <TimerButton audioRef={audioRef} isPlaying={isPlaying} />
+            <TimerButton audioEle={audioEle} isPlaying={status === "playing"} />
 
-            <VolumeButton audioRef={audioRef} />
+            <VolumeButton audioEle={audioEle} />
 
             <Tooltip content={tab === "playing" ? "Queue" : "Playing"}>
                <Button

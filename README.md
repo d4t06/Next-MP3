@@ -30,3 +30,7 @@
 
 -  config tailwind css for old browser
 -  fix ui
+
+### update 22/10/2024
+
+-  Refactor useControl logic

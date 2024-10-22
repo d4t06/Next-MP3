@@ -6,6 +6,7 @@ import { ComputerDesktopIcon } from "@heroicons/react/24/outline";
 import { getAllSong } from "@/share/services/songService";
 import NoResult from "@/components/NoResult";
 import Tooltip from "@/share/_components/Tooltip";
+import Player from "@/components/Player";
 
 export const revalidate = 864000;
 
@@ -17,7 +18,7 @@ export default async function HomePage() {
 
    return (
       <>
-         <Control songs={songs} />
+         <Player songs={songs} />
 
          <div className="!absolute bottom-8 left-8">
             {session && (

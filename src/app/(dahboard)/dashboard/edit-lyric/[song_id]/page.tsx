@@ -20,7 +20,7 @@ export default async function EditSongLyric(props: Props) {
 
    return (
       <EditLyricContextProvider>
-         <CheckAuth />?
+         <CheckAuth />
          <div className="container h-full max-w-[800px]">
             <LyricEditor songWithLyric={songWithLyric} />
          </div>

@@ -1,21 +1,19 @@
 "use client";
 
-import { ElementRef, RefObject } from "react";
 import ScrollText from "./ScrollText";
 import LyricItem from "./LyricIitem";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import useSongInfoAndLyric from "@/hooks/useSongInfoAndLyric";
 import { Center } from "@/share/_components/Center";
-import { MusicalNoteIcon } from "@heroicons/react/24/outline";
 
 type Props = {
    currentSong: Song;
-   audioRef: RefObject<ElementRef<"audio">>;
+   audioEle: HTMLAudioElement
 };
 
-export default function SongInfoAndLyric({ currentSong, audioRef }: Props) {
+export default function SongInfoAndLyric({ currentSong, audioEle }: Props) {
    const { currentTime, tab, setTab, isFetching, lyrics, scrollBehavior } =
-      useSongInfoAndLyric({ audioRef, currentSong });
+      useSongInfoAndLyric({ audioEle, currentSong });
 
    return (
       <>

@@ -3,18 +3,18 @@
 import useVolume from "@/hooks/useVolume";
 import Button from "@/share/_components/Button";
 import { SpeakerWaveIcon, SpeakerXMarkIcon } from "@heroicons/react/24/outline";
-import { ElementRef, RefObject, useRef } from "react";
+import { ElementRef, useRef } from "react";
 
 type Props = {
-   audioRef: RefObject<HTMLAudioElement>;
+   audioEle: HTMLAudioElement
 };
 
-export function VolumeButton({ audioRef }: Props) {
+export function VolumeButton({ audioEle }: Props) {
    const volumeLineRef = useRef<ElementRef<"div">>(null);
    const volumeHolderRef = useRef<ElementRef<"div">>(null);
 
    const { handleMute, handleWheel, handleSetVolume, isMute } = useVolume({
-      audioRef,
+      audioEle,
       volumeLineRef,
       volumeHolderRef,
    });

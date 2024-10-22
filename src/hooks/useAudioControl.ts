@@ -71,5 +71,6 @@ export default function useAudioControl({ audioEle }: Props) {
       forward,
       backward,
       isClickPlay,
+      setStatus,
    };
 }

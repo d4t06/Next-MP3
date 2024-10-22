@@ -9,14 +9,14 @@ import Tooltip from "@/share/_components/Tooltip";
 
 type Props = {
    isPlaying: boolean;
-   audioRef: RefObject<HTMLAudioElement>;
+   audioEle: HTMLAudioElement
 };
 
-export default function TimerButton({ audioRef, isPlaying }: Props) {
+export default function TimerButton({ audioEle, isPlaying }: Props) {
    const modalRef = useRef<ModalRef>(null);
 
    const { isActive, setIsActive, countDown, handleEndTimer } = useTimer({
-      audioRef,
+      audioEle,
       isPlaying,
    });
 
