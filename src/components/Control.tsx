@@ -158,7 +158,11 @@ export default function Control({ songs, audioEle }: Props) {
          </div>
 
          <div className="absolute bottom-8 right-8 flex space-x-2">
-            <TimerButton audioEle={audioEle} isPlaying={status === "playing"} />
+            <TimerButton
+               disable={!currentSong}
+               audioEle={audioEle}
+               isPlaying={status === "playing"}
+            />
 
             <VolumeButton audioEle={audioEle} />
 

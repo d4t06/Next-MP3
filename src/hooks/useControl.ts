@@ -137,19 +137,25 @@ export default function useControl({
    };
 
    const handleEnded = () => {
-      if (currentIndexRef.current === songs.length - 1) {
-         if (songs.length === 1) {
-            handleResetForNewSong();
+      if (songs.length === 1) return setStatus("paused");
 
-            // setIsPlaying(false);
-            // setIsWaiting(false);
-            setStatus("paused");
+      const timer = getLocalStorage()["timer"];
 
-            return;
-         } else {
-            const isTimer = !!getLocalStorage()["timer"] || 0;
-            if (!isTimer) isPlayAllSong.current = true;
+      if (!!timer) {
+         // user modified local storage
+         if (timer < 1) {
+            setLocalStorage("timer", 0);
+            return setStatus("paused");
+         } else if (timer > 1) {
+            return handleNext();
          }
+      }
+
+      if (
+         (!!timer && timer === 1) ||
+         currentIndexRef.current === songs.length - 1
+      ) {
+         isPlayAllSong.current = true;
       }
 
       return handleNext();
@@ -185,9 +191,6 @@ export default function useControl({
 
       if (isPlayAllSong.current) {
          isPlayAllSong.current = false;
-
-         // setIsPlaying(false);
-         // setIsWaiting(false);
 
          setStatus("paused");
          setLocalStorage("timeProcess", 0);
