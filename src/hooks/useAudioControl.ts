@@ -4,7 +4,7 @@ type Props = {
    audioEle: HTMLAudioElement;
 };
 
-type Status = "playing" | "paused" | "waiting" | "error";
+export type Status = "playing" | "paused" | "waiting" | "loading" | "error";
 
 export default function useAudioControl({ audioEle }: Props) {
    const [status, setStatus] = useState<Status>("paused");
@@ -33,8 +33,12 @@ export default function useAudioControl({ audioEle }: Props) {
       setStatus("paused");
    };
 
-   const handleError = () => {
-      setStatus("error");
+   const handleWaiting = () => {
+      setStatus("waiting");
+   };
+
+   const handleLoadStart = () => {
+      setStatus("loading");
    };
 
    const seek = (time: number) => {
@@ -50,15 +54,16 @@ export default function useAudioControl({ audioEle }: Props) {
 
    // add events listener
    useEffect(() => {
-      audioEle.addEventListener("error", handleError);
       audioEle.addEventListener("pause", handlePaused);
-      audioEle.addEventListener("playing", handlePlaying);
-      // audioEle.addEventListener("waiting", handleWaiting);
+      audioEle.addEventListener("play", handlePlaying);
+      audioEle.addEventListener("waiting", handleWaiting);
+      audioEle.addEventListener("loadstart", handleLoadStart);
 
       return () => {
-         audioEle.removeEventListener("error", handleError);
          audioEle.removeEventListener("pause", handlePaused);
-         audioEle.removeEventListener("playing", handlePlaying);
+         audioEle.removeEventListener("play", handlePlaying);
+         audioEle.removeEventListener("waiting", handleWaiting);
+         audioEle.removeEventListener("loadstart", handleLoadStart);
       };
    }, []);
 

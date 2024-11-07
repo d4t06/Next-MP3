@@ -3,32 +3,30 @@ import {
    getLocalStorage,
    setLocalStorage,
 } from "@/share/utils/appHelper";
-import { useCurrentSong } from "@/stores/currentSongContext";
 import { MouseEventHandler, RefObject, useEffect, useRef } from "react";
-import useAudioControl from "./useAudioControl";
+import useAudioControl, { Status } from "./useAudioControl";
+import { usePlayerContext } from "@/stores/PlayerContext";
 
 type Props = {
    audioEle: HTMLAudioElement;
    processLineRef: RefObject<HTMLDivElement>;
    currentTimeRef: RefObject<HTMLDivElement>;
    timeHolderRef: RefObject<HTMLDivElement>;
-   songs: Song[];
 };
 
 export default function useControl({
    audioEle,
-   songs,
    currentTimeRef,
    processLineRef,
    timeHolderRef,
 }: Props) {
-   const { currentIndex, setCurrentSong, currentSong, from } = useCurrentSong();
+   const { songs, currentIndex, setCurrentSong, currentSongRef } =
+      usePlayerContext();
 
    const firstTimeSongLoaded = useRef(true);
    const isPlayAllSong = useRef(false); // use for end event
-   const currentIndexRef = useRef<number | undefined>(undefined); // use for audio event handler
-   const currentSongRef = useRef<Song | null>(null); // use for audio event handler
-   const isPlayingRef = useRef(false); // for document.keydown event
+   const currentIndexRef = useRef<number | null>(null); // use for audio event handler
+   const statusRef = useRef<Status>("paused");
 
    const { play, pause, handlePlayPause, status, setStatus } = useAudioControl({
       audioEle: audioEle,
@@ -36,17 +34,14 @@ export default function useControl({
 
    const _handlePlayPause = () => {
       if (firstTimeSongLoaded.current) {
-         audioEle.currentTime = getLocalStorage()["timeProcess"] || 0;
+         audioEle.currentTime = getLocalStorage()["current_time"] || 0;
          firstTimeSongLoaded.current = false;
       }
 
       handlePlayPause();
    };
 
-   const handleResetForNewSong = () => {
-      setStatus("waiting");
-      firstTimeSongLoaded.current = false;
-
+   const resetUI = () => {
       if (
          processLineRef.current &&
          currentTimeRef.current &&
@@ -69,46 +64,32 @@ export default function useControl({
          const lengthRatio = length / processLineRef.current.clientWidth;
          const newSeekTime = lengthRatio * audioEle.duration;
 
-         audioEle.currentTime = newSeekTime;
-         handleTimeUpdate();
+         updateTimeProgressEle(newSeekTime);
+         if (firstTimeSongLoaded.current) {
+            setLocalStorage("current_time", newSeekTime);
+         } else {
+            audioEle.currentTime = newSeekTime;
+         }
       }
    };
 
    const handleNext = () => {
-      if (currentIndexRef.current === undefined) return;
+      if (currentIndexRef.current === null) return;
 
       let newIndex = currentIndexRef.current + 1;
-      let newSong: Song;
 
-      if (newIndex < songs.length) {
-         newSong = songs[newIndex];
-      } else {
-         newIndex = 0;
-         newSong = songs[0];
-      }
+      if (newIndex >= songs.length) newIndex = 0;
 
-      setCurrentSong({
-         song: newSong,
-         from: "songs",
-         index: newIndex,
-      });
+      setCurrentSong(newIndex);
    };
 
    const handlePrevious = () => {
-      let newIndex = currentIndex - 1;
-      let newSong: Song;
-      if (newIndex >= 0) {
-         newSong = songs[newIndex];
-      } else {
-         newSong = songs[songs.length - 1];
-         newIndex = songs.length - 1;
-      }
+      if (currentIndexRef.current === null) return;
 
-      setCurrentSong({
-         song: newSong,
-         from: "songs",
-         index: newIndex,
-      });
+      let newIndex = currentIndexRef.current - 1;
+      if (newIndex < 0) newIndex = songs.length - 1;
+
+      setCurrentSong(newIndex);
    };
 
    const updateTimeProgressEle = (time: number) => {
@@ -129,11 +110,12 @@ export default function useControl({
       if (!audioEle) return;
       const currentTime = audioEle?.currentTime;
 
+      if (statusRef.current !== "paused") setStatus("playing");
       updateTimeProgressEle(currentTime);
 
       // set localStorage
       if (Math.round(currentTime) % 3 === 0)
-         setLocalStorage("timeProcess", Math.round(currentTime));
+         setLocalStorage("current_time", Math.round(currentTime));
    };
 
    const handleEnded = () => {
@@ -165,78 +147,42 @@ export default function useControl({
       if (firstTimeSongLoaded.current) return;
       if (songs.length > 1) {
          handleNext();
-      }
-      //  setIsPlaying(false);
-      else setStatus("paused");
+      } else setStatus("paused");
    };
 
    const handleLoaded = () => {
-      if (!audioEle) {
-         setStatus("paused");
-         return;
-      }
-
-      const storage = getLocalStorage();
-      const current = storage["current"];
-
-      if (!firstTimeSongLoaded.current || !current)
-         if (currentIndexRef.current !== undefined)
-            setLocalStorage("current", {
-               from,
-               index: currentIndexRef.current,
-               song: currentSongRef.current,
-            } as CurrentSong);
-
-      // case end of list
-
       if (isPlayAllSong.current) {
          isPlayAllSong.current = false;
+         return setStatus("paused");
+      }
 
-         setStatus("paused");
-         setLocalStorage("timeProcess", 0);
-         return;
+      if (currentSongRef.current) {
+         setLocalStorage("current", currentSongRef.current.id);
       }
 
       if (firstTimeSongLoaded.current) {
-         // setIsPlaying(false);
-         // setIsWaiting(false);
+         const storage = getLocalStorage();
+
          setStatus("paused");
 
-         if (firstTimeSongLoaded.current) {
-            /** set when click play button */
-            // firstTimeSongLoaded.current = false;
-
-            // if user have play any song before
-            // on the other hand the localStore have current song value
-            // then update audio current time
-            if (current?.song?.id === currentSongRef.current?.id) {
-               // update time line ui
-               updateTimeProgressEle(storage["timeProcess"] || 0);
-               return;
-            }
-
-            // the first time user click any song
-            // the current song in localStorage is empty
-            // then play the song
-            play();
-         }
+         const currentTime = storage["current_time"] || 0;
+         updateTimeProgressEle(currentTime);
+         return;
       }
 
-      // normal click play case
       play();
    };
 
+   // init song from local storage
    useEffect(() => {
       const storage = getLocalStorage();
-      const current = storage["current"] as CurrentSong;
+      const current = storage["current"];
 
       if (current) {
-         if (songs.length && songs.find((s) => s.id === current.song.id))
-            setCurrentSong({
-               song: current.song,
-               index: current.index,
-               from: current.from,
-            });
+         if (songs.length) {
+            const index = songs.findIndex((s) => s.id === current);
+            if (index !== -1) setCurrentSong(index);
+         }
       }
    }, []);
 
@@ -248,16 +194,12 @@ export default function useControl({
       }
 
       audioEle.addEventListener("error", handleError);
-      // audioEle.addEventListener("pause", handlePause);
-      // audioEle.addEventListener("playing", handlePlaying);
       audioEle.addEventListener("timeupdate", handleTimeUpdate);
       audioEle.addEventListener("ended", handleEnded);
       audioEle.addEventListener("loadedmetadata", handleLoaded);
 
       return () => {
          audioEle?.removeEventListener("error", handleError);
-         // audioEle?.removeEventListener("pause", handlePause);
-         // audioEle?.removeEventListener("playing", handlePlaying);
          audioEle?.removeEventListener("timeupdate", handleTimeUpdate);
          audioEle?.removeEventListener("ended", handleEnded);
          audioEle?.removeEventListener("loadedmetadata", handleLoaded);
@@ -267,28 +209,24 @@ export default function useControl({
    useEffect(() => {
       if (!audioEle) return;
 
-      currentSongRef.current = currentSong;
-
-      if (!currentSong) return;
-
       currentIndexRef.current = currentIndex;
-
       pause();
 
       return () => {
-         handleResetForNewSong();
+         resetUI();
       };
-   }, [currentSong]);
+   }, [currentIndex]);
+
+   useEffect(() => {
+      statusRef.current = status;
+   }, [status]);
 
    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === " ") {
          e.preventDefault();
          e.stopPropagation();
 
-         console.log("check ", currentIndexRef.current);
-
-         if (currentIndexRef.current !== undefined)
-            isPlayingRef.current ? pause() : play();
+         if (currentIndexRef.current !== null) _handlePlayPause();
       }
    };
 

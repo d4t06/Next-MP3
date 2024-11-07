@@ -1,40 +1,18 @@
-import {
-   ElementRef,
-   MutableRefObject,
-   RefObject,
-   useEffect,
-   useRef,
-} from "react";
+"use client";
+import { forwardRef, Ref } from "react";
+
+export type LyricStatus = "active" | "done" | "coming";
 
 type Props = {
-   status: "" | "active" | "done" | "coming";
+   status: LyricStatus;
    text: string;
    className?: string;
-   scrollBehavior?: MutableRefObject<ScrollBehavior>;
-   shouldScroll?: boolean;
 };
 
-export default function LyricItem({
-   status = "coming",
-   text,
-   className = "pb-6",
-   scrollBehavior,
-   shouldScroll = true,
-}: Props) {
-   const lyricRef = useRef<ElementRef<"p">>(null);
-
-   const scroll = () => {
-      console.log("scroll behavior", scrollBehavior?.current);
-
-      lyricRef.current?.scrollIntoView({
-         behavior: scrollBehavior?.current || "smooth",
-         block: "center",
-      });
-
-      if (scrollBehavior?.current && scrollBehavior.current !== "smooth")
-         scrollBehavior.current = "smooth";
-   };
-
+function LyricItem(
+   { status = "coming", text, className = "pb-6" }: Props,
+   ref: Ref<any>
+) {
    const getClass = () => {
       switch (status) {
          case "coming":
@@ -46,18 +24,11 @@ export default function LyricItem({
       }
    };
 
-   useEffect(() => {
-      if (status === "active") {
-         if (shouldScroll) scroll();
-      }
-   }, [status]);
-
    return (
-      <p
-         ref={lyricRef}
-         className={`select-none ${className} ${getClass()}`}
-      >
+      <p ref={ref} className={`select-none ${className} ${getClass()}`}>
          {text}
       </p>
    );
 }
+
+export default forwardRef(LyricItem);

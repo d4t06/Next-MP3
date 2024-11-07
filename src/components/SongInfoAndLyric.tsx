@@ -1,19 +1,25 @@
 "use client";
 
 import ScrollText from "./ScrollText";
-import LyricItem from "./LyricIitem";
+import LyricItem, { LyricStatus } from "./LyricIitem";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 import useSongInfoAndLyric from "@/hooks/useSongInfoAndLyric";
 import { Center } from "@/share/_components/Center";
 
 type Props = {
-   currentSong: Song;
-   audioEle: HTMLAudioElement
+   audioEle: HTMLAudioElement;
 };
 
-export default function SongInfoAndLyric({ currentSong, audioEle }: Props) {
-   const { currentTime, tab, setTab, isFetching, lyrics, scrollBehavior } =
-      useSongInfoAndLyric({ audioEle, currentSong });
+export default function SongInfoAndLyric({ audioEle }: Props) {
+   const {
+      currentLyricIndex,
+      lyricRefs,
+      tab,
+      setTab,
+      isFetching,
+      lyrics,
+      currentSongRef,
+   } = useSongInfoAndLyric({ audioEle });
 
    return (
       <>
@@ -35,13 +41,13 @@ export default function SongInfoAndLyric({ currentSong, audioEle }: Props) {
                </p>
                <div className="h-[32px]">
                   <ScrollText
-                     content={currentSong?.name || "..."}
+                     content={currentSongRef.current?.name || "..."}
                      className="font-bold text-2xl"
                   />
                </div>
 
                <p className="text-sm font-medium line-clamp-1">
-                  {currentSong?.singer || "..."}
+                  {currentSongRef.current?.singer || "..."}
                </p>
             </div>
 
@@ -61,28 +67,20 @@ export default function SongInfoAndLyric({ currentSong, audioEle }: Props) {
                      {lyrics?.length ? (
                         <>
                            {lyrics.map((l, index) => {
-                              let status = "coming";
+                              let status: LyricStatus = "coming";
 
-                              if (currentTime >= l.start - 0.3) {
-                                 if (
-                                    (lyrics[index + 1] &&
-                                       currentTime <
-                                          lyrics[index + 1].start - 0.3) ||
-                                    index === lyrics.length - 1
-                                 )
-                                    status = "active";
-                                 else status = "done";
-                              }
-
+                              if (index < currentLyricIndex) status = "done";
+                              if (index === currentLyricIndex)
+                                 status = "active";
                               return (
                                  <LyricItem
                                     key={index}
                                     className="pb-4"
                                     text={l.text}
-                                    //@ts-ignore
                                     status={status}
-                                    scrollBehavior={scrollBehavior}
-                                    shouldScroll={tab === "lyrics"}
+                                    ref={(el) =>
+                                       (lyricRefs.current[index] = el!)
+                                    }
                                  />
                               );
                            })}
@@ -97,7 +95,8 @@ export default function SongInfoAndLyric({ currentSong, audioEle }: Props) {
             </div>
             {tab === "lyrics" && (
                <p className="text-sm mt-2 text-amber-100/60 text-center">
-                  {currentSong.name} - {currentSong.singer}
+                  {currentSongRef.current?.name || "..."} -{" "}
+                  {currentSongRef.current?.singer || "..."}
                </p>
             )}
          </div>

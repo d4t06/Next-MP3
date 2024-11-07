@@ -3,7 +3,6 @@ import useControl from "@/hooks/useControl";
 import Button from "@/share/_components/Button";
 import Frame from "@/share/_components/Frame";
 import { formatTime } from "@/share/utils/appHelper";
-import { useCurrentSong } from "@/stores/currentSongContext";
 import {
    ArrowPathIcon,
    BackwardIcon,
@@ -20,16 +19,17 @@ import TimerButton from "./TimerButton";
 import SongListContainer from "./SongList";
 import Tooltip from "@/share/_components/Tooltip";
 import SongInfoAndLyric from "./SongInfoAndLyric";
+import { usePlayerContext } from "@/stores/PlayerContext";
 
 type Props = {
-   songs: Song[];
    audioEle: HTMLAudioElement;
 };
 
 type Tab = "playing" | "queue";
 
-export default function Control({ songs, audioEle }: Props) {
-   const { currentSong } = useCurrentSong();
+export default function Control({ audioEle }: Props) {
+   // const { currentSong } = useCurrentSong();
+   const { songs, currentIndex, currentSongRef } = usePlayerContext();
 
    const [tab, setTab] = useState<Tab>("playing");
 
@@ -41,7 +41,6 @@ export default function Control({ songs, audioEle }: Props) {
    const { handleNext, handlePlayPause, handlePrevious, handleSeek, status } =
       useControl({
          audioEle,
-         songs,
          currentTimeRef,
          processLineRef,
          timeHolderRef,
@@ -56,6 +55,7 @@ export default function Control({ songs, audioEle }: Props) {
             return <PlayIcon className="w-10" />;
 
          case "waiting":
+         case "loading":
             return <ArrowPathIcon className="w-10 animate-spin" />;
          case "error":
             return <ExclamationCircleIcon className="w-10" />;
@@ -71,7 +71,7 @@ export default function Control({ songs, audioEle }: Props) {
 
    return (
       <>
-         <title>{currentSong?.name || "Next MP3"}</title>
+         <title>{currentSongRef.current?.name || "Next MP3"}</title>
          <div className="">
             <div className="w-[400px] max-w-[95vw] ">
                <Frame pushAble={"clear"} className="">
@@ -83,19 +83,14 @@ export default function Control({ songs, audioEle }: Props) {
                               : "opacity-0 pointer-events-none h-0"
                         } `}
                      >
-                        {currentSong && (
-                           <SongInfoAndLyric
-                              audioEle={audioEle}
-                              currentSong={currentSong}
-                           />
-                        )}
+                        <SongInfoAndLyric audioEle={audioEle} />
 
                         <div className="h-[6px] mt-5 mb-2 flex items-center">
                            <div
                               ref={processLineRef}
                               onClick={handleSeek}
                               className={`${classes.timeLineRef} ${
-                                 !currentSong && "disabled"
+                                 currentIndex === null && "disabled"
                               }`}
                            >
                               <div
@@ -107,7 +102,11 @@ export default function Control({ songs, audioEle }: Props) {
 
                         <div className="flex justify-between items-center h-[30px] text-amber-100">
                            <div ref={currentTimeRef}>0:00</div>
-                           <div>{formatTime(currentSong?.duration || 0)}</div>
+                           <div>
+                              {formatTime(
+                                 currentSongRef.current?.duration || 0
+                              )}
+                           </div>
                         </div>
 
                         <div
@@ -159,7 +158,7 @@ export default function Control({ songs, audioEle }: Props) {
 
          <div className="absolute bottom-8 right-8 flex space-x-2">
             <TimerButton
-               disable={!currentSong}
+               disable={!currentIndex}
                audioEle={audioEle}
                isPlaying={status === "playing"}
             />

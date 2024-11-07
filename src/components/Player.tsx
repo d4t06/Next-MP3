@@ -1,15 +1,11 @@
 "use client";
 
-import { useCurrentSong } from "@/stores/currentSongContext";
 import { ElementRef, useEffect, useRef, useState } from "react";
 import Control from "./Control";
+import { usePlayerContext } from "@/stores/PlayerContext";
 
-type Props = {
-   songs: Song[];
-};
-
-export default function Player({ songs }: Props) {
-   const { currentSong } = useCurrentSong();
+export default function Player() {
+   const { currentSongRef } = usePlayerContext();
    const audioRef = useRef<ElementRef<"audio">>(null);
 
    const [hadAudio, setHadAudio] = useState(false);
@@ -22,12 +18,12 @@ export default function Player({ songs }: Props) {
       <>
          <audio
             ref={audioRef}
-            src={currentSong?.song_url}
+            src={currentSongRef.current?.song_url}
             className="hidden"
          ></audio>
 
          {audioRef.current && hadAudio && (
-            <Control audioEle={audioRef.current} songs={songs} />
+            <Control audioEle={audioRef.current}  />
          )}
       </>
    );

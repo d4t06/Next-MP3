@@ -7,6 +7,7 @@ import { getAllSong } from "@/share/services/songService";
 import NoResult from "@/components/NoResult";
 import Tooltip from "@/share/_components/Tooltip";
 import Player from "@/components/Player";
+import PlayerProvider from "@/stores/PlayerContext";
 
 export const revalidate = 864000;
 
@@ -18,17 +19,19 @@ export default async function HomePage() {
 
    return (
       <>
-         <Player songs={songs} />
+         <PlayerProvider songs={songs}>
+            <Player />
 
-         <div className="!absolute bottom-8 left-8">
-            {session && (
-               <Tooltip content="Dashboard">
-                  <Button href="/dashboard" className="p-2" size={"clear"}>
-                     <ComputerDesktopIcon className="w-6" />
-                  </Button>
-               </Tooltip>
-            )}
-         </div>
+            <div className="!absolute bottom-8 left-8">
+               {session && (
+                  <Tooltip content="Dashboard">
+                     <Button href="/dashboard" className="p-2" size={"clear"}>
+                        <ComputerDesktopIcon className="w-6" />
+                     </Button>
+                  </Tooltip>
+               )}
+            </div>
+         </PlayerProvider>
       </>
    );
 }

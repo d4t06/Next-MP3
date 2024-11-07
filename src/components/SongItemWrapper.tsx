@@ -1,38 +1,24 @@
 "use client";
 
-import { convertToEn, setLocalStorage } from "@/share/utils/appHelper";
-import { useCurrentSong } from "@/stores/currentSongContext";
-import { useQueue } from "@/stores/songQueueContext";
+import { convertToEn } from "@/share/utils/appHelper";
+import { usePlayerContext } from "@/stores/PlayerContext";
 import { ReactNode } from "react";
 
 type Props = {
    song: Song;
-   songs: Song[];
    children: ReactNode;
    className?: string;
    index: number;
-   songFrom?: "songs";
 };
 
-export default function SongItemWrapper({
-   children,
-   song,
-   songs,
-   index,
-   songFrom = "songs",
-}: Props) {
-   const { setCurrentSong, currentSong, from } = useCurrentSong();
-   const { setQueue, songs: queueSongs } = useQueue();
+export default function SongItemWrapper({ children, song, index }: Props) {
+   const { currentIndex, setCurrentSong } = usePlayerContext();
 
-   const active = currentSong?.id === song.id;
+   const active = currentIndex === index;
 
    const handleSetSong = () => {
       if (!active) {
-         if (songFrom !== from || songs.length !== queueSongs.length) {
-            setQueue(songs);
-            setLocalStorage("queue", songs);
-         }
-         setCurrentSong({ song, index, from: songFrom });
+         setCurrentSong(index);
       }
    };
 
