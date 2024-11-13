@@ -22,7 +22,8 @@ export default function useAudioControl({ audioEle }: Props) {
    };
 
    const handlePlayPause = () => {
-      status === "playing" ? pause() : status === "paused" && play();
+      if (status === "playing") pause();
+      else if (status === "paused") play();
    };
 
    const handlePlaying = () => {

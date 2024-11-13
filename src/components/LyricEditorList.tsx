@@ -34,7 +34,7 @@ export default function LyricEditorList({ controlRef }: Props) {
    }, [baseLyricArr]);
 
    return (
-      <div className="flex flex-grow overflow-auto no-scrollbar mb-5 bg-amber-800 rounded-xl mt-3 py-2 text-amber-100">
+      <div className="flex flex-grow overflow-auto no-scrollbar mb-5 bg-amber-800 rounded-xl mt-3 py-2 text-lg font-[700] text-amber-100">
          <div className={"w-1/2 px-2"}>
             {!!baseLyricArr.length ? (
                <>
@@ -47,7 +47,7 @@ export default function LyricEditorList({ controlRef }: Props) {
                            : "coming";
                      return (
                         <LyricItem
-                           className="pt-[24px] pb-[10px] mr-[24px]"
+                           className="pt-[28px] pb-[10px] mr-[24px] last:mb-[30vh]"
                            key={index}
                            status={status}
                            text={lyric}

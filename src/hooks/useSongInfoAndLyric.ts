@@ -86,8 +86,6 @@ export default function useSongInfoAndLyric({ audioEle }: Props) {
          currentLyricIndexRef.current = nextIndex;
          setCurrentLyricIndex(nextIndex);
 
-         console.log(lyricRefs.current[nextIndex]);
-
          if (lyricRefs.current[nextIndex]) {
             lyricRefs.current[nextIndex].scrollIntoView({
                behavior: scrollBehavior.current,

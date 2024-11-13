@@ -28,7 +28,7 @@ export default function SongList({ back, songs, tab }: Props) {
          className="max-h-[40vh] overflow-auto no-scrollbar"
       >
          {songs.map((s, i) => (
-            <SongItem key={i} song={s} index={i} songs={songs} />
+            <SongItem key={i} song={s} index={i} />
          ))}
       </div>
    );

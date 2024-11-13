@@ -40,10 +40,10 @@ export default function AddLyricItem({ lyric, index, seek }: Props) {
          </button>
 
          {!isEditText && (
-            <p className="font-[500] select-none flex items-center">
+            <p className="select-none flex items-center">
                {lyric.text}
 
-               <button onClick={() => setIdEditText(true)} className="ml-2">
+               <button onClick={() => setIdEditText(true)} className="ml-1">
                   <PencilSquareIcon className="w-5" />
                </button>
             </p>

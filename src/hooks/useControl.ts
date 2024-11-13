@@ -226,7 +226,10 @@ export default function useControl({
          e.preventDefault();
          e.stopPropagation();
 
-         if (currentIndexRef.current !== null) _handlePlayPause();
+         if (currentIndexRef.current !== null) {
+            if (statusRef.current === "playing") pause();
+            else if (statusRef.current === "paused") play();
+         }
       }
    };
 
@@ -244,5 +247,6 @@ export default function useControl({
       handlePrevious,
       handlePlayPause: _handlePlayPause,
       status,
+      statusRef,
    };
 }

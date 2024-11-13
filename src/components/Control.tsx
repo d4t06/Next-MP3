@@ -29,7 +29,8 @@ type Tab = "playing" | "queue";
 
 export default function Control({ audioEle }: Props) {
    // const { currentSong } = useCurrentSong();
-   const { songs, currentIndex, currentSongRef } = usePlayerContext();
+   const { songs, currentIndex, currentSongRef, setCurrentSong } =
+      usePlayerContext();
 
    const [tab, setTab] = useState<Tab>("playing");
 
@@ -45,6 +46,13 @@ export default function Control({ audioEle }: Props) {
          processLineRef,
          timeHolderRef,
       });
+
+   const _handlePlayPause = () => {
+      if (currentIndex === null) {
+         setCurrentSong(Math.round(Math.random() * songs.length));
+         handlePlayPause();
+      } else handlePlayPause();
+   };
 
    const renderPlayButton = () => {
       switch (status) {
@@ -73,7 +81,7 @@ export default function Control({ audioEle }: Props) {
       <>
          <title>{currentSongRef.current?.name || "Next MP3"}</title>
          <div className="">
-            <div className="w-[400px] max-w-[95vw] ">
+            <div className="w-[500px] max-w-[95vw] ">
                <Frame pushAble={"clear"} className="">
                   <div className="px-2">
                      <div
@@ -123,7 +131,7 @@ export default function Control({ audioEle }: Props) {
                            <Button
                               colors={"second"}
                               disabled={!songs.length}
-                              onClick={handlePlayPause}
+                              onClick={_handlePlayPause}
                            >
                               {renderPlayButton()}
                            </Button>

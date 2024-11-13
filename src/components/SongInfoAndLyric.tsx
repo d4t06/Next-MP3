@@ -56,7 +56,7 @@ export default function SongInfoAndLyric({ audioEle }: Props) {
                   tab === "lyrics"
                      ? "opacity-[1] h-[30vh] pt-4 pb-[7vh]"
                      : "opacity-0 pointer-events-none h-0"
-               }  overflow-auto text-center relative text-amber-100 font-[800] text-2xl no-scrollbar mask-vertical`}
+               }  overflow-auto text-center relative text-amber-100 font-[800] text-[22px] sm:text-[26px] no-scrollbar mask-vertical`}
             >
                {isFetching ? (
                   <Center>
@@ -94,7 +94,7 @@ export default function SongInfoAndLyric({ audioEle }: Props) {
                )}
             </div>
             {tab === "lyrics" && (
-               <p className="text-sm mt-2 text-amber-100/60 text-center">
+               <p className="mt-2 text-amber-100/60 text-center">
                   {currentSongRef.current?.name || "..."} -{" "}
                   {currentSongRef.current?.singer || "..."}
                </p>
