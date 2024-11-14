@@ -3,21 +3,10 @@
 import useVolume from "@/hooks/useVolume";
 import Button from "@/share/_components/Button";
 import { SpeakerWaveIcon, SpeakerXMarkIcon } from "@heroicons/react/24/outline";
-import { ElementRef, useRef } from "react";
 
-type Props = {
-   audioEle: HTMLAudioElement
-};
-
-export function VolumeButton({ audioEle }: Props) {
-   const volumeLineRef = useRef<ElementRef<"div">>(null);
-   const volumeHolderRef = useRef<ElementRef<"div">>(null);
-
-   const { handleMute, handleWheel, handleSetVolume, isMute } = useVolume({
-      audioEle,
-      volumeLineRef,
-      volumeHolderRef,
-   });
+export function VolumeButton() {
+   const { handleMute, handleWheel, handleSetVolume, isMute, refs } =
+      useVolume();
 
    const classes = {
       wrapper: `volume-btn-wrapper group relative
@@ -35,11 +24,11 @@ export function VolumeButton({ audioEle }: Props) {
          <div className={classes.volumeLineContainer}>
             <div
                onClick={handleSetVolume}
-               ref={volumeLineRef}
+               ref={refs.volumeLineRef}
                className={classes.volumeLine}
             >
                <div
-                  ref={volumeHolderRef}
+                  ref={refs.volumeHolderRef}
                   className={classes.volumeHolder}
                ></div>
             </div>

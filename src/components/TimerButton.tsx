@@ -8,19 +8,17 @@ import Tooltip from "@/share/_components/Tooltip";
 
 type Props = {
    isPlaying: boolean;
-   audioEle: HTMLAudioElement;
-   disable: boolean;
 };
 
 const COUNT_LIST = [3, 5, 7, 10];
 
-export default function TimerButton({ audioEle, isPlaying, disable }: Props) {
+export default function TimerButton({ isPlaying }: Props) {
    const modalRef = useRef<ModalRef>(null);
 
-   const { isActive, setIsActive, countDown, clearTimer } = useTimer({
-      audioEle,
-      isPlaying,
-   });
+   const { isActive, setIsActive, countDown, clearTimer, currentIndex } =
+      useTimer({
+         isPlaying,
+      });
 
    const toggleModal = () => modalRef.current?.toggle();
 
@@ -55,7 +53,7 @@ export default function TimerButton({ audioEle, isPlaying, disable }: Props) {
       <>
          <Tooltip content={isActive ? "Cancel" : "Sleep timer"}>
             <Button
-               disabled={disable}
+               disabled={currentIndex === null}
                className={classes.triggerModalBtn}
                size={"clear"}
                active={!!countDown}
@@ -76,7 +74,7 @@ export default function TimerButton({ audioEle, isPlaying, disable }: Props) {
 
          <Modal ref={modalRef}>
             <div className="w-[300px] max-w-[85vw]">
-               <div className="text-xl font-semibold">Timer</div>
+               <div className="text-xl font-semibold text-amber-800">Sleep timer</div>
                <div className="mt-3 flex flex-wrap -ml-2 pb-2">
                   {renderItems}
                </div>

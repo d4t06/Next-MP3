@@ -1,16 +1,13 @@
+import { usePlayerContext } from "@/stores/PlayerContext";
 import { RefObject, useEffect } from "react";
 
 type Props = {
-   tab: "playing" | "queue";
-   back: () => void;
    songListContainer: RefObject<HTMLDivElement>;
 };
 
-export default function useSongListEvent({
-   tab,
-   back,
-   songListContainer,
-}: Props) {
+export default function useSongListEvent({ songListContainer }: Props) {
+   const { tab, setTab } = usePlayerContext();
+
    const scroll = (el: Element) => {
       el.scrollIntoView({
          behavior: "instant",
@@ -48,7 +45,7 @@ export default function useSongListEvent({
       )
          return;
 
-      back();
+      setTab("playing");
    };
 
    useEffect(() => {

@@ -41,4 +41,4 @@ type Toast = {
    id: string;
 };
 
-type Tab = "playing" | "queue";
+type Tab = "playing" | "queue" | "lyric";

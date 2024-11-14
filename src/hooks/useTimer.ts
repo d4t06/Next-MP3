@@ -1,12 +1,14 @@
 import { getLocalStorage, setLocalStorage } from "@/share/utils/appHelper";
+import { usePlayerContext } from "@/stores/PlayerContext";
 import { useEffect, useRef, useState } from "react";
 
 type Props = {
    isPlaying: boolean;
-   audioEle: HTMLAudioElement;
 };
 
-export default function useTimer({ isPlaying, audioEle }: Props) {
+export default function useTimer({ isPlaying }: Props) {
+   const { audioEleRef, currentIndex } = usePlayerContext();
+
    // store user timer, decide add song event or not
    const [isActive, setIsActive] = useState(0);
    const [countDown, setCountDown] = useState(0); // count down
@@ -15,7 +17,7 @@ export default function useTimer({ isPlaying, audioEle }: Props) {
 
    const play = async () => {
       try {
-         await audioEle.play();
+         await audioEleRef.current?.play();
       } catch (error) {}
    };
 
@@ -50,10 +52,10 @@ export default function useTimer({ isPlaying, audioEle }: Props) {
    useEffect(() => {
       if (!isActive) return;
 
-      audioEle.addEventListener("ended", handleSongEnd);
+      audioEleRef.current?.addEventListener("ended", handleSongEnd);
 
       return () => {
-         audioEle.removeEventListener("ended", handleSongEnd);
+         audioEleRef.current?.removeEventListener("ended", handleSongEnd);
       };
    }, [isActive]);
 
@@ -71,5 +73,12 @@ export default function useTimer({ isPlaying, audioEle }: Props) {
       }
    }, [isActive]);
 
-   return { countDown, clearTimer, setCountDown, setIsActive, isActive };
+   return {
+      countDown,
+      clearTimer,
+      setCountDown,
+      setIsActive,
+      isActive,
+      currentIndex,
+   };
 }

@@ -1,29 +1,30 @@
 "use client";
 
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Control from "./Control";
 import { usePlayerContext } from "@/stores/PlayerContext";
 
 export default function Player() {
-   const { currentSongRef } = usePlayerContext();
-   const audioRef = useRef<ElementRef<"audio">>(null);
+   const { currentSongRef, audioEleRef } = usePlayerContext();
 
    const [hadAudio, setHadAudio] = useState(false);
 
    useEffect(() => {
-      if (audioRef.current) setHadAudio(true);
+      if (audioEleRef.current) {
+         setHadAudio(true);
+      }
    }, []);
 
    return (
       <>
          <audio
-            ref={audioRef}
+            ref={audioEleRef}
             src={currentSongRef.current?.song_url}
             className="hidden"
          ></audio>
 
-         {audioRef.current && hadAudio && (
-            <Control audioEle={audioRef.current}  />
+         {audioEleRef.current && hadAudio && (
+            <Control audioEle={audioEleRef.current} />
          )}
       </>
    );

@@ -1,16 +1,34 @@
 "use client";
-import { createContext, ReactNode, useContext, useRef, useState } from "react";
+import {
+   createContext,
+   ElementRef,
+   ReactNode,
+   useContext,
+   useRef,
+   useState,
+} from "react";
 
 const usePlayer = (songs: Song[]) => {
-   const currentSongRef = useRef<Song | null>(null);
    const [currentIndex, setCurrentIndex] = useState<number | null>(null);
+   const [tab, setTab] = useState<Tab>("playing");
+
+   const currentSongRef = useRef<Song | null>(null);
+   const audioEleRef = useRef<ElementRef<"audio">>(null);
 
    const setCurrentSong = (index: number) => {
       setCurrentIndex(index);
       currentSongRef.current = songs[index];
    };
 
-   return { songs, currentSongRef, setCurrentSong, currentIndex };
+   return {
+      songs,
+      audioEleRef,
+      currentSongRef,
+      setCurrentSong,
+      currentIndex,
+      tab,
+      setTab,
+   };
 };
 
 type ContextType = ReturnType<typeof usePlayer>;

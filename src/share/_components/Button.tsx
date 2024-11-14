@@ -21,7 +21,7 @@ const ButtonVariant = cva(classes.button, {
          primary: "px-[15px] py-[5px]",
       },
       colors: {
-         primary: "text-amber-800 before:bg-amber-100",
+         primary: "text-amber-800 before:bg-[#fdf6e3]",
          second: "text-amber-100 before:bg-amber-800",
          clear: "",
       },

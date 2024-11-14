@@ -1,18 +1,25 @@
 "use client";
 
 import { getLocalStorage, setLocalStorage } from "@/share/utils/appHelper";
-import { MouseEvent, RefObject, WheelEvent, useEffect, useState } from "react";
+import {
+   ElementRef,
+   MouseEvent,
+   WheelEvent,
+   useEffect,
+   useRef,
+   useState,
+} from "react";
 import useDebounce from "./useDebounce";
+import { usePlayerContext } from "@/stores/PlayerContext";
 
-type Props = {
-   audioEle: HTMLAudioElement
-   volumeLineRef: RefObject<HTMLDivElement>;
-   volumeHolderRef: RefObject<HTMLDivElement>;
-};
+export default function useVolume() {
+   const { audioEleRef } = usePlayerContext();
 
-export default function useVolume({ audioEle, volumeHolderRef, volumeLineRef }: Props) {
    const [isMute, setIsMute] = useState(false);
    const [volume, setVolume] = useState(0);
+
+   const volumeLineRef = useRef<ElementRef<"div">>(null);
+   const volumeHolderRef = useRef<ElementRef<"div">>(null);
 
    const debounceVolume = useDebounce(volume, 500);
 
@@ -73,8 +80,8 @@ export default function useVolume({ audioEle, volumeHolderRef, volumeLineRef }: 
    }, []);
 
    useEffect(() => {
-      if (!audioEle) return;
-      audioEle.muted = isMute;
+      if (!audioEleRef.current) return;
+      audioEleRef.current.muted = isMute;
    }, [isMute]);
 
    useEffect(() => {
@@ -84,10 +91,14 @@ export default function useVolume({ audioEle, volumeHolderRef, volumeLineRef }: 
    }, [debounceVolume]);
 
    useEffect(() => {
-      if (audioEle && volumeLineRef.current && volumeHolderRef.current) {
+      if (
+         audioEleRef.current &&
+         volumeLineRef.current &&
+         volumeHolderRef.current
+      ) {
          const ratio = volume * 100;
 
-         audioEle.volume = volume;
+         audioEleRef.current.volume = volume;
          volumeLineRef.current.style.background = `linear-gradient(to top, rgb(253, 230, 138) ${ratio}%, white ${ratio}%, white 100%)`;
          volumeHolderRef.current.style.bottom = `${ratio}%`;
 
@@ -96,5 +107,12 @@ export default function useVolume({ audioEle, volumeHolderRef, volumeLineRef }: 
       }
    }, [volume]);
 
-   return { volume, isMute, handleMute, handleWheel, handleSetVolume };
+   return {
+      volume,
+      isMute,
+      handleMute,
+      handleWheel,
+      handleSetVolume,
+      refs: { volumeHolderRef, volumeLineRef },
+   };
 }

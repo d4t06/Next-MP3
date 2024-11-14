@@ -65,7 +65,7 @@ function Modal(
                         <div
                            className={`${
                               childClassName || " py-[12px] px-[16px]"
-                           } rounded-[8px] bg-amber-100`}
+                           } rounded-[8px] bg-[#fdf6e3]`}
                         >
                            {children}
                         </div>

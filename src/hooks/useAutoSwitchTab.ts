@@ -1,16 +1,13 @@
+import { usePlayerContext } from "@/stores/PlayerContext";
 import { ElementRef, RefObject, useEffect, useRef, useState } from "react";
 
 type Props = {
-   back: () => void;
-   scrollContainer: RefObject<ElementRef<"div">>;
-   tab: Tab;
+   songListContainer: RefObject<ElementRef<"div">>;
 };
 
-export default function useAutoSwitchTab({
-   back,
-   scrollContainer,
-   tab,
-}: Props) {
+export default function useAutoSwitchTab({ songListContainer }: Props) {
+   const { tab, setTab } = usePlayerContext();
+
    const timerId = useRef<NodeJS.Timeout>();
 
    const [someThingToTrigger, setSomeThingToTrigger] = useState(0);
@@ -18,7 +15,7 @@ export default function useAutoSwitchTab({
    const handleScroll = () => setSomeThingToTrigger(Math.random);
 
    useEffect(() => {
-      const ele = scrollContainer.current;
+      const ele = songListContainer.current;
       if (!ele) return;
 
       /** must use scroll event cause' wheel event don't work on mobile */
@@ -32,7 +29,7 @@ export default function useAutoSwitchTab({
    useEffect(() => {
       if (!someThingToTrigger) return;
 
-      timerId.current = setTimeout(back, 5000);
+      timerId.current = setTimeout(() => setTab("playing"), 5000);
 
       return () => {
          clearTimeout(timerId.current);
@@ -40,6 +37,6 @@ export default function useAutoSwitchTab({
    }, [someThingToTrigger]);
 
    useEffect(() => {
-      setSomeThingToTrigger(Math.random);
+      if (tab === "queue") setSomeThingToTrigger(Math.random);
    }, [tab]);
 }

@@ -7,20 +7,14 @@ import useSongListEvent from "@/hooks/useSongListEvent";
 
 type Props = {
    songs: Song[];
-   back: () => void;
-   tab: Tab;
 };
 
-export default function SongList({ back, songs, tab }: Props) {
+export default function SongList({ songs }: Props) {
    const songListContainer = useRef<ElementRef<"div">>(null);
 
-   useSongListEvent({ tab, back, songListContainer });
+   useSongListEvent({ songListContainer });
 
-   useAutoSwitchTab({
-      back,
-      scrollContainer: songListContainer,
-      tab,
-   });
+   useAutoSwitchTab({ songListContainer });
 
    return (
       <div

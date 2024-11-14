@@ -55,3 +55,9 @@ export const convertToEn = (name: string): string => {
    };
    return convert(name).replace(/[\W_]/g, "-");
 };
+
+
+export const getShowHideClass = (active: boolean, className?: string) => {
+   if (active) return `opacity-[1] ${className || ""}`;
+   return "opacity-0 pointer-events-none h-0";
+};

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import defaultTheme from "tailwindcss/defaultTheme";
 import "./globals.css";
 import "./styles.scss";
+import bgImage from "../../public/bg-image.png";
 import AuthProvider from "@/stores/sesstionContext";
 
 const font = Inter({ subsets: ["latin"] });
@@ -28,8 +29,9 @@ export default function RootLayout({
                      font.style.fontFamily +
                      "," +
                      defaultTheme.fontFamily.sans.join(","),
+                  backgroundImage: `url(${bgImage.src})`,
                }}
-               className={`bg-amber-100`}
+               className={`bg-[#fdf6e3]`}
             >
                {children}
                <div id="portals"></div>

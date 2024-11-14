@@ -2,7 +2,7 @@
 import useControl from "@/hooks/useControl";
 import Button from "@/share/_components/Button";
 import Frame from "@/share/_components/Frame";
-import { formatTime } from "@/share/utils/appHelper";
+import { formatTime, getShowHideClass } from "@/share/utils/appHelper";
 import {
    ArrowPathIcon,
    BackwardIcon,
@@ -12,10 +12,9 @@ import {
    PlayIcon,
    QueueListIcon,
 } from "@heroicons/react/24/outline";
-import { ElementRef, useRef, useState } from "react";
+import { ElementRef, useRef } from "react";
 import { VolumeButton } from "./VolumeButton";
 import TimerButton from "./TimerButton";
-// import ScrollText from "./ScrollText";
 import SongListContainer from "./SongList";
 import Tooltip from "@/share/_components/Tooltip";
 import SongInfoAndLyric from "./SongInfoAndLyric";
@@ -24,15 +23,9 @@ import { usePlayerContext } from "@/stores/PlayerContext";
 type Props = {
    audioEle: HTMLAudioElement;
 };
-
-type Tab = "playing" | "queue";
-
 export default function Control({ audioEle }: Props) {
-   // const { currentSong } = useCurrentSong();
-   const { songs, currentIndex, currentSongRef, setCurrentSong } =
+   const { songs, currentIndex, currentSongRef, setCurrentSong, setTab, tab } =
       usePlayerContext();
-
-   const [tab, setTab] = useState<Tab>("playing");
 
    const processLineRef = useRef<ElementRef<"div">>(null);
    const timeHolderRef = useRef<ElementRef<"div">>(null);
@@ -85,13 +78,11 @@ export default function Control({ audioEle }: Props) {
                <Frame pushAble={"clear"} className="">
                   <div className="px-2">
                      <div
-                        className={` ${
-                           tab === "playing"
-                              ? "opacity-100 h-auto"
-                              : "opacity-0 pointer-events-none h-0"
-                        } `}
+                        className={` ${getShowHideClass(
+                           tab === "playing" || tab === "lyric"
+                        )} `}
                      >
-                        <SongInfoAndLyric audioEle={audioEle} />
+                        <SongInfoAndLyric />
 
                         <div className="h-[6px] mt-5 mb-2 flex items-center">
                            <div
@@ -146,18 +137,8 @@ export default function Control({ audioEle }: Props) {
                         </div>
                      </div>
 
-                     <div
-                        className={` ${
-                           tab === "queue"
-                              ? "opacity-100 h-auto"
-                              : "opacity-0 pointer-events-none h-0"
-                        } `}
-                     >
-                        <SongListContainer
-                           tab={tab}
-                           back={() => setTab("playing")}
-                           songs={songs}
-                        />
+                     <div className={` ${getShowHideClass(tab === "queue")} `}>
+                        <SongListContainer songs={songs} />
                      </div>
                   </div>
                </Frame>
@@ -165,13 +146,9 @@ export default function Control({ audioEle }: Props) {
          </div>
 
          <div className="absolute bottom-8 right-8 flex space-x-2">
-            <TimerButton
-               disable={!currentIndex}
-               audioEle={audioEle}
-               isPlaying={status === "playing"}
-            />
+            <TimerButton isPlaying={status === "playing"} />
 
-            <VolumeButton audioEle={audioEle} />
+            <VolumeButton />
 
             <Tooltip content={tab === "playing" ? "Queue" : "Playing"}>
                <Button
