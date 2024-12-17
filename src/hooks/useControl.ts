@@ -151,13 +151,13 @@ export default function useControl({
    };
 
    const handleLoaded = () => {
+      if (currentSongRef.current) {
+         setLocalStorage("current", currentSongRef.current.id);
+      }
+
       if (isPlayAllSong.current) {
          isPlayAllSong.current = false;
          return setStatus("paused");
-      }
-
-      if (currentSongRef.current) {
-         setLocalStorage("current", currentSongRef.current.id);
       }
 
       if (firstTimeSongLoaded.current) {
@@ -165,8 +165,10 @@ export default function useControl({
 
          setStatus("paused");
 
-         const currentTime = storage["current_time"] || 0;
-         updateTimeProgressEle(currentTime);
+         const localTime = storage["current_time"] || 0;
+         // const localSong = storage["current"];
+
+         updateTimeProgressEle(localTime);
          return;
       }
 
@@ -182,7 +184,12 @@ export default function useControl({
          if (songs.length) {
             const index = songs.findIndex((s) => s.id === current);
             if (index !== -1) setCurrentSong(index);
+            else {
+               firstTimeSongLoaded.current = false;
+            }
          }
+      } else {
+         firstTimeSongLoaded.current = false;
       }
    }, []);
 
@@ -214,6 +221,10 @@ export default function useControl({
 
       return () => {
          resetUI();
+
+         if (currentIndexRef.current !== null && firstTimeSongLoaded.current) {
+            firstTimeSongLoaded.current = false;
+         }
       };
    }, [currentIndex]);
 

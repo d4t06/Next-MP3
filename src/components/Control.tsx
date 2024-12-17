@@ -43,7 +43,6 @@ export default function Control({ audioEle }: Props) {
    const _handlePlayPause = () => {
       if (currentIndex === null) {
          setCurrentSong(Math.round(Math.random() * songs.length));
-         handlePlayPause();
       } else handlePlayPause();
    };
 
@@ -79,7 +78,7 @@ export default function Control({ audioEle }: Props) {
                   <div className="px-2">
                      <div
                         className={` ${getShowHideClass(
-                           tab === "playing" || tab === "lyric"
+                           tab === "playing" || tab === "lyric",
                         )} `}
                      >
                         <SongInfoAndLyric />
@@ -103,7 +102,7 @@ export default function Control({ audioEle }: Props) {
                            <div ref={currentTimeRef}>0:00</div>
                            <div>
                               {formatTime(
-                                 currentSongRef.current?.duration || 0
+                                 currentSongRef.current?.duration || 0,
                               )}
                            </div>
                         </div>
