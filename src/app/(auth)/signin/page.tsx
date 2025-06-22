@@ -5,8 +5,7 @@ import { redirect } from "next/navigation";
 
 export default async function SignInPage() {
    const session = await getServerSession(nextAuthOptions);
-
-   if (session) return redirect("/dashboard");
+   if (session?.token) return redirect("/dashboard");
 
    return (
       <>

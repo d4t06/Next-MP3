@@ -1,40 +1,6 @@
 import { API_ENDPOINT } from "@/share/utils/appHelper";
 import { NextAuthOptions } from "next-auth";
-import { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
-
-const CLIENT_TOKEN_EXPIRE = 60 * 60; //1h
-
-async function refreshToken(tokenData: JWT) {
-   try {
-      console.log(">>> refresh token");
-
-      const res = await fetch(`${API_ENDPOINT}/auth/refresh`, {
-         method: "POST",
-         body: JSON.stringify({ refresh_token: tokenData.refreshToken }),
-         headers: {
-            "Content-type": "application/json",
-         },
-      });
-
-      const payload = await res.json();
-
-      if (!payload.data) throw new Error();
-
-      return {
-         ...tokenData,
-         tokenExpired: Date.now() + CLIENT_TOKEN_EXPIRE * 1000,
-         token: payload.data.token,
-         error: "",
-      };
-   } catch (error) {
-      console.log(">>> refresh token error");
-      return {
-         ...tokenData,
-         error: "RefreshAccessTokenError",
-      };
-   }
-}
 
 export const nextAuthOptions: NextAuthOptions = {
    providers: [
@@ -61,49 +27,59 @@ export const nextAuthOptions: NextAuthOptions = {
                },
             });
 
-            if (!res.ok) return null;
+            if (!res.ok) throw new Error("");
 
             const payload = await res.json();
 
-            return payload.data;
+            return payload;
          },
       }),
    ],
    session: {
-      strategy: "jwt",
+      maxAge: 60 * 60 * 24 * 29,
    },
 
    pages: {
       signIn: "/signin",
    },
-   /** this callbacks list run twice when the first them user meet the page
-    * but the the second one can't get the date return from the first one
-    * so this if statement in jwt below don't work
-    */
    callbacks: {
-      async jwt({ token, user }) {
-         // if (token.error) return token; // not work
+      // token for persist auth
+      // user is the response from login method
+      // session is payload when call update()
+      async jwt({ token, user: loginPayload, trigger, session }) {
+         console.log(
+            ">>> jwt, token:",
+            token,
+            "loginPayload: ",
+            loginPayload,
+            "session: ",
+            session,
+            "trigger: ",
+            trigger,
+         );
 
-         /** only when logging
-          * user is data return from authorize function above */
-         if (user)
-            return {
-               token: user.token,
-               refreshToken: user.refresh_token,
-               error: "",
-               tokenExpired: Date.now() + CLIENT_TOKEN_EXPIRE * 1000,
-            } as JWT;
+         switch (trigger) {
+            case "signIn":
+               return {
+                  refreshToken: loginPayload.data.refresh_token,
+                  token: loginPayload.data.token,
+               };
 
-         if (token.tokenExpired > Date.now()) return { ...token, error: "" };
+            case "update": {
+               Object.assign(token, session);
+               break;
+            }
+         }
 
-         return refreshToken(token);
+         return token;
       },
 
-      // store client session context
+      // for client side
       async session({ token, session }) {
+         console.log(">>> session, token:", token, "session: ", session);
+
          session.token = token.token;
          session.refreshToken = token.refreshToken;
-         session.error = token.error;
 
          return session;
       },

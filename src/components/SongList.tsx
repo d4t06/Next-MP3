@@ -4,6 +4,7 @@ import useAutoSwitchTab from "@/hooks/useAutoSwitchTab";
 import { ElementRef, useRef } from "react";
 import SongItem from "./SongItem";
 import useSongListEvent from "@/hooks/useSongListEvent";
+import useScrollToSongWhenKeyPress from "@/hooks/useScrollToSongWhenKeyPress";
 
 type Props = {
    songs: Song[];
@@ -13,6 +14,7 @@ export default function SongList({ songs }: Props) {
    const songListContainer = useRef<ElementRef<"div">>(null);
 
    useSongListEvent({ songListContainer });
+   useScrollToSongWhenKeyPress();
 
    useAutoSwitchTab({ songListContainer });
 

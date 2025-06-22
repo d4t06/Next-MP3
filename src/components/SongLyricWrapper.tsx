@@ -1,6 +1,6 @@
 import useGetLyic from "@/hooks/useGetLyric";
-import SongLyric from "./SongLyric";
-import { Center } from "@/share/_components/Center";
+import SongLyric from "./song-lyric/SongLyric";
+import { Center } from "@/share/_components";
 import { ArrowPathIcon } from "@heroicons/react/16/solid";
 
 export default function SongLyricWrapper() {

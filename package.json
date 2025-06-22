@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
+    "@imagekit/react": "^5.0.1",
     "axios": "^1.7.7",
     "class-variance-authority": "^0.7.0",
-    "firebase": "^10.13.1",
     "music-metadata": "^10.3.1",
     "next": "14.2.7",
     "next-auth": "^4.24.7",

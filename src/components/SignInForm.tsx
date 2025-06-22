@@ -81,7 +81,9 @@ export default function SignInForm() {
                      Sign In
                   </Button>
 
-                  <p className="text-right text-sm">No have account jet?, get out!</p>
+                  <p className="text-right text-sm">
+                     No have account jet?, get out!
+                  </p>
                </form>
             </Frame>
          </div>

@@ -29,7 +29,7 @@ export default function RootLayout({
                      font.style.fontFamily +
                      "," +
                      defaultTheme.fontFamily.sans.join(","),
-                  backgroundImage: `url(${bgImage.src})`,
+                  // backgroundImage: `url(${bgImage.src})`,
                }}
                className={`bg-[#fdf6e3]`}
             >

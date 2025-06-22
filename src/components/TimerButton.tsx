@@ -1,10 +1,8 @@
 import Button from "@/share/_components/Button";
 import { ClockIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useRef } from "react";
-import Modal from "./Modal";
 import useTimer from "@/hooks/useTimer";
-import { ModalRef } from "@/hooks/useModal";
-import Tooltip from "@/share/_components/Tooltip";
+import { Tooltip, ModalRef, Modal } from "@/share/_components";
 
 type Props = {
    isPlaying: boolean;
@@ -74,7 +72,9 @@ export default function TimerButton({ isPlaying }: Props) {
 
          <Modal ref={modalRef}>
             <div className="w-[300px] max-w-[85vw]">
-               <div className="text-xl font-semibold text-amber-800">Sleep timer</div>
+               <div className="text-xl font-semibold text-amber-800">
+                  Sleep timer
+               </div>
                <div className="mt-3 flex flex-wrap -ml-2 pb-2">
                   {renderItems}
                </div>

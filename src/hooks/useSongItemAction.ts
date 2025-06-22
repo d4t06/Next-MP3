@@ -1,5 +1,4 @@
 import { runRevalidateTag } from "@/app/actions";
-import { deleteFile } from "@/share/services/firebaseServices";
 import { API_ENDPOINT, sleep } from "@/share/utils/appHelper";
 import { useToast } from "@/stores/toastContext";
 import { useSession } from "next-auth/react";
@@ -13,7 +12,7 @@ export default function useSongItemAction() {
 
    const { data: session } = useSession();
    const { setErrorToast, setSuccessToast } = useToast();
-   const request = useInterceptRequest();
+   const $fetch = useInterceptRequest();
 
    type Delete = {
       variant: "delete";
@@ -30,23 +29,20 @@ export default function useSongItemAction() {
       try {
          if (!session) throw new Error("");
 
-         const headers = new Headers();
-         headers.set("Authorization", `Bearer ${session?.token}`);
-
          setIsFetching(true);
-
-         if (process.env.NODE_ENV === "development") await sleep(500);
 
          switch (props.variant) {
             case "delete":
-               await request.delete(`${SONG_URL}/${props.song.id}`);
-               await deleteFile({ filePath: props.song.song_file_path });
+               await Promise.all([
+                  $fetch.delete(`${SONG_URL}/${props.song.id}`),
+                  $fetch.delete(`/image/${props.song.song_file_path}`),
+               ]);
 
                setSuccessToast(`'${props.song.name}' deleted`);
                break;
 
             case "edit":
-               await request.put(`${SONG_URL}/${props.id}`, props.song);
+               await $fetch.put(`${SONG_URL}/${props.id}`, props.song);
 
                setSuccessToast(`Edit song successful`);
                break;

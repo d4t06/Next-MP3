@@ -1,7 +1,5 @@
 "use client";
 import useControl from "@/hooks/useControl";
-import Button from "@/share/_components/Button";
-import Frame from "@/share/_components/Frame";
 import { formatTime, getShowHideClass } from "@/share/utils/appHelper";
 import {
    ArrowPathIcon,
@@ -16,7 +14,7 @@ import { ElementRef, useRef } from "react";
 import { VolumeButton } from "./VolumeButton";
 import TimerButton from "./TimerButton";
 import SongListContainer from "./SongList";
-import Tooltip from "@/share/_components/Tooltip";
+import { Tooltip, Button, Frame } from "@/share/_components";
 import SongInfoAndLyric from "./SongInfoAndLyric";
 import { usePlayerContext } from "@/stores/PlayerContext";
 

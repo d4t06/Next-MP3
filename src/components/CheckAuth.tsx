@@ -1,6 +1,6 @@
 "use client";
 
-import { update } from "firebase/database";
+// import { update } from "firebase/database";
 import { Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { signOut, useSession } from "next-auth/react";
@@ -14,17 +14,17 @@ type Props = {
    session?: Session;
 };
 export default function CheckAuth({ session: serverSession }: Props) {
-   const { data: clientSession, status, update } = useSession();
-   const router = useRouter();
+   // const { data: clientSession, status, update } = useSession();
+   // const router = useRouter();
 
-   const targetSession = serverSession || clientSession;
+   // const targetSession = serverSession || clientSession;
 
-   const handleLogout = async () => {
-      if (targetSession?.error) {
-         await signOut({ redirect: false });
-         return router.push("/signin");
-      }
-   };
+   // const handleLogout = async () => {
+   //    if (targetSession?.error) {
+   //       await signOut({ redirect: false });
+   //       return router.push("/signin");
+   //    }
+   // };
 
    // // Polling the session every 1 hour
    // useEffect(() => {
@@ -32,11 +32,11 @@ export default function CheckAuth({ session: serverSession }: Props) {
    //    return () => clearInterval(interval);
    // }, [update]);
 
-   useEffect(() => {
-      if (status === "loading") return;
+   // useEffect(() => {
+   //    if (status === "loading") return;
 
-      handleLogout();
-   }, [serverSession, clientSession, handleLogout]);
+   //    handleLogout();
+   // }, [serverSession, clientSession, handleLogout]);
 
    return <></>;
 }

@@ -1,78 +1,86 @@
-"use client";
 import { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import axios from "axios";
-import { API_ENDPOINT } from "@/share/utils/appHelper";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/stores/toastContext";
+import { request } from "@/share/utils/request";
 
-const CLIENT_TOKEN_EXPIRE = 10;
+type AuthResponse = {
+   data: {
+      token: string;
+   };
+};
 
-const request = axios.create({
-   baseURL: API_ENDPOINT,
-   headers: { "Content-Type": "application/json" },
-});
+const REFRESH_URL =
+   (process.env.NEXT_PUBLIC_API_ENDPOINT ||
+      "https://nest-mobile.vercel.app/api") + "/auth/refresh";
 
-const useInterceptRequest = () => {
-   // hooks
-   const { data: session, update } = useSession();
+export function useRefreshToken() {
+   const { update, data: user } = useSession();
+   const { setErrorToast } = useToast();
+
+   const refresh = async () => {
+      try {
+         if (!user) throw new Error("No user");
+
+         const response = await axios.post(REFRESH_URL, {
+            refresh_token: user.refreshToken,
+         });
+
+         const payload = response.data as AuthResponse;
+
+         await update({ token: payload.data.token });
+
+         return payload.data.token;
+      } catch (error: any) {
+         console.log({ message: error });
+
+         setErrorToast();
+      }
+   };
+   return refresh;
+}
+
+export default function useInterceptRequest() {
+   const refresh = useRefreshToken();
+   const { data: user } = useSession();
 
    useEffect(() => {
-      if (!session || !session.token) return;
+      if (!user) return;
       const requestIntercept = request.interceptors.request.use(
          (config) => {
             // Do something before request is sent
             if (!config.headers["Authorization"]) {
-               config.headers["Authorization"] = `Bearer ${session.token}`;
+               config.headers["Authorization"] = `Bearer ${user.token}`;
             }
 
             return config;
          },
-         (err) => Promise.reject(err) // Do something with response error
+         (err) => Promise.reject(err), // Do something with response error
       );
 
       const responseIntercept = request.interceptors.response.use(
          (response) => response, // Do something with response data
 
          async (err) => {
-            try {
-               const prevRequest = err?.config;
+            // Do something with response error
+            const prevRequest = err?.config;
 
-               if (err?.response?.status === 401 && !prevRequest.sent) {
-                  console.log(">>> refresh token");
-                  prevRequest.sent = true;
-                  const payload = await axios.post(
-                     API_ENDPOINT + "/auth/refresh",
-                     { refresh_token: session.refreshToken }
-                  );
+            if (err?.response?.status === 401 && !prevRequest?.sent) {
+               prevRequest.sent = true;
+               const newToken = await refresh();
+               prevRequest.headers["Authorization"] = `Bearer ${newToken}`;
 
-                  if (!payload.data.data.token) return Promise.reject(err);
-
-                  prevRequest.headers[
-                     "Authorization"
-                  ] = `Bearer ${payload.data.data.token}`;
-
-                  await update({
-                     token: payload.data.data.token,
-                     tokenExpired: Date.now() + CLIENT_TOKEN_EXPIRE * 1000,
-                  });
-
-                  return request(prevRequest);
-               }
-            } catch (error) {
-               console.log(">>> refresh token error");
-               await update({ error: "RefreshAccessTokenError" });
+               return request(prevRequest);
             }
-
             return Promise.reject(err);
-         }
+         },
       );
 
       return () => {
          request.interceptors.request.eject(requestIntercept);
          request.interceptors.response.eject(responseIntercept);
       };
-   }, [session]);
+   }, [user, refresh]);
 
    return request;
-};
-
-export default useInterceptRequest;
+}

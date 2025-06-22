@@ -1,11 +1,8 @@
-import Control from "@/components/Control";
-import Button from "@/share/_components/Button";
 import { getServerSession } from "next-auth";
 import { nextAuthOptions } from "../api/auth/[...nextauth]/authOption";
 import { ComputerDesktopIcon } from "@heroicons/react/24/outline";
 import { getAllSong } from "@/share/services/songService";
-import NoResult from "@/components/NoResult";
-import Tooltip from "@/share/_components/Tooltip";
+import { NoResult, Button, Tooltip } from "@/share/_components";
 import Player from "@/components/Player";
 import PlayerProvider from "@/stores/PlayerContext";
 

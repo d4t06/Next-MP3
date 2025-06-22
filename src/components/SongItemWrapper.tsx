@@ -25,7 +25,7 @@ export default function SongItemWrapper({ children, song, index }: Props) {
    return (
       <div
          onClick={handleSetSong}
-         date-first-letter={convertToEn(song.name.charAt(0))}
+         data-first_letter={convertToEn(song.name.charAt(0))}
          className={`${
             active ? "active-song-item" : ""
          } flex w-full font-medium justify-between items-center rounded-md p-2  ${

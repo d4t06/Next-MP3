@@ -1,4 +1,4 @@
-import { Center } from "@/share/_components/Center";
+import { Center } from "@/share/_components";
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 
 export default function Loading() {

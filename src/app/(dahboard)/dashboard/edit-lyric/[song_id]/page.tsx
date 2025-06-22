@@ -1,11 +1,9 @@
 import { nextAuthOptions } from "@/app/api/auth/[...nextauth]/authOption";
-import LyricEditor from "@/components/LyricEditor";
+import LyricEditor from "./_components/LyricEditor";
 import * as songService from "@/share/services/songService";
-import EditLyricContextProvider from "@/stores/editLyricContext";
+import EditLyricContextProvider from "./_components/EditLyricContext";
 import { getServerSession } from "next-auth";
-// import Error from "next/error";
 import { redirect } from "next/navigation";
-import CheckAuth from "@/components/CheckAuth";
 
 type Props = {
    params: { song_id: string };
@@ -20,7 +18,7 @@ export default async function EditSongLyric(props: Props) {
 
    return (
       <EditLyricContextProvider>
-         <CheckAuth />
+         {/* <CheckAuth /> */}
          <div className="container h-full max-w-[800px]">
             <LyricEditor songWithLyric={songWithLyric} />
          </div>
