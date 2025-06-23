@@ -3,6 +3,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/stores/toastContext";
 import { request } from "@/share/utils/request";
+import { API_ENDPOINT } from "@/share/utils/appHelper";
 
 type AuthResponse = {
    data: {
@@ -10,9 +11,7 @@ type AuthResponse = {
    };
 };
 
-const REFRESH_URL =
-   (process.env.NEXT_PUBLIC_API_ENDPOINT ||
-      "https://nest-mobile.vercel.app/api") + "/auth/refresh";
+const REFRESH_URL = API_ENDPOINT + "/auth/refresh";
 
 export function useRefreshToken() {
    const { update, data: user } = useSession();
