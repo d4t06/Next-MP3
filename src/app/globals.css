@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+   .my-input {
+      @apply w-full bg-amber-900 text-amber-100 py-2 rounded-lg outline-none px-2 py-1.5;
+      
+   }
+}
+
 button[disabled],
 a[aria-disabled="true"],
 .disabled {

@@ -14,6 +14,7 @@ const useEditLyric = () => {
    const [songLyricId, setSongLyricId] = useState<number | null>(null);
 
    const start = useRef(0);
+   const audioRef = useRef<HTMLAudioElement>(null);
 
    const updateLyric = (index: number, text: string) => {
       setLyrics((prev) => {
@@ -22,6 +23,8 @@ const useEditLyric = () => {
 
          return [...prev];
       });
+
+      setIsChanged(true);
    };
 
    return {
@@ -45,6 +48,7 @@ const useEditLyric = () => {
       start,
       isPreview,
       setIsPreview,
+      audioRef,
    };
 };
 

@@ -27,8 +27,8 @@ export default function SyncLyricModal({ closeModal }: Props) {
 
          newLyrics.forEach((_item, index) => {
             if (index >= currentLyricIndex) {
-               newLyrics[index].start = newLyrics[index].start + time;
-               newLyrics[index].end = newLyrics[index].end + time;
+               newLyrics[index].start = +(newLyrics[index].start + time).toFixed(1);
+               newLyrics[index].end = +(newLyrics[index].end + time).toFixed(1);
             }
          });
 
@@ -44,9 +44,9 @@ export default function SyncLyricModal({ closeModal }: Props) {
       <ModalContentWrapper>
          <ModalHeader title="Sync lyric" close={closeModal} />
 
-         <input ref={inputRef} type="number" />
+         <input ref={inputRef} type="number" className="my-input text-xl" />
 
-         <Button onClick={handleSyncLyric}>Save</Button>
+         <Button className="mt-5" onClick={handleSyncLyric}>Save</Button>
       </ModalContentWrapper>
    );
 }

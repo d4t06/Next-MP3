@@ -8,7 +8,6 @@ import {
 import parseSongFromFile from "@/share/utils/parseSong";
 import { useToast } from "@/stores/toastContext";
 import { upload } from "@imagekit/react";
-import { useSession } from "next-auth/react";
 import { ChangeEvent, useState } from "react";
 
 type Props = {
@@ -66,7 +65,7 @@ export default function useUploadImage({ toggleModal }: Props) {
             const file = fileLists[i];
 
             const getAuthKeyRes =
-               await $fetch.get<ImageKitAuthKeys>("/image/auth");
+               await $fetch.get<ImageKitAuthKeys>("/storage/auth");
             const { expire, publicKey, signature, token } = getAuthKeyRes.data;
 
             const { url, fileId } = await upload({
@@ -95,6 +94,8 @@ export default function useUploadImage({ toggleModal }: Props) {
          console.log(error);
          setErrorToast("Upload song failed");
       } finally {
+         e.target.value = "";
+
          setIsUploading(false);
          toggleModal();
          setSongSchemas([]);

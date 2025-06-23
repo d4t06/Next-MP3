@@ -47,17 +47,6 @@ export const nextAuthOptions: NextAuthOptions = {
       // user is the response from login method
       // session is payload when call update()
       async jwt({ token, user: loginPayload, trigger, session }) {
-         console.log(
-            ">>> jwt, token:",
-            token,
-            "loginPayload: ",
-            loginPayload,
-            "session: ",
-            session,
-            "trigger: ",
-            trigger,
-         );
-
          switch (trigger) {
             case "signIn":
                return {
@@ -76,8 +65,6 @@ export const nextAuthOptions: NextAuthOptions = {
 
       // for client side
       async session({ token, session }) {
-         console.log(">>> session, token:", token, "session: ", session);
-
          session.token = token.token;
          session.refreshToken = token.refreshToken;
 

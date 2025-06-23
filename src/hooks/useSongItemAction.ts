@@ -35,7 +35,7 @@ export default function useSongItemAction() {
             case "delete":
                await Promise.all([
                   $fetch.delete(`${SONG_URL}/${props.song.id}`),
-                  $fetch.delete(`/image/${props.song.song_file_path}`),
+                  $fetch.delete(`/storage/${props.song.song_file_path}`),
                ]);
 
                setSuccessToast(`'${props.song.name}' deleted`);

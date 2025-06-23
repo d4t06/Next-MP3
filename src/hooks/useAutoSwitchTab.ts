@@ -29,7 +29,10 @@ export default function useAutoSwitchTab({ songListContainer }: Props) {
    useEffect(() => {
       if (!someThingToTrigger) return;
 
-      timerId.current = setTimeout(() => setTab("playing"), 5000);
+      console.log(tab);
+
+      if (tab === "queue")
+         timerId.current = setTimeout(() => setTab("playing"), 5000);
 
       return () => {
          clearTimeout(timerId.current);
@@ -37,6 +40,6 @@ export default function useAutoSwitchTab({ songListContainer }: Props) {
    }, [someThingToTrigger]);
 
    useEffect(() => {
-      if (tab === "queue") setSomeThingToTrigger(Math.random);
+      setSomeThingToTrigger(Math.random);
    }, [tab]);
 }

@@ -22,7 +22,6 @@ export default function useExportLyric() {
       switch (type) {
          case "json":
             handleDownload(JSON.stringify(lyrics, null, 2), "json");
-
             break;
 
          case "srt": {
@@ -33,7 +32,6 @@ export default function useExportLyric() {
                const seconds = Math.floor(time % 60);
 
                const mASec = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
                const [_s, decimal = "0"] = time.toString().split(".");
 
                return `00:${mASec},${+decimal * 100}`;

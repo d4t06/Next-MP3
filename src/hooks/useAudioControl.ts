@@ -3,8 +3,6 @@ import { useEffect, useRef, useState } from "react";
 
 type Props = {
    audioEle: HTMLAudioElement;
-   // progressLineRef?: RefObject<HTMLDivElement>;
-   // currentTimeRef?: RefObject<HTMLDivElement>;
 };
 
 export type Status = "playing" | "paused" | "waiting" | "loading" | "error";
@@ -44,16 +42,16 @@ export default function useAudioControl({ audioEle }: Props) {
       setStatus("paused");
    };
 
-   // const handleWaiting = () => {
-   //    setStatus("waiting");
-   // };
-
    const handleError = () => {
       setStatus("error");
    };
 
    const handleLoadStart = () => {
       setStatus("loading");
+   };
+
+   const handleLoaded = () => {
+      setStatus("paused");
 
       if (durationRef.current) {
          durationRef.current.innerText = formatTime(audioEle.duration);
@@ -98,6 +96,7 @@ export default function useAudioControl({ audioEle }: Props) {
       audioEle.addEventListener("play", handlePlaying);
       // audioEle.addEventListener("waiting", handleWaiting);
       audioEle.addEventListener("loadstart", handleLoadStart);
+      audioEle.addEventListener("loadedmetadata", handleLoaded);
       audioEle.addEventListener("error", handleError);
 
       if (progressLineRef?.current)
@@ -108,6 +107,7 @@ export default function useAudioControl({ audioEle }: Props) {
          audioEle.removeEventListener("play", handlePlaying);
          // audioEle.removeEventListener("waiting", handleWaiting);
          audioEle.removeEventListener("loadstart", handleLoadStart);
+         audioEle.removeEventListener("loadedmetadata", handleLoaded);
          audioEle.removeEventListener("error", handleError);
 
          if (progressLineRef?.current)

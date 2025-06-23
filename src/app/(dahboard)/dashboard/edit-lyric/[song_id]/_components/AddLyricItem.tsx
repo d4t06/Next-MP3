@@ -1,6 +1,10 @@
 import { useRef, useState, FormEvent, useEffect } from "react";
 import { useEditLyricContext } from "./EditLyricContext";
-import { PencilSquareIcon } from "@heroicons/react/16/solid";
+import {
+   CheckIcon,
+   PencilSquareIcon,
+   XMarkIcon,
+} from "@heroicons/react/16/solid";
 import { formatTime } from "@/share/utils/appHelper";
 import { LyricStatus } from "@/components/song-lyric/LyricItem";
 
@@ -22,17 +26,17 @@ export default function AddLyricItem({
    seek,
 }: Props) {
    const [isEditText, setIdEditText] = useState(false);
-   const [text, setText] = useState(lyric.text);
+   // const [text, setText] = useState(lyric.text);
 
    const textRef = useRef<HTMLTextAreaElement>(null);
 
    const { updateLyric } = useEditLyricContext();
 
-   const handleEdit = (e: FormEvent) => {
-      e.preventDefault();
-
-      updateLyric(index, text);
-      setIdEditText(false);
+   const handleEdit = () => {
+      if (textRef.current) {
+         updateLyric(index, textRef.current.value);
+         setIdEditText(false);
+      }
    };
 
    const classes = {
@@ -40,13 +44,14 @@ export default function AddLyricItem({
    };
 
    useEffect(() => {
-      if (isEditText) {
+      if (isEditText && textRef.current) {
+         textRef.current.value = lyric.text;
          textRef.current?.focus();
       }
    }, [isEditText]);
 
    return (
-      <div className="last:mb-10">
+      <div className="last:pb-10">
          <button className={`text-white`} onClick={() => seek(lyric.start)}>
             {formatTime(lyric.start)}
          </button>
@@ -69,15 +74,22 @@ export default function AddLyricItem({
          )}
 
          {isEditText && (
-            <form action="" onSubmit={handleEdit}>
-               <textarea
-                  onBlur={() => setIdEditText(false)}
-                  value={text}
-                  onChange={(e) => setText(e.target.value)}
-                  ref={textRef}
-                  className={classes.input}
-               />
-            </form>
+            <div className="py-2">
+               <textarea ref={textRef} className={classes.input} />
+
+               <div className="ml-1">
+                  <button className=" flex-shrink-0" onClick={handleEdit}>
+                     <CheckIcon className="w-5" />
+                  </button>
+
+                  <button
+                     className=" flex-shrink-0"
+                     onClick={() => setIdEditText(false)}
+                  >
+                     <XMarkIcon className="w-5" />
+                  </button>
+               </div>
+            </div>
          )}
       </div>
    );

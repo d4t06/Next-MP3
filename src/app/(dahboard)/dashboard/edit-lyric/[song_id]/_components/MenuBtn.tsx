@@ -10,7 +10,6 @@ import {
    VertialMenuWrapper,
    PopupContent,
    PopupTrigger,
-   TriggerRef,
    Popup,
 } from "@/share/_components";
 
@@ -24,6 +23,7 @@ import {
 import useImportLyric from "../_hooks/useImportLyric";
 import EditStringLyicModal from "./EditStringLyricModal";
 import SyncLyricModal from "./SyncLyricModal";
+import { useEditLyricContext } from "./EditLyricContext";
 
 type Modal = "lyric" | "tutorial" | "song-beat" | "sync" | "export";
 
@@ -32,10 +32,10 @@ type Props = {
 };
 
 export default function MenuBtn({ pause }: Props) {
+   const { isPreview, lyrics } = useEditLyricContext();
    const [modal, setModal] = useState<Modal | "">("");
 
    const modalRef = useRef<ModalRef>(null);
-   const triggerRef = useRef<TriggerRef>(null);
 
    const { handleInputChange } = useImportLyric();
    const { exportLyric } = useExportLyric();
@@ -44,50 +44,9 @@ export default function MenuBtn({ pause }: Props) {
       pause();
       setModal(m);
       modalRef.current?.open();
-      triggerRef.current?.close();
    };
 
    const closeModal = () => modalRef.current?.close();
-
-   const renderModal = () => {
-      if (!modal) return;
-
-      switch (modal) {
-         case "lyric":
-            return <EditStringLyicModal closeModal={closeModal} />;
-         case "sync":
-            return <SyncLyricModal closeModal={closeModal} />;
-
-         case "export":
-            return (
-               <ModalContentWrapper>
-                  <ModalHeader title="Export" close={closeModal} />
-
-                  <div className="flex">
-                     <Button
-                        onClick={() =>
-                           exportLyric({
-                              type: "json",
-                           })
-                        }
-                     >
-                        JSON
-                     </Button>
-                     <Button
-                        onClick={() =>
-                           exportLyric({
-                              type: "srt",
-                           })
-                        }
-                        className="ml-2"
-                     >
-                        SRT
-                     </Button>
-                  </div>
-               </ModalContentWrapper>
-            );
-      }
-   };
 
    return (
       <>
@@ -99,7 +58,7 @@ export default function MenuBtn({ pause }: Props) {
          />
 
          <Popup appendOnPortal>
-            <PopupTrigger ref={triggerRef}>
+            <PopupTrigger>
                <Button
                   size={"clear"}
                   className={`h-[36px] w-[36px] justify-center rounded-full mt-2`}
@@ -111,25 +70,31 @@ export default function MenuBtn({ pause }: Props) {
             <PopupContent origin="top right">
                <MenuContentWrapper className="w-[140px]">
                   <VertialMenuWrapper>
-                     <button onClick={() => openModal("lyric")}>
-                        <PencilIcon />
+                     {!isPreview && (
+                        <button onClick={() => openModal("lyric")}>
+                           <PencilIcon />
 
-                        <span>Edit lyric</span>
+                           <span>Edit lyric</span>
+                        </button>
+                     )}
+
+                     {isPreview && !!lyrics.length && (
+                        <button onClick={() => openModal("sync")}>
+                           <ArrowPathIcon />
+
+                           <span>Sync lyric</span>
+                        </button>
+                     )}
+
+                     <button className="!p-0">
+                        <label
+                           className="flex px-3 py-2 w-full cursor-pointer items-center space-x-2"
+                           htmlFor="import_lyric"
+                        >
+                           <ArrowDownTrayIcon />
+                           <span>Import</span>
+                        </label>
                      </button>
-
-                     <button onClick={() => openModal("sync")}>
-                        <ArrowPathIcon />
-
-                        <span>Sync lyric</span>
-                     </button>
-
-                     <label
-                        className="flex cursor-pointer items-center space-x-2"
-                        htmlFor="import_lyric"
-                     >
-                        <ArrowDownTrayIcon />
-                        <span>Import</span>
-                     </label>
 
                      <button onClick={() => openModal("export")}>
                         <ArrowTopRightOnSquareIcon />
@@ -140,7 +105,31 @@ export default function MenuBtn({ pause }: Props) {
             </PopupContent>
          </Popup>
 
-         <Modal ref={modalRef}>{renderModal()}</Modal>
+         <Modal ref={modalRef}>
+            {modal === "lyric" && (
+               <EditStringLyicModal closeModal={closeModal} />
+            )}
+
+            {modal === "sync" && <SyncLyricModal closeModal={closeModal} />}
+
+            {modal === "export" && (
+               <ModalContentWrapper>
+                  <ModalHeader title="Export" close={closeModal} />
+
+                  <div className="flex">
+                     <Button onClick={() => exportLyric({ type: "json" })}>
+                        JSON
+                     </Button>
+                     <Button
+                        className="ml-2"
+                        onClick={() => exportLyric({ type: "srt" })}
+                     >
+                        SRT
+                     </Button>
+                  </div>
+               </ModalContentWrapper>
+            )}
+         </Modal>
       </>
    );
 }

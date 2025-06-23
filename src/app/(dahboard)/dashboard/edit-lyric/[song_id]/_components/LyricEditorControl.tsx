@@ -13,6 +13,7 @@ import {
 import { forwardRef, Ref, useImperativeHandle, useRef } from "react";
 import {
    InputModal,
+   MenuContentWrapper,
    Modal,
    ModalRef,
    Popup,
@@ -23,19 +24,16 @@ import { useEditLyricContext } from "./EditLyricContext";
 import { useLyricAction } from "../_hooks/useEditLyricAction";
 import MenuBtn from "./MenuBtn";
 
-type Props = {
-   audioEle: HTMLAudioElement;
-};
-
 export type LyricEditorControlRef = {
    seek: (second: number) => void;
    pause: () => void;
 };
 
-function LyricEditorControl(
-   { audioEle }: Props,
-   ref: Ref<LyricEditorControlRef>,
-) {
+function LyricEditorControl({}, ref: Ref<LyricEditorControlRef>) {
+   const { audioRef } = useEditLyricContext();
+
+   if (!audioRef.current) return <></>;
+
    const modalRef = useRef<ModalRef>(null);
 
    const {
@@ -46,6 +44,7 @@ function LyricEditorControl(
       setIsPreview,
       isPreview,
    } = useEditLyricContext();
+   
    const {
       handlePlayPause,
       pause,
@@ -58,7 +57,7 @@ function LyricEditorControl(
       currentTimeRef,
       durationRef,
    } = useAudioControl({
-      audioEle,
+      audioEle: audioRef.current,
    });
 
    const {
@@ -70,7 +69,7 @@ function LyricEditorControl(
       changeSpeed,
       changeVolume,
    } = useLyricAction({
-      audioEle,
+      audioEle: audioRef.current,
       isClickPlay,
    });
 
@@ -117,8 +116,9 @@ function LyricEditorControl(
                   </PopupTrigger>
 
                   <PopupContent className="top-[calc(100%+8px)] left-0 z-[9]">
-                     <div
-                        className={`relative ${classes.arrow} w-[220px] relative p-2 rounded-lg text-amber-800 bg-amber-100 border-[2px] border-amber-800`}
+                     <MenuContentWrapper
+                        noStyle
+                        className="w-[220px] text-amber-800 bg-amber-100 p-2 border-amber-800"
                      >
                         <div className="space-y-[6px]">
                            <div className={`flex space-x-1`}>
@@ -151,7 +151,7 @@ function LyricEditorControl(
                               />
                            </div>
                         </div>
-                     </div>
+                     </MenuContentWrapper>
                   </PopupContent>
                </Popup>
 
@@ -167,7 +167,7 @@ function LyricEditorControl(
                   <span>Add</span>
                </Button>
                <Button
-                  disabled={!lyrics.length}
+                  disabled={!lyrics.length || !baseLyric}
                   onClick={removeLyric}
                   className={classes.button}
                >
@@ -194,14 +194,6 @@ function LyricEditorControl(
                   <EyeIcon className="w-6" />
                   <span>{!isPreview ? "Preview" : "Edit"}</span>
                </Button>
-
-               {/* <Button
-               onClick={() => modalRef.current?.toggle()}
-               className={classes.button}
-            >
-               <DocumentTextIcon className="w-6" />
-               <span>Edit lyrics</span>
-            </Button> */}
             </div>
 
             <div className="ml-5">

@@ -5,23 +5,27 @@ import AddLyricItem from "./AddLyricItem";
 import LyricItem, { LyricStatus } from "@/components/song-lyric/LyricItem";
 import useLyric from "@/components/song-lyric/useSongLyric";
 import { setLocalStorage } from "@/share/utils/appHelper";
+import useEditorList from "../_hooks/useEditorList";
 
 type Props = {
    controlRef: RefObject<LyricEditorControlRef>;
-   audioEle: HTMLAudioElement;
 };
 
-export default function LyricEditorList({ controlRef, audioEle }: Props) {
-   const { baseLyricArr, lyrics, currentLyricIndex, isPreview } =
+export default function LyricEditorList({ controlRef }: Props) {
+   const { baseLyricArr, lyrics, audioRef, currentLyricIndex, isPreview } =
       useEditLyricContext();
+
+   if (!audioRef.current) return <></>;
 
    const ranFirstScroll = useRef(false);
 
    const { currentIndex, lyricRefs } = useLyric({
-      audioEle,
+      audioEle: audioRef.current,
       isActive: isPreview,
       lyrics,
    });
+
+   const { lyricRefs: _lyricRefs } = useEditorList();
 
    const handleSeek = (second: number) => {
       controlRef.current?.seek(second);
@@ -65,6 +69,7 @@ export default function LyricEditorList({ controlRef, audioEle }: Props) {
                            key={index}
                            status={status}
                            text={lyric}
+                           getPRef={(el) => (_lyricRefs.current[index] = el)}
                         />
                      );
                   })}
