@@ -2,21 +2,30 @@ import useSongLyric from "./useSongLyric";
 import LyricItem, { LyricStatus } from "./LyricItem";
 import { Center } from "@/share/_components";
 import { usePlayerContext } from "@/stores/PlayerContext";
+import { useEffect } from "react";
 
 type Props = {
    lyrics: Lyric[];
 };
 
 export default function SongLyric({ lyrics }: Props) {
-   const { audioEleRef, tab } = usePlayerContext();
+   const { audioEleRef, tab, currentIndex: currentSongIndex } = usePlayerContext();
 
    if (!audioEleRef.current) return <></>;
 
-   const { currentIndex, lyricRefs } = useSongLyric({
+   const { currentIndex, lyricRefs, reset } = useSongLyric({
       lyrics,
       audioEle: audioEleRef.current,
       isActive: tab === "lyric",
    });
+
+
+   useEffect(() => {
+
+      return () => {
+         reset();
+      }
+   }, [currentSongIndex])
 
    return (
       <>

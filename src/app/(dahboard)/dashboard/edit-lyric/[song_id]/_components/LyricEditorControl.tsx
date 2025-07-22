@@ -212,7 +212,7 @@ function LyricEditorControl({}, ref: Ref<LyricEditorControlRef>) {
             <div
                ref={progressLineRef}
                style={{ backgroundColor: "rgba(146, 64, 14, .3)" }}
-               className={`h-1 rounded-full w-full`}
+               className={`progress-line`}
             ></div>
 
             <div

@@ -83,6 +83,20 @@ export default function useAudioControl({ audioEle }: Props) {
          progressLineRef.current.style.background = getLinearBg(_progress);
    };
 
+   const handleSeek = (e: MouseEvent) => {
+      const node = e.target as HTMLElement;
+
+      if (progressLineRef?.current) {
+         const clientRect = node.getBoundingClientRect();
+
+         const length = e.clientX - clientRect.left;
+         const lengthRatio = length / progressLineRef.current!.offsetWidth;
+         const newSeekTime = Math.round(lengthRatio * audioEle.duration);
+
+         seek(newSeekTime);
+      }
+   };
+
    const handleTimeUpdate = () => {
       const currentTime = audioEle.currentTime;
       const ratio = currentTime / (audioEle.duration / 100);
@@ -99,8 +113,10 @@ export default function useAudioControl({ audioEle }: Props) {
       audioEle.addEventListener("loadedmetadata", handleLoaded);
       audioEle.addEventListener("error", handleError);
 
-      if (progressLineRef?.current)
+      if (progressLineRef?.current) {
          audioEle.addEventListener("timeupdate", handleTimeUpdate);
+         progressLineRef?.current.addEventListener("click", handleSeek);
+      }
 
       return () => {
          audioEle.removeEventListener("pause", handlePaused);
@@ -110,8 +126,10 @@ export default function useAudioControl({ audioEle }: Props) {
          audioEle.removeEventListener("loadedmetadata", handleLoaded);
          audioEle.removeEventListener("error", handleError);
 
-         if (progressLineRef?.current)
+         if (progressLineRef?.current) {
             audioEle.removeEventListener("timeupdate", handleTimeUpdate);
+            progressLineRef?.current.removeEventListener("click", handleSeek);
+         }
       };
    }, []);
 

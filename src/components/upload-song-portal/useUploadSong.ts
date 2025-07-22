@@ -14,12 +14,7 @@ type Props = {
    toggleModal: () => void;
 };
 
-type ImageKitAuthKeys = {
-   signature: string;
-   expire: number;
-   token: string;
-   publicKey: string;
-};
+
 
 export default function useUploadImage({ toggleModal }: Props) {
    // hooks

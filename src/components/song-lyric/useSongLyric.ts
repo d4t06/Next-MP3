@@ -1,4 +1,4 @@
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const LYRIC_TIME_BOUNDED = 0.3;
 
@@ -59,7 +59,7 @@ export default function useLyric({ audioEle, lyrics, isActive }: Props) {
 
          currentIndexRef.current = nextIndex;
          setCurrentIndex(nextIndex);
-
+         lyrics;
          if (!!lyricRefs.current[nextIndex])
             lyricRefs.current[nextIndex].scrollIntoView({
                block: "center",
@@ -97,15 +97,9 @@ export default function useLyric({ audioEle, lyrics, isActive }: Props) {
       };
    }, [lyrics, isActive]);
 
-   //  reset when change song
-   useEffect(() => {
-      return () => {
-         reset();
-      };
-   }, [lyrics]);
-
    return {
       currentIndex,
       lyricRefs,
+      reset,
    };
 }

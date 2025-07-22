@@ -92,7 +92,7 @@ function ModalContentWrapper({
  
    return (
      <div
-       className={`max-h-[80vh] max-w-[90vw] flex flex-col  ${disable ? "disabled" : ""} ${!noStyle ? "p-3 rounded-xl" : ""} bg-[#fdf6e3] ${className}`}
+       className={`max-h-[80vh] max-w-[90vw] relative overflow-hidden flex flex-col  ${disable ? "disabled" : ""} ${!noStyle ? "p-3 rounded-xl" : ""} bg-[#fdf6e3] ${className}`}
      >
        {children}
      </div>

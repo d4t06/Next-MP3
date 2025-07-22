@@ -1,8 +1,14 @@
 import { convertToEn } from "@/share/utils/appHelper";
 import { useEditLyricContext } from "../_components/EditLyricContext";
+import { useToast } from "@/stores/toastContext";
 
-export default function useExportLyric() {
+type Props = {
+   closeModal: () => void;
+};
+
+export default function useExportLyric({ closeModal }: Props) {
    const { lyrics, song } = useEditLyricContext();
+   const { setSuccessToast } = useToast();
 
    const handleDownload = (content: string, type: "srt" | "json") => {
       if (!song) return;
@@ -16,6 +22,9 @@ export default function useExportLyric() {
       a.download = `lyric_${convertToEn(song.name)}.${type}`;
       a.click();
       URL.revokeObjectURL(url);
+
+      closeModal();
+      setSuccessToast("Export lyric succesfull");
    };
 
    const exportLyric = ({ type }: { type: "json" | "srt" }) => {

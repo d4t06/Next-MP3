@@ -25,7 +25,7 @@ export const getOneSong = async (songId: string) => {
 
    const url = `${API_ENDPOINT}/songs/${songId}`;
 
-   const res = await fetch(url);
+   const res = await fetch(url, { next: { tags: [`song-${songId}`] } });
 
    if (!res.ok) return undefined;
 

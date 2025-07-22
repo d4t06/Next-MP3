@@ -42,3 +42,11 @@ type Toast = {
 };
 
 type Tab = "playing" | "queue" | "lyric";
+
+
+type ImageKitAuthKeys = {
+   signature: string;
+   expire: number;
+   token: string;
+   publicKey: string;
+};

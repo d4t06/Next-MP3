@@ -61,7 +61,7 @@ export default function Control({ audioEle }: Props) {
    };
 
    const classes = {
-      timeLineRef: `relative group h-full sm:h-1 hover:h-full  w-full rounded-full bg-white/30 before:content-[''] before:w-[100%] before:h-[16px] before:absolute before:top-[50%] before:translate-y-[-50%]`,
+      timeLineRef: `group hover:h-full bg-white/30`,
       timeLineHolderRef:
          "absolute pointer-events-none hidden sm:block opacity-0 group-hover:opacity-[100] h-6 w-3 rounded-sm bg-amber-900 border-[2px] border-amber-200 top-1/2 -translate-y-1/2 -translate-x-1/2",
       toggleButton: "queue-btn p-2 ",
@@ -85,14 +85,14 @@ export default function Control({ audioEle }: Props) {
                            <div
                               ref={processLineRef}
                               onClick={handleSeek}
-                              className={`${classes.timeLineRef} ${
+                              className={`${classes.timeLineRef} progress-line ${
                                  currentIndex === null && "disabled"
                               }`}
                            >
                               <div
                                  ref={timeHolderRef}
                                  className={classes.timeLineHolderRef}
-                              ></div>
+                              ></div>  
                            </div>
                         </div>
 

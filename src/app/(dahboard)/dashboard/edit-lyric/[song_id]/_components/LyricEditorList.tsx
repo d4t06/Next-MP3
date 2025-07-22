@@ -47,6 +47,7 @@ export default function LyricEditorList({ controlRef }: Props) {
       }
    }, [baseLyricArr]);
 
+   // for sync lyrix function
    useEffect(() => {
       setLocalStorage("edit_current-lyric-index", currentIndex);
    }, [currentIndex]);

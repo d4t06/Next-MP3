@@ -98,6 +98,8 @@ export default function useLyricEditorEffect({
 
       // update base lyric array
    }, [songWithLyric, hasAudioEle]);
+
+   
    useEffect(() => {
       if (!baseLyric) return;
 

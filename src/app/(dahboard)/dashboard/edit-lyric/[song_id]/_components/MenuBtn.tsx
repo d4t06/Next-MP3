@@ -24,8 +24,9 @@ import useImportLyric from "../_hooks/useImportLyric";
 import EditStringLyicModal from "./EditStringLyricModal";
 import SyncLyricModal from "./SyncLyricModal";
 import { useEditLyricContext } from "./EditLyricContext";
+import ChangeSongFileModal from "./ChangeSongFileModal";
 
-type Modal = "lyric" | "tutorial" | "song-beat" | "sync" | "export";
+type Modal = "lyric" | "tutorial" | "song-file" | "sync" | "export";
 
 type Props = {
    pause: () => void;
@@ -38,15 +39,16 @@ export default function MenuBtn({ pause }: Props) {
    const modalRef = useRef<ModalRef>(null);
 
    const { handleInputChange } = useImportLyric();
-   const { exportLyric } = useExportLyric();
+
+   const closeModal = () => modalRef.current?.close();
+
+   const { exportLyric } = useExportLyric({ closeModal });
 
    const openModal = (m: Modal) => {
       pause();
       setModal(m);
       modalRef.current?.open();
    };
-
-   const closeModal = () => modalRef.current?.close();
 
    return (
       <>
@@ -100,6 +102,11 @@ export default function MenuBtn({ pause }: Props) {
                         <ArrowTopRightOnSquareIcon />
                         <span>Export</span>
                      </button>
+
+                     <button onClick={() => openModal("song-file")}>
+                        <ArrowPathIcon />
+                        <span>Song file</span>
+                     </button>
                   </VertialMenuWrapper>
                </MenuContentWrapper>
             </PopupContent>
@@ -128,6 +135,9 @@ export default function MenuBtn({ pause }: Props) {
                      </Button>
                   </div>
                </ModalContentWrapper>
+            )}
+            {modal === "song-file" && (
+               <ChangeSongFileModal closeModal={closeModal} />
             )}
          </Modal>
       </>

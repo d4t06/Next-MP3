@@ -29,8 +29,6 @@ export default function useAutoSwitchTab({ songListContainer }: Props) {
    useEffect(() => {
       if (!someThingToTrigger) return;
 
-      console.log(tab);
-
       if (tab === "queue")
          timerId.current = setTimeout(() => setTab("playing"), 5000);
 
