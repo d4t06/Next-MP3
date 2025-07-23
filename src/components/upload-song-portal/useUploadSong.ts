@@ -6,7 +6,7 @@ import {
    initSongObject,
 } from "@/share/utils/appHelper";
 import parseSongFromFile from "@/share/utils/parseSong";
-import { useToast } from "@/stores/toastContext";
+import { useToastContext } from "@/stores/toastContext";
 import { upload } from "@imagekit/react";
 import { ChangeEvent, useState } from "react";
 
@@ -14,11 +14,9 @@ type Props = {
    toggleModal: () => void;
 };
 
-
-
 export default function useUploadImage({ toggleModal }: Props) {
    // hooks
-   const { setErrorToast, setSuccessToast } = useToast();
+   const { setErrorToast, setSuccessToast } = useToastContext();
 
    const [songSchemas, setSongSchemas] = useState<SongSchema[]>([]);
    const [currentIndex, setCurrentIndex] = useState(0);
@@ -69,6 +67,7 @@ export default function useUploadImage({ toggleModal }: Props) {
                signature,
                publicKey,
                file,
+               folder: "next-mp3",
                fileName: convertToEn(file.name),
             });
 

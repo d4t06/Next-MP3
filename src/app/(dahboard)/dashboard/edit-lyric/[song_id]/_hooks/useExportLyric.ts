@@ -1,6 +1,6 @@
 import { convertToEn } from "@/share/utils/appHelper";
 import { useEditLyricContext } from "../_components/EditLyricContext";
-import { useToast } from "@/stores/toastContext";
+import { useToastContext } from "@/stores/toastContext";
 
 type Props = {
    closeModal: () => void;
@@ -8,7 +8,7 @@ type Props = {
 
 export default function useExportLyric({ closeModal }: Props) {
    const { lyrics, song } = useEditLyricContext();
-   const { setSuccessToast } = useToast();
+   const { setSuccessToast } = useToastContext();
 
    const handleDownload = (content: string, type: "srt" | "json") => {
       if (!song) return;

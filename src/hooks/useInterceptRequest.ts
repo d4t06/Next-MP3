@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useToast } from "@/stores/toastContext";
+import { useToastContext } from "@/stores/toastContext";
 import { request } from "@/share/utils/request";
 import { API_ENDPOINT } from "@/share/utils/appHelper";
 
@@ -15,7 +15,7 @@ const REFRESH_URL = API_ENDPOINT + "/auth/refresh";
 
 export function useRefreshToken() {
    const { update, data: user } = useSession();
-   const { setErrorToast } = useToast();
+   const { setErrorToast } = useToastContext();
 
    const refresh = async () => {
       try {

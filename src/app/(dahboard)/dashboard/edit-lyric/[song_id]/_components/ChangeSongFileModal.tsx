@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function ChangeSongFileModal({ closeModal }: Props) {
-   const { songFile, setSongFile, isFetching, submit } = useChangeSongFile();
+   const { songFile, setSongFile, isFetching, submit } = useChangeSongFile({closeModal});
 
    const songUrl = useMemo(
       () => (songFile ? URL.createObjectURL(songFile) : ""),

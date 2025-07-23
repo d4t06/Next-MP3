@@ -2,6 +2,7 @@
 
 import { ModalContentWrapper } from "@/share/_components";
 import Button from "@/share/_components/Button";
+import LoadingOverlay from "@/share/_components/LoadingOverlay";
 import { useState } from "react";
 
 type Props = {
@@ -34,7 +35,7 @@ export default function EditSongModal({
    };
 
    return (
-      <ModalContentWrapper disable={loading}>
+      <ModalContentWrapper>
          <h1 className="text-xl font-medium ">Edit {song.name}</h1>
 
          <div className="mt-3 space-y-2">
@@ -79,13 +80,14 @@ export default function EditSongModal({
             <Button
                colors={"second"}
                className="min-w-[120px]"
-               loading={loading}
                disabled={!ableToSubmit}
                onClick={handleSubmit}
             >
                Save
             </Button>
          </div>
+
+         {loading && <LoadingOverlay />}
       </ModalContentWrapper>
    );
 }

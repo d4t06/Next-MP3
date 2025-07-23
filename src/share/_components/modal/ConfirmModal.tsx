@@ -1,6 +1,7 @@
 import Button from "@/share/_components/Button";
 import { ModalContentWrapper } from "./Modal";
 import ModalHeader from "./ModalHeader";
+import LoadingOverlay from "../LoadingOverlay";
 
 type Props = {
    callback: () => void;
@@ -22,7 +23,7 @@ export default function ConfirmModal({
    className,
 }: Props) {
    return (
-      <ModalContentWrapper disable={loading}>
+      <ModalContentWrapper>
          <ModalHeader close={closeModal} title={label || "Wait a minute"} />
          {desc && (
             <p className=" text-[16px] font-semibold text-red-500">{desc}</p>
@@ -33,12 +34,13 @@ export default function ConfirmModal({
             <Button
                colors={"second"}
                className="min-w-[120px]"
-               loading={loading}
                onClick={callback}
             >
                {buttonLabel || "Yes please"}
             </Button>
          </div>
+
+         {loading && <LoadingOverlay />}
       </ModalContentWrapper>
    );
 }

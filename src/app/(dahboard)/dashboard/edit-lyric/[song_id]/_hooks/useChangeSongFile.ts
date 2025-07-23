@@ -1,6 +1,6 @@
 import useInterceptRequest from "@/hooks/useInterceptRequest";
 import { API_ENDPOINT, convertToEn } from "@/share/utils/appHelper";
-import { useToast } from "@/stores/toastContext";
+import { useToastContext } from "@/stores/toastContext";
 import { upload } from "@imagekit/react";
 import { useState } from "react";
 import { useEditLyricContext } from "../_components/EditLyricContext";
@@ -8,8 +8,12 @@ import { runRevalidateTag } from "@/app/actions";
 
 const SONG_URL = `${API_ENDPOINT}/songs`;
 
-export default function useChangeSongFile() {
-   const { setErrorToast, setSuccessToast } = useToast();
+type Props = {
+   closeModal: () => void;
+};
+
+export default function useChangeSongFile({ closeModal }: Props) {
+   const { setErrorToast, setSuccessToast } = useToastContext();
    const { song } = useEditLyricContext();
 
    const [songFile, setSongFile] = useState<File>();
@@ -43,6 +47,7 @@ export default function useChangeSongFile() {
             signature,
             publicKey,
             file: songFile,
+            folder: "next-mp3",
             fileName: convertToEn(songFile.name),
          });
 
@@ -56,6 +61,8 @@ export default function useChangeSongFile() {
          await runRevalidateTag(`song-${song.id}`);
 
          setSuccessToast(`Change song file successful`);
+
+         closeModal();
       } catch (error) {
          console.log(error);
          setErrorToast();

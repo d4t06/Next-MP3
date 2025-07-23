@@ -1,11 +1,11 @@
 "use client";
 
-import { useToast } from "@/stores/toastContext";
+import { useToastContext } from "@/stores/toastContext";
 import { useEffect, useState } from "react";
 import ToastItem from "./ToastItem";
 
 export default function ToastContainer() {
-   const { setToasts, toasts } = useToast();
+   const { setToasts, toasts } = useToastContext();
    const [removing, setRemoving] = useState("");
 
    const removeToast = (id: string) => {

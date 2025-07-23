@@ -1,5 +1,5 @@
 import { API_ENDPOINT } from "@/share/utils/appHelper";
-import { useToast } from "@/stores/toastContext";
+import { useToastContext } from "@/stores/toastContext";
 import { RefObject, useEffect, useState } from "react";
 import { LyricEditorControlRef } from "@/app/(dahboard)/dashboard/edit-lyric/[song_id]/_components/LyricEditorControl";
 import useInterceptRequest from "@/hooks/useInterceptRequest";
@@ -34,7 +34,7 @@ export default function useLyricEditorEffect({
 
    const [hasAudioEle, setHasAudioEle] = useState(false);
 
-   const { setErrorToast, setSuccessToast } = useToast();
+   const { setErrorToast, setSuccessToast } = useToastContext();
    const $fetch = useInterceptRequest();
 
    const handleAddLyric = async () => {

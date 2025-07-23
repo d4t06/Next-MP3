@@ -1,6 +1,6 @@
 import { runRevalidateTag } from "@/app/actions";
 import { API_ENDPOINT, sleep } from "@/share/utils/appHelper";
-import { useToast } from "@/stores/toastContext";
+import { useToastContext } from "@/stores/toastContext";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import useInterceptRequest from "./useInterceptRequest";
@@ -11,7 +11,7 @@ export default function useSongItemAction() {
    const [isFetching, setIsFetching] = useState(false);
 
    const { data: session } = useSession();
-   const { setErrorToast, setSuccessToast } = useToast();
+   const { setErrorToast, setSuccessToast } = useToastContext();
    const $fetch = useInterceptRequest();
 
    type Delete = {

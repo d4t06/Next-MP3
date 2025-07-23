@@ -1,5 +1,6 @@
 "use client";
 
+import { NEXT_URL } from "next/dist/client/components/app-router-headers";
 // init state
 import {
    Dispatch,
@@ -10,37 +11,7 @@ import {
    useState,
 } from "react";
 
-type StateType = {
-   toasts: Toast[];
-};
-const initialState: StateType = {
-   toasts: [],
-};
-
-// create context
-// we expect {
-//    state: {...props},
-//    setState
-//    ...
-// }
-type ContextType = {
-   state: StateType;
-   setToasts: Dispatch<SetStateAction<Toast[]>>;
-   setErrorToast: (message?: string) => void;
-   setSuccessToast: (message?: string) => void;
-};
-
-const initialContext: ContextType = {
-   state: initialState,
-   setToasts: () => {},
-   setErrorToast: () => {},
-   setSuccessToast: () => {},
-};
-
-const ToastContext = createContext(initialContext);
-
-// define context provider
-const ToastProvider = ({ children }: { children: ReactNode }) => {
+const useToast = () => {
    const [toasts, setToasts] = useState<Toast[]>([]);
 
    const setErrorToast = (message: string = "Somethings went wrong") =>
@@ -55,30 +26,29 @@ const ToastProvider = ({ children }: { children: ReactNode }) => {
          { title: "success", id: Date.now() + "", desc: `${message}` },
       ]);
 
+   return { toasts, setToasts, setErrorToast, setSuccessToast };
+};
+
+type ContextType = ReturnType<typeof useToast>;
+
+const ToastContext = createContext<ContextType | null>(null);
+
+// define context provider
+const ToastProvider = ({ children }: { children: ReactNode }) => {
    return (
-      <ToastContext.Provider
-         value={{
-            state: { toasts },
-            setToasts,
-            setErrorToast,
-            setSuccessToast,
-         }}
-      >
+      <ToastContext.Provider value={useToast()}>
          {children}
       </ToastContext.Provider>
    );
 };
 
-// define useToast Hook
-const useToast = () => {
-   const {
-      state: { toasts },
-      setToasts,
-      setErrorToast,
-      setSuccessToast,
-   } = useContext(ToastContext);
-   return { toasts, setToasts, setErrorToast, setSuccessToast };
+// define useToastContext Hook
+const useToastContext = () => {
+   const ct = useContext(ToastContext);
+   if (!ct) throw new Error("ToastProvider not provided");
+
+   return ct;
 };
 
 export default ToastProvider;
-export { useToast };
+export { useToastContext };

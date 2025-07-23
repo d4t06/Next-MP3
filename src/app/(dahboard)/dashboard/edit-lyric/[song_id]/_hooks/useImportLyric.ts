@@ -1,10 +1,10 @@
 import { ChangeEventHandler } from "react";
-import { useToast } from "@/stores/toastContext";
+import { useToastContext } from "@/stores/toastContext";
 import { converSrt } from "./convertSrt";
 import { useEditLyricContext } from "../_components/EditLyricContext";
 
 export default function useImportLyric() {
-   const { setErrorToast } = useToast();
+   const { setErrorToast } = useToastContext();
    const { setLyrics, setIsChanged, setIsPreview } = useEditLyricContext();
 
    const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
